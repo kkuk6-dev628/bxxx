@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="3.5"
+    android:id="@+id/activity_search"
     tools:context="cn.reservation.app.baixingxinwen.activity.SearchActivity">
 
     <LinearLayout
@@ -378,5 +379,7 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/vline"
             android:overScrollMode="never" />
+
+
     </LinearLayout>
 </LinearLayout>

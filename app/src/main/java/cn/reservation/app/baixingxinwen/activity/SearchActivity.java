@@ -1,5 +1,6 @@
 package cn.reservation.app.baixingxinwen.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.drm.DrmStore;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -19,8 +21,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -86,6 +90,10 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
     private String price = "";
     private int preLast;
     BasePopupWindow popUp;
+    private View contentView;
+    private boolean isKeyboardShown = false;
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +101,26 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         showAction = 0;
         selectedKeyTab = new Hashtable();
         setContentView(R.layout.activity_search);
+        contentView = findViewById(R.id.activity_search);
+        contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                Rect r = new Rect();
+                TabHostActivity.tabWidget.getWindowVisibleDisplayFrame(r);
+                int screenHeight = contentView.getRootView().getHeight();
+
+                // r.bottom is the position above soft keypad or device button.
+                // if keypad is shown, the r.bottom is smaller than that before.
+                int keypadHeight = screenHeight - r.bottom;
+
+                // 0.15 ratio is perhaps enough to determine keypad height.
+                isKeyboardShown = keypadHeight > screenHeight * 0.15;
+                if(isKeyboardShown && popUp.isShowing()){
+                    popUp.dismiss();
+                }
+            }
+        });
         postItem = (String) intent.getSerializableExtra("PostItem");
         pActivity = (AnimatedActivity) SearchActivity.this.getParent();
         editSearchTxt = (EditText) findViewById(R.id.edit_search_title);
@@ -271,6 +299,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
             sortid = (String) intent.getSerializableExtra("sortid");
             editSearchTxt.setHint("搜索");
         }
+
         getSearchOption();
         mContext = TabHostActivity.TabHostStack;
         res = getResources();
@@ -315,6 +344,32 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
             }
         });
 
+        lstSearch.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()) {
+
+                    case MotionEvent.ACTION_DOWN:
+                        CommonUtils.hideKeyboard(SearchActivity.this);
+                        break;
+
+                    case MotionEvent.ACTION_MOVE:
+
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+
+                        break;
+
+                    default:
+                        break;
+                }
+
+                return false;
+
+            }
+        });
+
         lstSearch.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView arg0, int scrollState) { }
@@ -328,13 +383,13 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                     }
                 }
                 final int lastItem = firstVisibleItem + visibleItemCount;
-                if(lastItem>2)
+                if(lastItem>3 && !isKeyboardShown)
                 {
                     findViewById(R.id.lyt_search_parent).post(new Runnable() {
                         @Override
                         public void run() {
                             if(popUp!=null && !popUp.isShowing()) {
-                                popUp.showAtLocation(findViewById(R.id.lyt_search_parent), Gravity.BOTTOM | Gravity.RIGHT, 0, 100);
+                                popUp.showAtLocation(findViewById(R.id.lyt_search_parent), Gravity.BOTTOM | Gravity.RIGHT, 0, 200);
                             }
                         }
                     });
@@ -446,6 +501,18 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         });
         //showCustomTopMenu();
     }
+
+    public boolean checkKeyboardShown(){
+        InputMethodManager imm = (InputMethodManager) SearchActivity.this
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        if (imm.isAcceptingText()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public void onClick(View view) {
         int id = view.getId();
@@ -506,8 +573,9 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
             }
         }
         else if (id == R.id.rlt_back){//点击返回按钮
-            intent = new Intent(SearchActivity.this, HomeActivity.class);
             popUp.dismiss();
+            CommonUtils.hideKeyboard(SearchActivity.this);
+            intent = new Intent(SearchActivity.this, HomeActivity.class);
             pActivity.startChildActivity("home", intent);
         }
         else if (id == R.id.rlt_search){//点击搜索按钮
