@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:layout_marginBottom="1dp">
+
+    <LinearLayout
+        android:id="@+id/lyt_home_favor_thumbnail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="false">
+
+        <LinearLayout
+            android:id="@+id/lyt_home_favor_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/lyt_home_favor_thumbnail"
+            android:layout_toRightOf="@+id/lyt_home_favor_thumbnail"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp">
+
+                <ImageView
+                    android:id="@+id/img_news_top"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginTop="2dp"
+                    android:adjustViewBounds="true"
+                    android:cropToPadding="false"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/new_detail_top_etc" />
+
+                <TextView
+                    android:id="@+id/txt_home_favor_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:singleLine="false"
+                    android:text="敬请期待敬请期待敬请期待敬请期待敬请期待敬请期"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="14sp" />
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/img_home_favor_thumbnail"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:adjustViewBounds="false"
+                    android:scaleType="center"
+                    android:src="@drawable/img_jianzhi" />
+
+                <LinearLayout
+                    android:id="@+id/img_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="70dp"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txt_property1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="2dp"
+                        android:singleLine="true"
+                        android:text="所属地区："
+                        android:textColor="@color/colorSmallText"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:id="@+id/txt_property2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="2dp"
+                        android:singleLine="true"
+                        android:text="楼层："
+                        android:textColor="@color/colorSmallText"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:id="@+id/txt_property3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="2dp"
+                        android:singleLine="true"
+                        android:text="面积："
+                        android:textColor="@color/colorSmallText"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lyt_property"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_alignParentBottom="false"
+                    android:layout_toRightOf="@id/img_search"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txt_property_val1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:singleLine="true"
+                        android:text="中心区"
+                        android:textColor="@color/colorSmallText"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:id="@+id/txt_property_val2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:singleLine="true"
+                        android:text="2楼"
+                        android:textColor="@color/colorSmallText"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:id="@+id/txt_property_val3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:singleLine="true"
+                        android:text="150/平方米"
+                        android:textColor="@color/colorSmallText"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/txt_home_favor_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="2dp"
+                    android:layout_toRightOf="@id/lyt_property"
+                    android:gravity="right"
+                    android:maxLines="2"
+                    android:paddingLeft="1dp"
+                    android:text="价格：28万"
+                    android:textColor="@color/colorConfirmText"
+                    android:textSize="15sp" />
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

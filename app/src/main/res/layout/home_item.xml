@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingRight="14dp"
+    android:layout_marginBottom="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
+        android:id="@+id/lyt_room_favor_thumbnail">
+        <LinearLayout
+            android:layout_width="122dp"
+            android:layout_height="100dp"
+            android:orientation="horizontal"
+            android:id="@+id/lyt_img_thumbnail"
+            android:layout_gravity="center_vertical">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/img_favor_thumbnail"
+                android:adjustViewBounds="true"
+                android:src="@drawable/room"
+                android:scaleType="fitXY"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="0dp"
+            android:paddingLeft="10dp"
+            android:layout_toRightOf="@+id/img_favor_thumbnail"
+            android:layout_toEndOf="@+id/img_favor_thumbnail">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:id="@+id/txt_room_favor_desc3"
+                android:textSize="16sp"
+                android:textColor="@color/colorPrimaryDark"
+                android:text="敬请期待敬请期待敬请期待"
+                android:singleLine="false"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_room_favor_type3"
+                android:textSize="12.5sp"
+                android:textColor="@color/colorLineLight"
+                android:text="天信小区 | 1室一厅"
+                android:singleLine="true" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txt_room_favor3"
+                    android:textSize="16sp"
+                    android:textColor="@color/colorConfirmText"
+                    android:singleLine="true"
+                    android:text="28万"
+                    android:layout_gravity="center_vertical" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

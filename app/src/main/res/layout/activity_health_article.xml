@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="cn.reservation.app.baixingxinwen.activity.HealthArticleActivity"
+    android:background="@color/colorBackground">
+    <include layout="@layout/include_search"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorDivider"
+        android:id="@+id/vline"
+        android:layout_below="@+id/relativeLayout"/>
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/vline"
+        android:id="@+id/lst_health_article"
+        android:overScrollMode="never"/>
+</RelativeLayout>

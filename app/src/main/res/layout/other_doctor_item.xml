@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="80dp"
+    android:layout_height="wrap_content"
+    android:id="@+id/lyt_other_doctors"
+    android:background="?android:selectableItemBackground"
+    android:gravity="center_horizontal"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/lyt_other_doctor_photo"
+        android:layout_gravity="center_horizontal"
+        android:measureWithLargestChild="false"
+        android:minHeight="90dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/img_other_doctor_photo"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="false"
+            android:layout_gravity="center_horizontal"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:id="@+id/txt_other_doctor_name"
+        android:textSize="11.5sp"
+        android:textColor="@color/colorSecondaryText"/>
+</LinearLayout>

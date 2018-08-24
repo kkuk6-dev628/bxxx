@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="cn.reservation.app.baixingxinwen.activity.ReAppointActivity"
+    android:background="@color/colorBackground">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/lyt_patients">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/please_choose_patient_to_reappoint"
+                android:textColor="@color/colorSecondaryText"
+                android:textSize="11sp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="5dp" />
+        </RelativeLayout>
+        <include layout="@layout/include_hlv_patients"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorDivider"
+            android:layout_marginTop="5dp" />
+    </LinearLayout>
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/lyt_patients"
+        android:id="@+id/lst_appoint_history"
+        android:background="@color/colorTabBackground"
+        android:overScrollMode="never">
+    </ListView>
+</RelativeLayout>

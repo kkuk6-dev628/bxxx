@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#595857</color>
+	<color name="colorComment">#68B098</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorBackground">#ffffff</color>
+    <color name="colorHomeBackground">#ebebeb</color>
+    <color name="colorBackgroundGray">#F4F4F4</color>
+    <color name="colorPrimaryText">#043779</color>
+    <color name="colorSecondaryText">#333333</color>
+    <color name="colorSmallText">#7a7a7a</color>
+    <color name="colorTabText">#7e7a7a</color>
+    <color name="colorLineDark">#777777</color>
+    <color name="colorLineLight">#c9caca</color>
+    <color name="colorButtonBackground1">#101e2d</color>
+    <color name="colorButtonBorder1">#223754</color>
+    <color name="colorPressedText">#395881</color>
+    <color name="colorHintText">#8a8a8a</color>
+    <color name="colorTabBackground">#f5f4f4</color>
+    <color name="colorHomeTitle">#ec5f34</color>
+    <color name="colorJobText">#f47a37</color>
+    <color name="colorRestDate">#bdbcbc</color>
+    <color name="colorRestStatus">#fd0101</color>
+    <color name="colorPossibleStatus">#018bdb</color>
+    <color name="colorButtonBackground">#2e5587</color>
+    <color name="colorButtonPressBackground">#1b3351</color>
+    <color name="colorLayoutBackground">#efeef4</color>
+    <color name="colorLabel">#8a8a8a</color>
+    <color name="colorConfirmText">#f15a24</color>
+    <color name="colorDescriptionText">#1c4c89</color>
+    <color name="colorNumPadText">#0a3f71</color>
+    <color name="colorDivider">#e5e5e5</color>
+    <color name="colorDialog">#045284</color>
+</resources>

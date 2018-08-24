@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="40dp"
+    tools:context="cn.reservation.app.baixingxinwen.activity.IntroduceActivity">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <cn.reservation.app.baixingxinwen.utils.JustifyTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/introduce"
+                android:id="@+id/txt_introduce"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:maxWidth="280dp"
+                android:textColor="@color/colorTabText"
+                android:textSize="14sp"
+                android:paddingBottom="40dp"
+                android:singleLine="false"
+                android:lineSpacingExtra="8dp"/>
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

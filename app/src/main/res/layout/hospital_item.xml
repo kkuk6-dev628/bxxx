@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="82dp"
+    android:paddingRight="14dp">
+
+    <LinearLayout
+        android:layout_width="122dp"
+        android:layout_height="82dp"
+        android:orientation="horizontal"
+        android:id="@+id/lyt_hospital_thumbnail"
+        android:layout_gravity="center_vertical">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/img_hospital_thumbnail"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="13dp"
+        android:id="@+id/imageView4"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/navi_next"
+        android:layout_centerVertical="true"
+        android:adjustViewBounds="true" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="10dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="12dp"
+        android:layout_toLeftOf="@+id/imageView4"
+        android:layout_toRightOf="@+id/lyt_hospital_thumbnail"
+        android:layout_toEndOf="@+id/lyt_hospital_thumbnail">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_hospital_title"
+            android:textSize="14sp"
+            android:textColor="@color/colorPrimaryText"
+            android:singleLine="true"
+            android:textStyle="bold" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_hospital_desc"
+            android:textSize="12.5sp"
+            android:textColor="@color/colorSecondaryText"
+            android:singleLine="true" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="13dp"
+                android:id="@+id/imageView3"
+                android:src="@drawable/navi_location"
+                android:layout_marginRight="4dp"
+                android:layout_gravity="center_vertical" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_hospital_region"
+                android:textSize="9.8sp"
+                android:textColor="@color/colorSmallText"
+                android:singleLine="true"
+                android:layout_gravity="center_vertical" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

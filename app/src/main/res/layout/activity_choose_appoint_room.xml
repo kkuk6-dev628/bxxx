@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="cn.reservation.app.baixingxinwen.activity.ChooseAppointDoctorActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorBackground"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="117dp"
+                android:paddingRight="10dp"
+                android:padding="10dp"
+                android:id="@+id/relatvie_layout1"
+                android:layout_alignParentTop="true">
+
+                <LinearLayout
+                    android:layout_width="73dp"
+                    android:layout_height="97dp"
+                    android:orientation="horizontal"
+                    android:id="@+id/lyt_doctor_photo"
+                    android:layout_gravity="center_vertical">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/img_doctor_photo"
+                        android:scaleType="centerCrop"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/lyt_right_buttons"
+                    android:orientation="vertical"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/btn_view_summary"
+                        android:clickable="true"
+                        android:text="@string/view_summary"
+                        android:background="@drawable/btn_view_summary_selector"
+                        android:textColor="@color/colorBackground"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="5dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/btn_call_phone"
+                        android:clickable="true"
+                        android:text="@string/call_phone"
+                        android:background="@drawable/btn_call_phone_selector"
+                        android:textColor="@color/colorBackground"
+                        android:textSize="12sp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp"
+                    android:layout_toLeftOf="@+id/lyt_right_buttons"
+                    android:layout_toRightOf="@+id/lyt_doctor_photo"
+                    android:layout_toEndOf="@+id/lyt_doctor_photo">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="15dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:id="@+id/txt_room_name"
+                            android:textSize="15sp"
+                            android:textColor="@color/colorPrimaryText"
+                            android:textStyle="bold"
+                            android:singleLine="true" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:id="@+id/txt_hospital_name"
+                            android:textSize="11sp"
+                            android:textColor="@color/colorSmallText"
+                            android:singleLine="true" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/medical_fee"
+                            android:id="@+id/txt_medical_fee"
+                            android:textSize="11sp"
+                            android:textColor="@color/colorSmallText"
+                            android:layout_gravity="center_vertical"
+                            android:singleLine="true" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:id="@+id/txt_room_fee"
+                            android:textSize="13sp"
+                            android:textColor="@color/colorSmallText"
+                            android:layout_gravity="center_vertical"
+                            android:singleLine="true"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/fee_unit"
+                            android:id="@+id/txt_fee_unit"
+                            android:textSize="11sp"
+                            android:textColor="@color/colorSmallText"
+                            android:layout_gravity="center_vertical"
+                            android:singleLine="true" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+            <include layout="@layout/include_choose_appoint"/>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

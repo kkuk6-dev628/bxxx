@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_centerInParent="true">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/choose_department"
+            android:textSize="14sp"
+            android:id="@+id/txt_tab_title"
+            android:textColor="@color/colorPrimaryText"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/img_tab_icon"
+            android:src="@drawable/navi_down"
+            android:clickable="true"
+            android:background="?android:selectableItemBackground"
+            android:padding="5dp" />
+    </LinearLayout>
+    <View
+        android:layout_width="1px"
+        android:layout_height="wrap_content"
+        android:background="@color/colorTabText"
+        android:id="@+id/img_tab_divider"
+        android:layout_alignParentLeft="true"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/colorLineLight"
+        android:layout_alignParentBottom="true" />
+</RelativeLayout>

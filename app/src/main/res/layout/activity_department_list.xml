@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="cn.reservation.app.baixingxinwen.activity.DepartmentListActivity"
+    android:background="@color/colorTabBackground">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        android:id="@+id/layout_hospital_title">
+        <TextView
+            android:id="@+id/txt_hospital_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="14sp"
+            android:textColor="@color/colorPrimaryText"
+            android:layout_gravity="center_horizontal"
+            android:layout_centerInParent="true"
+            android:textStyle="bold" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#777777"
+            android:layout_alignParentBottom="true" />
+    </RelativeLayout>
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/simpleTabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="47dp"
+        android:layout_below="@+id/layout_hospital_title"
+        app:tabBackground="@color/colorTabBackground"
+        app:tabIndicatorColor="@color/colorPrimaryText"
+        app:tabIndicatorHeight="3dp"
+        app:tabSelectedTextColor="@color/colorPrimaryText"
+        app:tabTextColor="@color/colorTabText"
+        app:tabPaddingStart="0dp"
+        app:tabPaddingEnd="0dp"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/simpleViewPager"
+        android:layout_below="@+id/simpleTabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+</RelativeLayout>

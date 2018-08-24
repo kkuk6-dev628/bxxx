@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/alert_dialog_lang_shape">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dep_internal"
+        android:textSize="14sp"
+        android:gravity="center_horizontal"
+        android:id="@+id/btn_dep_internal"
+        android:textColor="@drawable/btn_color_selector2"
+        android:background="@drawable/alert_dialog_top_button_selector"
+        android:clickable="true"
+        android:paddingBottom="13dp"
+        android:paddingTop="13dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/colorTabText"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dep_surgery"
+        android:textSize="14sp"
+        android:id="@+id/btn_dep_surgery"
+        android:textColor="@drawable/btn_color_selector2"
+        android:background="@drawable/alert_dialog_middle_button_selector"
+        android:clickable="true"
+        android:paddingBottom="13dp"
+        android:paddingTop="13dp"
+        android:gravity="center_horizontal" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/colorTabText"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dep_other"
+        android:textSize="14sp"
+        android:id="@+id/btn_dep_other"
+        android:textColor="@drawable/btn_color_selector2"
+        android:background="@drawable/alert_dialog_bottom_button_selector"
+        android:clickable="true"
+        android:paddingBottom="13dp"
+        android:paddingTop="13dp"
+        android:gravity="center_horizontal" />
+</LinearLayout>

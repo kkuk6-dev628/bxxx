@@ -1,0 +1,38 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="40dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/lyt_month_date"
+    android:background="?android:selectableItemBackground">
+
+    <TextView
+        android:id="@+id/txt_month_weekday"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textColor="@color/colorSecondaryText"
+        android:text="周一"
+        android:textSize="13.2sp"/>
+    <TextView
+        android:id="@+id/txt_month_day"
+        android:layout_width="28dp"
+        android:layout_height="23dp"
+        android:textColor="@color/colorBackground"
+        android:gravity="clip_vertical|center_horizontal"
+        android:text="10"
+        android:textSize="19sp"
+        android:layout_marginTop="-3dp"
+        android:layout_marginBottom="-3dp"
+        android:background="@drawable/current_date_shape"
+        android:layout_gravity="center_horizontal" />
+    <TextView
+        android:id="@+id/txt_month_day_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorSecondaryText"
+        android:gravity="center_horizontal"
+        android:text="@string/possible_date"
+        android:textSize="12.8sp"/>
+
+</LinearLayout>

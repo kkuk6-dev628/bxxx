@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="cn.reservation.app.baixingxinwen.activity.HomeActivity"
+    android:orientation="vertical"
+    android:weightSum="3.5">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2.5"
+                android:background="@color/colorHomeBackground"
+                android:weightSum="2.7">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:background="@color/colorBackground"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/colorHomeBackground"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="1dp"
+                            android:background="@color/colorBackground">
+
+                            <RelativeLayout
+                                android:id="@+id/rlt_safe_phone"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="10dp"
+                                android:background="?android:selectableItemBackground"
+                                android:clickable="true"
+                                android:orientation="horizontal"
+                                android:padding="2dp">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/new_safe_phone" />
+
+                            </RelativeLayout>
+
+                            <TextView
+                                android:id="@+id/txt_safe_phone"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_marginLeft="10dp"
+                                android:layout_toRightOf="@id/rlt_safe_phone"
+                                android:text="13888888888"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textColor="@color/colorPrimaryDark"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/btn_safe_phone"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center"
+                                android:layout_marginRight="15dp"
+                                android:text="换绑"
+                                android:textSize="16sp" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="1dp"
+                            android:background="@color/colorBackground">
+
+                            <RelativeLayout
+                                android:id="@+id/rlt_safe_weixin"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="10dp"
+                                android:background="?android:selectableItemBackground"
+                                android:clickable="true"
+                                android:orientation="horizontal"
+                                android:padding="2dp">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/new_safe_weixin" />
+
+                            </RelativeLayout>
+
+                            <TextView
+                                android:id="@+id/txt_safe_weixin"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_marginLeft="10dp"
+                                android:layout_toRightOf="@id/rlt_safe_weixin"
+                                android:text="微信"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textColor="@color/colorPrimaryDark"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/btn_safe_weixin"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginRight="15dp"
+                                android:text="绑定"
+                                android:textSize="16sp" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="1dp"
+                            android:background="@color/colorBackground">
+
+                            <RelativeLayout
+                                android:id="@+id/rlt_safe_qq"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="10dp"
+                                android:background="?android:selectableItemBackground"
+                                android:clickable="true"
+                                android:orientation="horizontal"
+                                android:padding="2dp">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/new_safe_qq" />
+
+                            </RelativeLayout>
+
+                            <TextView
+                                android:id="@+id/txt_safe_qq"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_marginLeft="10dp"
+                                android:layout_toRightOf="@id/rlt_safe_qq"
+                                android:text="QQ号码"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textColor="@color/colorPrimaryDark"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/btn_safe_qq"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginRight="15dp"
+                                android:text="绑定"
+                                android:textSize="16sp" />
+                        </RelativeLayout>
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginTop="1dp"
+                            android:background="@color/colorBackground">
+
+                            <RelativeLayout
+                                android:id="@+id/rlt_safe_pass"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="10dp"
+                                android:background="?android:selectableItemBackground"
+                                android:clickable="true"
+                                android:orientation="horizontal"
+                                android:padding="2dp">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/new_safe_pass" />
+
+                            </RelativeLayout>
+
+                            <TextView
+                                android:id="@+id/txt_safe_pass"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_toRightOf="@id/rlt_safe_pass"
+                                android:layout_centerVertical="true"
+                                android:text="账号密码"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textColor="@color/colorPrimaryDark"
+                                android:textSize="16sp" />
+
+                            <TextView
+                                android:id="@+id/btn_safe_pass"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginRight="15dp"
+                                android:text="修改"
+                                android:textSize="16sp" />
+                        </RelativeLayout>
+                        <RelativeLayout
+                            android:id="@+id/rlt_my_logout"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:background="@color/colorBackground"
+                            android:layout_marginTop="1dp"
+                            android:layout_gravity="center_horizontal">
+
+                            <RelativeLayout
+                                android:id="@+id/my_logout"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:orientation="horizontal"
+                                android:clickable="true"
+                                android:background="?android:selectableItemBackground"
+                                android:layout_marginLeft="10dp"
+                                android:padding="0dp">
+
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_gravity="center"
+                                    android:src="@drawable/new_logout"
+                                    android:layout_centerHorizontal="true"
+                                    android:layout_centerVertical="true"
+                                    android:scaleType="fitXY"/>
+
+                            </RelativeLayout>
+                            <TextView
+                                android:id="@+id/my_logout_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_toRightOf="@id/my_logout"
+                                android:textColor="@color/colorPrimaryDark"
+                                android:layout_marginLeft="10dp"
+                                android:textAppearance="?android:attr/textAppearanceLarge"
+                                android:textSize="16sp"
+                                android:text="退出登录"/>
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center"
+                                android:layout_marginRight="15dp"
+                                android:src="@drawable/navi_next"/>
+                        </RelativeLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

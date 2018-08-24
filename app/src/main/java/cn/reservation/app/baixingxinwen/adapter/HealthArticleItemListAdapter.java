@@ -1,0 +1,64 @@
+package cn.reservation.app.baixingxinwen.adapter;
+
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+
+import java.util.ArrayList;
+
+import cn.reservation.app.baixingxinwen.utils.HealthArticleItem;
+import cn.reservation.app.baixingxinwen.utils.HealthArticleItemView;
+
+/**
+ * Created by LiYin on 3/20/2017.
+ */
+public class HealthArticleItemListAdapter extends BaseAdapter {
+    private Context mContext;
+    private ArrayList<HealthArticleItem> mItems = new ArrayList<HealthArticleItem>();
+
+    public HealthArticleItemListAdapter(Context context) {
+        mContext = context;
+    }
+
+    public void addItem(HealthArticleItem aItem) {
+        mItems.add(aItem);
+    }
+
+    public void setListItems(ArrayList<HealthArticleItem> lItems) {
+        mItems = lItems;
+    }
+
+    public void clearItems(){
+        mItems.clear();
+    }
+    @Override
+    public int getCount() {
+        return mItems.size();
+    }
+
+    @Override
+    public Object getItem(int i) {
+        return mItems.get(i);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return i;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup viewGroup) {
+        HealthArticleItemView itemView;
+        if (convertView == null) {
+            itemView = new HealthArticleItemView(mContext);
+        }else {
+            itemView = (HealthArticleItemView) convertView;
+        }
+
+        itemView.setThumbnail(mItems.get(position).getmImage());
+        itemView.setTitle(mItems.get(position).getmTitle());
+        itemView.setContent(mItems.get(position).getmContent());
+        return itemView;
+    }
+}

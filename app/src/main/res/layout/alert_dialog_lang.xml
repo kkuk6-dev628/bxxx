@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/layout_lang"
+    android:background="@drawable/alert_dialog_lang_shape">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:text="@string/lang_ko"
+        android:id="@+id/btn_lang_ko"
+        android:layout_gravity="center_horizontal"
+        android:textSize="13.2sp"
+        android:background="@drawable/alert_dialog_top_button_selector"
+        android:textColor="@drawable/btn_color_selector2"
+        android:clickable="true"
+        android:gravity="center" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/icon_divider"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:text="@string/lang_ch"
+        android:id="@+id/btn_lang_ch"
+        android:layout_gravity="center_horizontal"
+        android:textSize="13.2sp"
+        android:background="@drawable/alert_dialog_bottom_button_selector"
+        android:textColor="@drawable/btn_color_selector2"
+        android:clickable="true"
+        android:gravity="center" />
+</LinearLayout>

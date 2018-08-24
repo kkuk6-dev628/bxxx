@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="cn.reservation.app.baixingxinwen">
+    <!-- 访问网络，网络定位需要上网 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 用于访问wifi网络信息，wifi信息会用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.hardware.camera.autofocus" />
+    <!-- 写入扩展存储，向扩展卡写入数据，用于写入离线定位数据 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	<uses-permission android:name="android.permission.CALL_PHONE"/>
+	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- 这个权限用于访问GPS定位 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:noHistory="true">
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.SplashActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.HomeAdverActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.TabHostActivity"
+            android:configChanges="locale"
+            android:screenOrientation="portrait" />
+        <activity android:name="cn.reservation.app.baixingxinwen.activity.HomeGroupActivity" />
+        <activity android:name="cn.reservation.app.baixingxinwen.activity.MoreGroupActivity" />
+        <activity android:name="cn.reservation.app.baixingxinwen.activity.MeGroupActivity" />
+        <activity android:name="cn.reservation.app.baixingxinwen.activity.PostGroupActivity" />
+        <activity android:name="cn.reservation.app.baixingxinwen.activity.NewsGroupActivity" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.HomeActivity"
+            android:configChanges="locale"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.MoreActivity"
+            android:configChanges="locale"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.MeActivity"
+            android:configChanges="locale"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.PostActivity"
+            android:configChanges="locale"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.PostCategoryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.ReportActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.NewsActivity"
+            android:configChanges="locale"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.LoginActivity"
+            android:configChanges="locale"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.AdverActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.HelpActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.HelpViewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.UserNewsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.ChatActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.UserSafeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.UserSaveListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.UserHistoryListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.EnterpriseListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.SearchActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.FullSearchActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.MemberActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.UpdateActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.PrivacyActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.ChargeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.ChargeActivitySet"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.RoomDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.ChooseAppointDoctorActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.ChooseAppointRoomActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.ChooseAppointActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.AddFamilyActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.FamilyInfoViewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.InputFamilyInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.AddFamilyMemberActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.AppointInfoViewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.RecoverPasswordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.VerifyPhoneActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.VerifyQQActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.VerifyWeixinActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.VerifyPasswordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.NewPasswordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.RegisterPatientInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.AppointHelpActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.AppointAlarmViewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.AppointHistoryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.ReAppointActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.HealthArticleActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.RecommendDoctorActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.KeypadActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.SummaryViewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.NewsViewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.ConfirmDialogActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.AboutActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.AdverViewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.AboutViewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.SetNameActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.ActivityGallery"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.storeVideoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tencent.tauth.AuthActivity"
+            android:noHistory="true"
+            android:launchMode="singleTask" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="tencent1106887707" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.tencent.connect.common.AssistActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name="com.zfdang.multiple_images_selector.ImagesSelectorActivity"
+            android:hardwareAccelerated="false"
+            android:configChanges="orientation|screenSize"/>
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.wxapi.WXEntryActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+		    android:name="com.alipay.sdk.app.H5PayActivity"
+		    android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+		    android:exported="false"
+		    android:screenOrientation="behind"
+		    android:windowSoftInputMode="adjustResize|stateHidden" >
+		</activity>
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.ChargePostActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.ChargeUpdateActivity"
+            android:screenOrientation="portrait" />
+		 <activity
+		    android:name="com.alipay.sdk.app.H5AuthActivity"
+		    android:configChanges="orientation|keyboardHidden|navigation"
+		    android:exported="false"
+		    android:screenOrientation="behind"
+		    android:windowSoftInputMode="adjustResize|stateHidden" >
+		</activity>
+        <activity
+            android:name=".wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop"/>
+		<meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="F4LOHhvculuVtuzLN8oWxCs1T4DRMTgb" />
+        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat"/>
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote" />
+
+        <activity
+            android:name="cn.reservation.app.baixingxinwen.activity.BaiduMapActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name="cn.reservation.app.baixingxinwen.activity.AppointHistoryViewActivity" />
+        <activity android:name="cn.reservation.app.baixingxinwen.activity.IntroduceActivity"></activity>
+    </application>
+
+</manifest>

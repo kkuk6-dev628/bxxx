@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ActionSheet/ActionSheet.iml" filepath="$PROJECT_DIR$/ActionSheet/ActionSheet.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CircleImageView/CircleImageView.iml" filepath="$PROJECT_DIR$/CircleImageView/CircleImageView.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ProgressHUD/ProgressHUD.iml" filepath="$PROJECT_DIR$/ProgressHUD/ProgressHUD.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/baixingxinwen.iml" filepath="$PROJECT_DIR$/baixingxinwen.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cropper/cropper.iml" filepath="$PROJECT_DIR$/cropper/cropper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/justifytext-library/justifytext-library.iml" filepath="$PROJECT_DIR$/justifytext-library/justifytext-library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/library_justifytext/library_justifytext.iml" filepath="$PROJECT_DIR$/library_justifytext/library_justifytext.iml" />
+    </modules>
+  </component>
+</project>

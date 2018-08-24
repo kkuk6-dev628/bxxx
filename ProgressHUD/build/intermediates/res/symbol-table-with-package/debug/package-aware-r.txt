@@ -1,0 +1,17 @@
+com.walnutlabs.android
+int anim progress_anim 0x7f010001
+int attr duration 0x7f040001
+int attr frameCount 0x7f040002
+int drawable ic_progress 0x7f090001
+int drawable icon 0x7f090002
+int drawable progress_hud_bg 0x7f090003
+int id message 0x7f0c0001
+int id spinnerImageView 0x7f0c0002
+int layout main 0x7f0f0001
+int layout progress_hud 0x7f0f0002
+int string app_name 0x7f150001
+int string simple_indeterminate 0x7f150002
+int style ProgressHUD 0x7f160001
+int[] styleable ProgressView { 0x7f040001, 0x7f040002 }
+int styleable ProgressView_duration 0
+int styleable ProgressView_frameCount 1

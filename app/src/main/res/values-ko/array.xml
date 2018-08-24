@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="weekday">
+        <item>일</item>
+        <item>월</item>
+        <item>화</item>
+        <item>수</item>
+        <item>목</item>
+        <item>금</item>
+        <item>토</item>
+    </string-array>
+    <string-array name="weekday_simply">
+        <item>일</item>
+        <item>월</item>
+        <item>화</item>
+        <item>수</item>
+        <item>목</item>
+        <item>금</item>
+        <item>토</item>
+    </string-array>
+    <string-array name="gender">
+        <item>남</item>
+        <item>여</item>
+    </string-array>
+    <string-array name="members">
+        <item>성인</item>
+        <item>노인</item>
+        <item>소아</item>
+    </string-array>
+</resources>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="cn.reservation.app.baixingxinwen.activity.EnterpriseListActivity"
+    android:orientation="vertical"
+    android:weightSum="2.1">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/colorBackground"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="match_parent"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:background="@color/colorBackground">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@color/colorBackground"
+                android:layout_marginBottom="20dp"
+                android:layout_gravity="center_horizontal">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorBackground"
+                    android:layout_centerHorizontal="true"
+                    android:textAlignment="center">
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorBackground"
+                        android:layout_centerHorizontal="true"
+                        android:textAlignment="center">
+                        <TextView
+                            android:id="@+id/txt_app_desc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:textColor="@color/colorPrimaryDark"
+                            android:textAppearance="?android:attr/textAppearanceLarge"
+                            android:textSize="13sp"
+                            android:text="便民电话火热招商中，抢啦电话：0433-2517776"/>
+                    </RelativeLayout>
+                </RelativeLayout>
+            </LinearLayout>
+            <ListView
+                android:id="@+id/lst_enterprise"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/vline"
+                android:overScrollMode="never"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
