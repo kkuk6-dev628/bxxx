@@ -383,7 +383,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                     }
                 }
                 final int lastItem = firstVisibleItem + visibleItemCount;
-                if(lastItem>3 && !isKeyboardShown)
+                if(lastItem>6 && !isKeyboardShown)
                 {
                     findViewById(R.id.lyt_search_parent).post(new Runnable() {
                         @Override
