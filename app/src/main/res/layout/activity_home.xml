@@ -86,647 +86,23 @@
                     <android.support.v4.view.ViewPager
                         android:id="@+id/viewPager"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:background="@drawable/banner" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/linearLayoutCategory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:layout_weight="1.17"
                 android:background="@color/colorHomeBackground"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:orientation="horizontal"
-                    android:padding="10dp"
-                    android:weightSum="2">
 
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.67"
-                        android:orientation="vertical"
-                        android:weightSum="2">
-
-                        <RelativeLayout
-                            android:id="@+id/btn_home_room"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_margin="0.5dp"
-                            android:layout_weight="0.45"
-                            android:background="@color/colorBackground"
-                            android:clickable="true"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:padding="10dp">
-
-                            <ImageView
-                                android:layout_width="40dp"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:layout_centerHorizontal="true"
-                                android:background="@android:color/transparent"
-                                android:scaleType="fitCenter"
-                                android:src="@drawable/new_ic_room" />
-
-                            <TextView
-                                android:id="@+id/txt_home_room"
-                                android:layout_width="wrap_content"
-                                android:layout_height="20dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center_horizontal"
-                                android:text="@string/home_room"
-                                android:textColor="@color/colorPrimaryDark"
-                                android:textSize="14sp" />
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:id="@+id/btn_home_invite"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_margin="0.5dp"
-                            android:layout_weight="0.45"
-                            android:background="@color/colorBackground"
-                            android:clickable="true"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:padding="10dp">
-
-                            <ImageView
-                                android:layout_width="40dp"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:layout_centerHorizontal="true"
-                                android:background="@android:color/transparent"
-                                android:scaleType="fitCenter"
-                                android:src="@drawable/new_ic_invite" />
-
-                            <TextView
-                                android:id="@+id/txt_home_invite"
-                                android:layout_width="wrap_content"
-                                android:layout_height="20dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center_horizontal"
-                                android:text="@string/home_invite"
-                                android:textColor="@color/colorPrimaryDark"
-                                android:textSize="14sp" />
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:id="@+id/btn_home_car"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_margin="0.5dp"
-                            android:layout_weight="0.45"
-                            android:background="@color/colorBackground"
-                            android:clickable="true"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:padding="12dp">
-
-                            <ImageView
-                                android:layout_width="50dp"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_marginTop="5dp"
-                                android:background="@android:color/transparent"
-                                android:scaleType="fitCenter"
-                                android:src="@drawable/new_ic_car" />
-
-                            <TextView
-                                android:id="@+id/txt_home_car"
-                                android:layout_width="wrap_content"
-                                android:layout_height="20dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center_horizontal"
-                                android:text="@string/home_car"
-                                android:textColor="@color/colorPrimaryDark"
-                                android:textSize="14sp" />
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:id="@+id/btn_home_join"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_margin="0.5dp"
-                            android:layout_weight="0.45"
-                            android:background="@color/colorBackground"
-                            android:clickable="true"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:padding="10dp">
-
-                            <ImageView
-                                android:layout_width="40dp"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:layout_centerHorizontal="true"
-                                android:background="@android:color/transparent"
-                                android:scaleType="fitCenter"
-                                android:src="@drawable/new_ic_join" />
-
-                            <TextView
-                                android:id="@+id/txt_home_join"
-                                android:layout_width="wrap_content"
-                                android:layout_height="20dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center_horizontal"
-                                android:text="@string/home_join"
-                                android:textColor="@color/colorPrimaryDark"
-                                android:textSize="14sp" />
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:id="@+id/btn_home_call"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_margin="0.5dp"
-                            android:layout_weight="0.45"
-                            android:background="@color/colorBackground"
-                            android:clickable="true"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:padding="15dp">
-
-                            <ImageView
-                                android:layout_width="40dp"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:layout_centerHorizontal="true"
-                                android:background="@android:color/transparent"
-                                android:scaleType="fitCenter"
-                                android:src="@drawable/new_ic_call" />
-
-                            <TextView
-                                android:id="@+id/txt_home_call"
-                                android:layout_width="wrap_content"
-                                android:layout_height="20dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center_horizontal"
-                                android:text="@string/home_call"
-                                android:textColor="@color/colorPrimaryDark"
-                                android:textSize="14sp" />
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:id="@+id/btn_home_travel"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_margin="0.5dp"
-                            android:layout_weight="0.45"
-                            android:background="@color/colorBackground"
-                            android:clickable="true"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:padding="10dp">
-
-                            <ImageView
-                                android:layout_width="40dp"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:layout_centerHorizontal="true"
-                                android:background="@android:color/transparent"
-                                android:scaleType="fitCenter"
-                                android:src="@drawable/new_ic_travel" />
-
-                            <TextView
-                                android:id="@+id/txt_home_travel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="20dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center_horizontal"
-                                android:text="@string/home_travel"
-                                android:textColor="@color/colorPrimaryDark"
-                                android:textSize="14sp" />
-                        </RelativeLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.67"
-                        android:orientation="vertical"
-                        android:weightSum="2">
-
-                        <RelativeLayout
-                            android:id="@+id/btn_home_tax"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_margin="0.5dp"
-                            android:layout_weight="0.45"
-                            android:background="@color/colorBackground"
-                            android:clickable="true"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:padding="10dp">
-
-                            <ImageView
-                                android:layout_width="40dp"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:layout_centerHorizontal="true"
-                                android:background="@android:color/transparent"
-                                android:scaleType="fitCenter"
-                                android:src="@drawable/new_ic_tax" />
-
-                            <TextView
-                                android:id="@+id/txt_home_tax"
-                                android:layout_width="wrap_content"
-                                android:layout_height="20dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center_horizontal"
-                                android:text="@string/home_tax"
-                                android:textColor="@color/colorPrimaryDark"
-                                android:textSize="14sp" />
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:id="@+id/btn_home_history"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_margin="0.5dp"
-                            android:layout_weight="0.45"
-                            android:background="@color/colorBackground"
-                            android:clickable="true"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:padding="10dp">
-
-                            <ImageView
-                                android:layout_width="45dp"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:layout_centerHorizontal="true"
-                                android:background="@android:color/transparent"
-                                android:scaleType="fitCenter"
-                                android:src="@drawable/new_ic_history" />
-
-                            <TextView
-                                android:id="@+id/txt_home_history"
-                                android:layout_width="wrap_content"
-                                android:layout_height="20dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center_horizontal"
-                                android:text="@string/home_history"
-                                android:textColor="@color/colorPrimaryDark"
-                                android:textSize="14sp" />
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:id="@+id/btn_home_old"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_margin="0.5dp"
-                            android:layout_weight="0.45"
-                            android:background="@color/colorBackground"
-                            android:clickable="true"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:padding="10dp">
-
-                            <ImageView
-                                android:layout_width="40dp"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:layout_centerHorizontal="true"
-                                android:background="@android:color/transparent"
-                                android:scaleType="fitCenter"
-                                android:src="@drawable/new_ic_old" />
-
-                            <TextView
-                                android:id="@+id/txt_home_old"
-                                android:layout_width="wrap_content"
-                                android:layout_height="22dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center_horizontal"
-                                android:text="@string/home_old"
-                                android:textColor="@color/colorPrimaryDark"
-                                android:textSize="14sp" />
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:id="@+id/btn_home_anniver"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_margin="0.5dp"
-                            android:layout_weight="0.45"
-                            android:background="@color/colorBackground"
-                            android:clickable="true"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:padding="8dp">
-
-                            <ImageView
-                                android:layout_width="40dp"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:layout_centerHorizontal="true"
-                                android:background="@android:color/transparent"
-                                android:scaleType="fitCenter"
-                                android:src="@drawable/new_ic_anniver" />
-
-                            <TextView
-                                android:id="@+id/txt_home_anniver"
-                                android:layout_width="wrap_content"
-                                android:layout_height="20dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center_horizontal"
-                                android:text="@string/home_anniver"
-                                android:textColor="@color/colorPrimaryDark"
-                                android:textSize="14sp" />
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:id="@+id/btn_home_outland"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_margin="0.5dp"
-                            android:layout_weight="0.45"
-                            android:background="@color/colorBackground"
-                            android:clickable="true"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:padding="15dp">
-
-                            <ImageView
-                                android:layout_width="40dp"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:layout_centerHorizontal="true"
-                                android:background="@android:color/transparent"
-                                android:scaleType="fitCenter"
-                                android:src="@drawable/new_ic_outland" />
-
-                            <TextView
-                                android:id="@+id/txt_home_outland"
-                                android:layout_width="wrap_content"
-                                android:layout_height="20dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center_horizontal"
-                                android:text="@string/home_outland"
-                                android:textColor="@color/colorPrimaryDark"
-                                android:textSize="14sp" />
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:id="@+id/btn_home_waitred"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_margin="0.5dp"
-                            android:layout_weight="0.45"
-                            android:background="@color/colorBackground"
-                            android:clickable="true"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:padding="10dp">
-
-                            <ImageView
-                                android:layout_width="40dp"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:layout_centerHorizontal="true"
-                                android:background="@android:color/transparent"
-                                android:scaleType="fitCenter"
-                                android:src="@drawable/new_wait_red" />
-
-                            <TextView
-                                android:id="@+id/txt_wait_red"
-                                android:layout_width="wrap_content"
-                                android:layout_height="20dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center_horizontal"
-                                android:text="@string/home_wait"
-                                android:textColor="@color/colorPrimaryDark"
-                                android:textSize="14sp" />
-                        </RelativeLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.67"
-                        android:orientation="vertical"
-                        android:weightSum="2">
-
-                        <RelativeLayout
-                            android:id="@+id/btn_home_house"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_margin="0.5dp"
-                            android:layout_weight="0.45"
-                            android:background="@color/colorBackground"
-                            android:clickable="true"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:padding="10dp">
-
-                            <ImageView
-                                android:layout_width="40dp"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:layout_centerHorizontal="true"
-                                android:background="@android:color/transparent"
-                                android:scaleType="fitCenter"
-                                android:src="@drawable/new_ic_home" />
-
-                            <TextView
-                                android:id="@+id/txt_home_house"
-                                android:layout_width="wrap_content"
-                                android:layout_height="20dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center_horizontal"
-                                android:text="@string/home_house"
-                                android:textColor="@color/colorPrimaryDark"
-                                android:textSize="14sp" />
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:id="@+id/btn_home_service"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_margin="0.5dp"
-                            android:layout_weight="0.45"
-                            android:background="@color/colorBackground"
-                            android:clickable="true"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:padding="6dp">
-
-                            <ImageView
-                                android:layout_width="40dp"
-                                android:layout_height="55dp"
-                                android:layout_alignParentTop="true"
-                                android:layout_centerHorizontal="true"
-                                android:background="@android:color/transparent"
-                                android:scaleType="fitEnd"
-                                android:src="@drawable/new_ic_service" />
-
-                            <TextView
-                                android:id="@+id/txt_home_service"
-                                android:layout_width="wrap_content"
-                                android:layout_height="24dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center_horizontal"
-                                android:text="@string/home_service"
-                                android:textColor="@color/colorPrimaryDark"
-                                android:textSize="14sp" />
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:id="@+id/btn_home_dazhe"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_margin="0.5dp"
-                            android:layout_weight="0.45"
-                            android:background="@color/colorBackground"
-                            android:clickable="true"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:padding="10dp">
-
-                            <ImageView
-                                android:layout_width="40dp"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:layout_centerHorizontal="true"
-                                android:background="@android:color/transparent"
-                                android:scaleType="fitCenter"
-                                android:src="@drawable/new_ic_dazhe" />
-
-                            <TextView
-                                android:id="@+id/txt_home_dazhe"
-                                android:layout_width="wrap_content"
-                                android:layout_height="22dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center_horizontal"
-                                android:text="@string/home_dazhe"
-                                android:textColor="@color/colorPrimaryDark"
-                                android:textSize="14sp" />
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:id="@+id/btn_home_educate"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_margin="0.5dp"
-                            android:layout_weight="0.45"
-                            android:background="@color/colorBackground"
-                            android:clickable="true"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:padding="8dp">
-
-                            <ImageView
-                                android:layout_width="40dp"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:layout_centerHorizontal="true"
-                                android:background="@android:color/transparent"
-                                android:scaleType="fitCenter"
-                                android:src="@drawable/new_ic_educate" />
-
-                            <TextView
-                                android:id="@+id/txt_home_educate"
-                                android:layout_width="wrap_content"
-                                android:layout_height="20dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center_horizontal"
-                                android:text="@string/home_educate"
-                                android:textColor="@color/colorPrimaryDark"
-                                android:textSize="14sp" />
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:id="@+id/btn_home_animal"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_margin="0.5dp"
-                            android:layout_weight="0.45"
-                            android:background="@color/colorBackground"
-                            android:clickable="true"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:padding="15dp">
-
-                            <ImageView
-                                android:layout_width="40dp"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:layout_centerHorizontal="true"
-                                android:background="@android:color/transparent"
-                                android:scaleType="fitCenter"
-                                android:src="@drawable/new_ic_animal" />
-
-                            <TextView
-                                android:id="@+id/txt_home_animal"
-                                android:layout_width="wrap_content"
-                                android:layout_height="20dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center_horizontal"
-                                android:text="@string/home_animal"
-                                android:textColor="@color/colorPrimaryDark"
-                                android:textSize="14sp" />
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:id="@+id/btn_home_waitblue"
-                            android:layout_width="match_parent"
-                            android:layout_height="100dp"
-                            android:layout_margin="0.5dp"
-                            android:layout_weight="0.45"
-                            android:background="@color/colorBackground"
-                            android:clickable="true"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:padding="10dp">
-
-                            <ImageView
-                                android:layout_width="40dp"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:layout_centerHorizontal="true"
-                                android:background="@android:color/transparent"
-                                android:scaleType="fitCenter"
-                                android:src="@drawable/new_wait_blue" />
-
-                            <TextView
-                                android:id="@+id/txt_wait_blue"
-                                android:layout_width="wrap_content"
-                                android:layout_height="20dp"
-                                android:layout_alignParentBottom="true"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center_horizontal"
-                                android:text="@string/home_wait"
-                                android:textColor="@color/colorPrimaryDark"
-                                android:textSize="14sp" />
-                        </RelativeLayout>
-                    </LinearLayout>
-                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -759,60 +135,134 @@
                     <LinearLayout
                         android:id="@+id/img_home_bottom_service"
                         android:layout_width="match_parent"
-                        android:layout_height="80dp"
+                        android:layout_height="wrap_content"
                         android:layout_below="@id/txt_home_bottom_service"
                         android:layout_margin="0.5dp"
                         android:layout_weight="1"
                         android:background="@color/colorBackground"
                         android:clickable="true"
                         android:gravity="center_vertical|center_horizontal"
-                        android:orientation="horizontal"
-                        android:paddingTop="10dp">
+                        android:orientation="vertical"
+                        android:paddingTop="0dp">
 
-                        <ImageView
-                            android:id="@+id/img_home_middle_01"
-                            android:layout_width="wrap_content"
-                            android:layout_height="80dp"
-                            android:layout_alignParentBottom="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="0.5dp"
                             android:layout_weight="1"
-                            android:adjustViewBounds="true"
-                            android:background="@android:color/transparent"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/home_middle_banner3" />
+                            android:background="@color/colorBackground"
+                            android:clickable="true"
+                            android:orientation="vertical"
+                            android:paddingTop="0dp">
 
-                        <ImageView
-                            android:id="@+id/img_home_middle_02"
-                            android:layout_width="wrap_content"
-                            android:layout_height="80dp"
-                            android:layout_alignParentBottom="true"
-                            android:layout_centerHorizontal="true"
-                            android:layout_centerInParent="true"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_weight="1"
-                            android:adjustViewBounds="true"
-                            android:background="@android:color/transparent"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/home_middle_banner2" />
+                            <!--<LinearLayout-->
+                                <!--android:layout_width="match_parent"-->
+                                <!--android:layout_height="80dp"-->
+                                <!--android:layout_margin="0.5dp"-->
+                                <!--android:layout_weight="1"-->
+                                <!--android:background="@color/colorBackground"-->
+                                <!--android:clickable="true"-->
+                                <!--android:orientation="horizontal"-->
+                                <!--android:paddingTop="10dp">-->
 
-                        <ImageView
-                            android:id="@+id/img_home_middle_03"
-                            android:layout_width="wrap_content"
-                            android:layout_height="80dp"
-                            android:layout_alignParentBottom="true"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginRight="5dp"
-                            android:layout_weight="1"
-                            android:adjustViewBounds="true"
-                            android:background="@android:color/transparent"
-                            android:scaleType="fitCenter"
-                            android:src="@drawable/home_middle_banner1" />
+                                <!--<ImageView-->
+                                    <!--android:layout_width="wrap_content"-->
+                                    <!--android:layout_height="80dp"-->
+                                    <!--android:layout_alignParentBottom="true"-->
+                                    <!--android:layout_alignParentRight="true"-->
+                                    <!--android:layout_centerHorizontal="true"-->
+                                    <!--android:layout_marginLeft="5dp"-->
+                                    <!--android:layout_marginRight="5dp"-->
+                                    <!--android:layout_weight="1"-->
+                                    <!--android:adjustViewBounds="true"-->
+                                    <!--android:background="@android:color/transparent"-->
+                                    <!--android:scaleType="fitCenter"-->
+                                    <!--android:src="@drawable/home_middle_banner3" />-->
+
+                                <!--<ImageView-->
+                                    <!--android:layout_width="wrap_content"-->
+                                    <!--android:layout_height="80dp"-->
+                                    <!--android:layout_alignParentBottom="true"-->
+                                    <!--android:layout_centerHorizontal="true"-->
+                                    <!--android:layout_centerInParent="true"-->
+                                    <!--android:layout_marginLeft="5dp"-->
+                                    <!--android:layout_marginRight="5dp"-->
+                                    <!--android:layout_weight="1"-->
+                                    <!--android:adjustViewBounds="true"-->
+                                    <!--android:background="@android:color/transparent"-->
+                                    <!--android:scaleType="fitCenter"-->
+                                    <!--android:src="@drawable/home_middle_banner2" />-->
+
+                                <!--<ImageView-->
+                                    <!--android:layout_width="wrap_content"-->
+                                    <!--android:layout_height="80dp"-->
+                                    <!--android:layout_alignParentBottom="true"-->
+                                    <!--android:layout_alignParentLeft="true"-->
+                                    <!--android:layout_marginLeft="5dp"-->
+                                    <!--android:layout_marginRight="5dp"-->
+                                    <!--android:layout_weight="1"-->
+                                    <!--android:adjustViewBounds="true"-->
+                                    <!--android:background="@android:color/transparent"-->
+                                    <!--android:scaleType="fitCenter"-->
+                                    <!--android:src="@drawable/home_middle_banner1" />-->
+                            <!--</LinearLayout>-->
+                            <!--<LinearLayout-->
+                                <!--android:layout_width="match_parent"-->
+                                <!--android:layout_height="80dp"-->
+                                <!--android:layout_margin="0.5dp"-->
+                                <!--android:layout_weight="1"-->
+                                <!--android:background="@color/colorBackground"-->
+                                <!--android:clickable="true"-->
+                                <!--android:orientation="horizontal"-->
+                                <!--android:paddingTop="10dp">-->
+
+                                <!--<ImageView-->
+                                    <!--android:layout_width="wrap_content"-->
+                                    <!--android:layout_height="80dp"-->
+                                    <!--android:layout_alignParentBottom="true"-->
+                                    <!--android:layout_alignParentRight="true"-->
+                                    <!--android:layout_centerHorizontal="true"-->
+                                    <!--android:layout_marginLeft="5dp"-->
+                                    <!--android:layout_marginRight="5dp"-->
+                                    <!--android:layout_weight="1"-->
+                                    <!--android:adjustViewBounds="true"-->
+                                    <!--android:background="@android:color/transparent"-->
+                                    <!--android:scaleType="fitCenter"-->
+                                    <!--android:src="@drawable/home_middle_banner3" />-->
+
+                                <!--<ImageView-->
+                                    <!--android:layout_width="wrap_content"-->
+                                    <!--android:layout_height="80dp"-->
+                                    <!--android:layout_alignParentBottom="true"-->
+                                    <!--android:layout_centerHorizontal="true"-->
+                                    <!--android:layout_centerInParent="true"-->
+                                    <!--android:layout_marginLeft="5dp"-->
+                                    <!--android:layout_marginRight="5dp"-->
+                                    <!--android:layout_weight="1"-->
+                                    <!--android:adjustViewBounds="true"-->
+                                    <!--android:background="@android:color/transparent"-->
+                                    <!--android:scaleType="fitCenter"-->
+                                    <!--android:src="@drawable/home_middle_banner2" />-->
+
+                                <!--<ImageView-->
+                                    <!--android:layout_width="wrap_content"-->
+                                    <!--android:layout_height="80dp"-->
+                                    <!--android:layout_alignParentBottom="true"-->
+                                    <!--android:layout_alignParentLeft="true"-->
+                                    <!--android:layout_marginLeft="5dp"-->
+                                    <!--android:layout_marginRight="5dp"-->
+                                    <!--android:layout_weight="1"-->
+                                    <!--android:adjustViewBounds="true"-->
+                                    <!--android:background="@android:color/transparent"-->
+                                    <!--android:scaleType="fitCenter"-->
+                                    <!--android:src="@drawable/home_middle_banner1" />-->
+                            <!--</LinearLayout>-->
+                        </LinearLayout>
+
                     </LinearLayout>
+
+
+
                 </RelativeLayout>
             </LinearLayout>
 

@@ -1,6 +1,7 @@
 package cn.reservation.app.baixingxinwen.activity;
 
 import android.app.TabActivity;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.app.Dialog;
 import android.content.Context;
@@ -13,8 +14,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Target;
 import com.walnutlabs.android.ProgressHUD;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -39,7 +44,14 @@ import org.w3c.dom.Text;
 
 import android.support.v4.view.ViewPager;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import cn.reservation.app.baixingxinwen.adapter.HomeSliderAdapter;
 import cn.reservation.app.baixingxinwen.adapter.SearchItemListAdapter;
@@ -47,6 +59,8 @@ import cn.reservation.app.baixingxinwen.api.APIManager;
 import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.utils.AnimatedActivity;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
+import cn.reservation.app.baixingxinwen.utils.CustomCategoryLayout;
+import cn.reservation.app.baixingxinwen.utils.CustomServiceLayout;
 import cn.reservation.app.baixingxinwen.utils.DictionaryUtils;
 import cn.reservation.app.baixingxinwen.utils.SearchItem;
 import cn.reservation.app.baixingxinwen.widget.ImbeddedListView;
@@ -55,6 +69,7 @@ import cz.msebera.android.httpclient.Header;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static com.alipay.sdk.util.l.c;
 
 @SuppressWarnings("deprecation")
 public class HomeActivity extends AppCompatActivity implements DialogInterface.OnCancelListener,PageListScrollView.OnScrollToBottomListener, View.OnClickListener {
@@ -78,6 +93,14 @@ public class HomeActivity extends AppCompatActivity implements DialogInterface.O
     private int mIntPage = 1;
     private PageListScrollView scrollView;
     private ImbeddedListView lstSearch;
+    final ArrayList<Target> targets = new ArrayList<>(20);
+
+    private LinearLayout linearLayoutCategory;
+    private LinearLayout linearLayoutService;
+    private CustomCategoryLayout customCategoryLayout;
+    private CustomServiceLayout customServiceLayout;
+
+    String[] advertUrls;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,9 +111,10 @@ public class HomeActivity extends AppCompatActivity implements DialogInterface.O
         res = mContext.getResources();
         pActivity = (AnimatedActivity) HomeActivity.this.getParent();
 
+
+
         homeActivity = HomeActivity.this;
         tabActivity = (TabActivity) HomeActivity.this.getParent().getParent();
-
         CommonUtils.customActionBar(mContext, this, false, "");
         /*
         LinearLayout lytFavor1 = (LinearLayout) findViewById(R.id.lyt_room_favor_thumbnail1); //房屋出售
@@ -130,32 +154,68 @@ public class HomeActivity extends AppCompatActivity implements DialogInterface.O
             }
         });
         */
-        findViewById(R.id.btn_home_room).setOnClickListener(this);
-        findViewById(R.id.btn_home_invite).setOnClickListener(this);
-        findViewById(R.id.btn_home_car).setOnClickListener(this);
-        findViewById(R.id.btn_home_join).setOnClickListener(this);
-        findViewById(R.id.btn_home_call).setOnClickListener(this);
-        findViewById(R.id.btn_home_travel).setOnClickListener(this);
-        findViewById(R.id.btn_home_tax).setOnClickListener(this);
-        findViewById(R.id.btn_home_old).setOnClickListener(this);
-        findViewById(R.id.btn_home_history).setOnClickListener(this);
-        findViewById(R.id.btn_home_anniver).setOnClickListener(this);
-        findViewById(R.id.btn_home_outland).setOnClickListener(this);
-        findViewById(R.id.btn_home_waitred).setOnClickListener(this);
-        findViewById(R.id.btn_home_house).setOnClickListener(this);
-        findViewById(R.id.btn_home_service).setOnClickListener(this);
-        findViewById(R.id.btn_home_dazhe).setOnClickListener(this);
-        findViewById(R.id.btn_home_educate).setOnClickListener(this);
-        findViewById(R.id.btn_home_animal).setOnClickListener(this);
-        findViewById(R.id.btn_home_waitblue).setOnClickListener(this);
-        findViewById(R.id.img_home_middle_01).setOnClickListener(this);
-        findViewById(R.id.img_home_middle_02).setOnClickListener(this);
-        findViewById(R.id.img_home_middle_03).setOnClickListener(this);
-        findViewById(R.id.rlt_search).setOnClickListener(this);
+//        findViewById(R.id.btn_home_room).setOnClickListener(this);
+//        findViewById(R.id.btn_home_invite).setOnClickListener(this);
+//        findViewById(R.id.btn_home_car).setOnClickListener(this);
+//        findViewById(R.id.btn_home_join).setOnClickListener(this);
+//        findViewById(R.id.btn_home_call).setOnClickListener(this);
+//        findViewById(R.id.btn_home_travel).setOnClickListener(this);
+//        findViewById(R.id.btn_home_tax).setOnClickListener(this);
+//        findViewById(R.id.btn_home_old).setOnClickListener(this);
+//        findViewById(R.id.btn_home_history).setOnClickListener(this);
+//        findViewById(R.id.btn_home_anniver).setOnClickListener(this);
+//        findViewById(R.id.btn_home_outland).setOnClickListener(this);
+//        findViewById(R.id.btn_home_waitred).setOnClickListener(this);
+//        findViewById(R.id.btn_home_house).setOnClickListener(this);
+//        findViewById(R.id.btn_home_service).setOnClickListener(this);
+//        findViewById(R.id.btn_home_dazhe).setOnClickListener(this);
+//        findViewById(R.id.btn_home_educate).setOnClickListener(this);
+//        findViewById(R.id.btn_home_animal).setOnClickListener(this);
+//        findViewById(R.id.btn_home_waitblue).setOnClickListener(this);
+//        findViewById(R.id.img_home_middle_01).setOnClickListener(this);
+//        findViewById(R.id.img_home_middle_02).setOnClickListener(this);
+//        findViewById(R.id.img_home_middle_03).setOnClickListener(this);
+//        findViewById(R.id.rlt_search).setOnClickListener(this);
         viewPager = (ViewPager)findViewById(R.id.viewPager);
 
-        homeSliderAdapter = new HomeSliderAdapter(HomeActivity.this, images);
-        viewPager.setAdapter(homeSliderAdapter);
+        linearLayoutCategory = (LinearLayout)findViewById(R.id.linearLayoutCategory);
+        try {
+            customCategoryLayout = new CustomCategoryLayout(mContext, null, pActivity);
+            linearLayoutCategory.addView(customCategoryLayout);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        linearLayoutService = (LinearLayout) findViewById(R.id.img_home_bottom_service);
+        try {
+            customServiceLayout = new CustomServiceLayout(mContext, null, pActivity);
+            linearLayoutService.addView(customServiceLayout);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+//        ImageView imageView = (ImageView) viewPager.findViewById(R.id.homeImageView);
+//        imageView.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                int selectedIndex = homeSliderAdapter.selectedIndex;
+//                if(selectedIndex == -1)
+//                    return;
+////                Intent mainIntent = new Intent(HomeActivity.this, RoomDetailActivity.class);
+////                HomeActivity.this.startActivity(mainIntent);
+////                HomeActivity.this.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+//
+//                Intent intent = new Intent(HomeActivity.this, AdverViewActivity.class);
+//                intent.putExtra("adver_url", advertUrls[selectedIndex]);
+////                popUp.dismiss();
+//                HomeActivity.this.startActivityForResult(intent,501);
+//            }
+//        });
+
+
+//        homeSliderAdapter = new HomeSliderAdapter(HomeActivity.this, images);
+//        viewPager.setAdapter(homeSliderAdapter);
         lstSearch = (ImbeddedListView) findViewById(R.id.lst_home_bottom_favor);
         searchItemListAdapter = new SearchItemListAdapter(this);
         searchItemListAdapter.setListItems(searchItems);
@@ -208,144 +268,147 @@ public class HomeActivity extends AppCompatActivity implements DialogInterface.O
         });
         */
         initViews();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i < homeSliderAdapter.getCount(); i++) {
-                    final int value = i;
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            viewPager.setCurrentItem(value, true);
-                        }
-                    });
-                    if(i==(homeSliderAdapter.getCount()-1)){
-                        i=-1;
-                    }
-                }
-            }
-        };
-        new Thread(runnable).start();
+//        Runnable runnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                for (int i = 0; i < homeSliderAdapter.getCount(); i++) {
+//                    final int value = i;
+//                    try {
+//                        Thread.sleep(5000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    handler.post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            viewPager.setCurrentItem(value, true);
+//                        }
+//                    });
+//                    if(i==(homeSliderAdapter.getCount()-1)){
+//                        i=-1;
+//                    }
+//                }
+//            }
+//        };
+//        new Thread(runnable).start();
     }
     @Override
     public void onClick(View view) {
         int id = view.getId();
         Intent intent;
-        if (id == R.id.btn_home_room){//房屋出售
-            intent = new Intent(HomeActivity.this, SearchActivity.class);
-            intent.putExtra("PostItem", "1");
-            pActivity.startChildActivity("activity_search", intent);
-        }
-        else if (id == R.id.btn_home_tax){//房屋出租
-            intent = new Intent(HomeActivity.this, SearchActivity.class);
-            intent.putExtra("PostItem", "2");
-            pActivity.startChildActivity("activity_search", intent);
-        }
-        else if (id == R.id.btn_home_house){//店铺出兑
-            intent = new Intent(HomeActivity.this, SearchActivity.class);
-            intent.putExtra("PostItem", "3");
-            pActivity.startChildActivity("activity_search", intent);
-        }
-        else if (id == R.id.btn_home_invite){//招聘信息
-            intent = new Intent(HomeActivity.this, SearchActivity.class);
-            intent.putExtra("PostItem", "4");
-            pActivity.startChildActivity("activity_search", intent);
-        }
-        else if (id == R.id.btn_home_history){//求职简历
-            intent = new Intent(HomeActivity.this, SearchActivity.class);
-            intent.putExtra("PostItem", "5");
-            pActivity.startChildActivity("activity_search", intent);
-        }
-        else if (id == R.id.btn_home_service){//便民服务
-            intent = new Intent(HomeActivity.this, SearchActivity.class);
-            intent.putExtra("PostItem", "6");
-            pActivity.startChildActivity("activity_search", intent);
-        }
-        else if (id == R.id.btn_home_car){//车辆交易
-            intent = new Intent(HomeActivity.this, SearchActivity.class);
-            intent.putExtra("PostItem", "7");
-            pActivity.startChildActivity("activity_search", intent);
-        }
-        else if (id == R.id.btn_home_old){//二手买卖
-            intent = new Intent(HomeActivity.this, SearchActivity.class);
-            intent.putExtra("PostItem", "8");
-            pActivity.startChildActivity("activity_search", intent);
-        }
-        else if (id == R.id.btn_home_dazhe){//打折促销
-            intent = new Intent(HomeActivity.this, SearchActivity.class);
-            intent.putExtra("PostItem", "9");
-            pActivity.startChildActivity("activity_search", intent);
-        }
-        else if (id == R.id.btn_home_join){//招商加盟
-            intent = new Intent(HomeActivity.this, SearchActivity.class);
-            intent.putExtra("PostItem", "10");
-            pActivity.startChildActivity("activity_search", intent);
-        }
-        else if (id == R.id.btn_home_anniver){//婚姻交友
-            intent = new Intent(HomeActivity.this, SearchActivity.class);
-            intent.putExtra("PostItem", "11");
-            pActivity.startChildActivity("activity_search", intent);
-        }
-        else if (id == R.id.btn_home_educate){//教育培训
-            intent = new Intent(HomeActivity.this, SearchActivity.class);
-            intent.putExtra("PostItem", "12");
-            pActivity.startChildActivity("activity_search", intent);
-        }
-        else if (id == R.id.btn_home_call){//电话号码
-            intent = new Intent(HomeActivity.this, SearchActivity.class);
-            intent.putExtra("PostItem", "13");
-            pActivity.startChildActivity("activity_search", intent);
-        }
-        else if (id == R.id.btn_home_outland){//出国咨询
-            intent = new Intent(HomeActivity.this, SearchActivity.class);
-            intent.putExtra("PostItem", "14");
-            pActivity.startChildActivity("activity_search", intent);
-        }
-        else if (id == R.id.btn_home_animal) {//宠物天地
-            intent = new Intent(HomeActivity.this, SearchActivity.class);
-            intent.putExtra("PostItem", "15");
-            pActivity.startChildActivity("activity_search", intent);
-        }
-        else if (id == R.id.btn_home_travel){//旅游专栏
-            intent = new Intent(HomeActivity.this, SearchActivity.class);
-            intent.putExtra("PostItem", "16");
-            pActivity.startChildActivity("activity_search", intent);
-        }
-        else if (id == R.id.btn_home_waitred){//敬请期待
-            intent = new Intent(HomeActivity.this, SearchActivity.class);
-        }
-        else if (id == R.id.btn_home_waitblue) {//敬请期待
-            intent = new Intent(HomeActivity.this, SearchActivity.class);
-        }
-        else if (id == R.id.img_home_middle_01){//便民电话-房屋维修
-            intent = new Intent(HomeActivity.this, EnterpriseListActivity.class);
-            intent.putExtra("enterprise", "房屋维修");
-            pActivity.startChildActivity("activity_enterprise", intent);
-        }
-        else if (id == R.id.img_home_middle_02){//便民电话-代驾
-            intent = new Intent(HomeActivity.this, EnterpriseListActivity.class);
-            intent.putExtra("enterprise", "代驾");
-            pActivity.startChildActivity("activity_enterprise", intent);
-        }
-        else if (id == R.id.img_home_middle_03){//便民电话-跑腿
-            intent = new Intent(HomeActivity.this, EnterpriseListActivity.class);
-            intent.putExtra("enterprise", "跑腿");
-            pActivity.startChildActivity("activity_enterprise", intent);
-        }
-        else if (id == R.id.rlt_search){//点击搜索按钮
-            intent = new Intent(HomeActivity.this, FullSearchActivity.class);
-            pActivity.startChildActivity("full_search", intent);
-        }
+//        if (id == R.id.btn_home_room){//房屋出售
+//            intent = new Intent(HomeActivity.this, SearchActivity.class);
+//            intent.putExtra("PostItem", "1");
+//            pActivity.startChildActivity("activity_search", intent);
+//        }
+//        else if (id == R.id.btn_home_tax){//房屋出租
+//            intent = new Intent(HomeActivity.this, SearchActivity.class);
+//            intent.putExtra("PostItem", "2");
+//            pActivity.startChildActivity("activity_search", intent);
+//        }
+//        else if (id == R.id.btn_home_house){//店铺出兑
+//            intent = new Intent(HomeActivity.this, SearchActivity.class);
+//            intent.putExtra("PostItem", "3");
+//            pActivity.startChildActivity("activity_search", intent);
+//        }
+//        else if (id == R.id.btn_home_invite){//招聘信息
+//            intent = new Intent(HomeActivity.this, SearchActivity.class);
+//            intent.putExtra("PostItem", "4");
+//            pActivity.startChildActivity("activity_search", intent);
+//        }
+//        else if (id == R.id.btn_home_history){//求职简历
+//            intent = new Intent(HomeActivity.this, SearchActivity.class);
+//            intent.putExtra("PostItem", "5");
+//            pActivity.startChildActivity("activity_search", intent);
+//        }
+//        else if (id == R.id.btn_home_service){//便民服务
+//            intent = new Intent(HomeActivity.this, SearchActivity.class);
+//            intent.putExtra("PostItem", "6");
+//            pActivity.startChildActivity("activity_search", intent);
+//        }
+//        else if (id == R.id.btn_home_car){//车辆交易
+//            intent = new Intent(HomeActivity.this, SearchActivity.class);
+//            intent.putExtra("PostItem", "7");
+//            pActivity.startChildActivity("activity_search", intent);
+//        }
+//        else if (id == R.id.btn_home_old){//二手买卖
+//            intent = new Intent(HomeActivity.this, SearchActivity.class);
+//            intent.putExtra("PostItem", "8");
+//            pActivity.startChildActivity("activity_search", intent);
+//        }
+//        else if (id == R.id.btn_home_dazhe){//打折促销
+//            intent = new Intent(HomeActivity.this, SearchActivity.class);
+//            intent.putExtra("PostItem", "9");
+//            pActivity.startChildActivity("activity_search", intent);
+//        }
+//        else if (id == R.id.btn_home_join){//招商加盟
+//            intent = new Intent(HomeActivity.this, SearchActivity.class);
+//            intent.putExtra("PostItem", "10");
+//            pActivity.startChildActivity("activity_search", intent);
+//        }
+//        else if (id == R.id.btn_home_anniver){//婚姻交友
+//            intent = new Intent(HomeActivity.this, SearchActivity.class);
+//            intent.putExtra("PostItem", "11");
+//            pActivity.startChildActivity("activity_search", intent);
+//        }
+//        else if (id == R.id.btn_home_educate){//教育培训
+//            intent = new Intent(HomeActivity.this, SearchActivity.class);
+//            intent.putExtra("PostItem", "12");
+//            pActivity.startChildActivity("activity_search", intent);
+//        }
+//        else if (id == R.id.btn_home_call){//电话号码
+//            intent = new Intent(HomeActivity.this, SearchActivity.class);
+//            intent.putExtra("PostItem", "13");
+//            pActivity.startChildActivity("activity_search", intent);
+//        }
+//        else if (id == R.id.btn_home_outland){//出国咨询
+//            intent = new Intent(HomeActivity.this, SearchActivity.class);
+//            intent.putExtra("PostItem", "14");
+//            pActivity.startChildActivity("activity_search", intent);
+//        }
+//        else if (id == R.id.btn_home_animal) {//宠物天地
+//            intent = new Intent(HomeActivity.this, SearchActivity.class);
+//            intent.putExtra("PostItem", "15");
+//            pActivity.startChildActivity("activity_search", intent);
+//        }
+//        else if (id == R.id.btn_home_travel){//旅游专栏
+//            intent = new Intent(HomeActivity.this, SearchActivity.class);
+//            intent.putExtra("PostItem", "16");
+//            pActivity.startChildActivity("activity_search", intent);
+//        }
+//        else if (id == R.id.btn_home_waitred){//敬请期待
+//            intent = new Intent(HomeActivity.this, SearchActivity.class);
+//        }
+//        else if (id == R.id.btn_home_waitblue) {//敬请期待
+//            intent = new Intent(HomeActivity.this, SearchActivity.class);
+//        }
+//        else if (id == R.id.img_home_middle_01){//便民电话-房屋维修
+//            intent = new Intent(HomeActivity.this, EnterpriseListActivity.class);
+//            intent.putExtra("enterprise", "房屋维修");
+//            pActivity.startChildActivity("activity_enterprise", intent);
+//        }
+//        else if (id == R.id.img_home_middle_02){//便民电话-代驾
+//            intent = new Intent(HomeActivity.this, EnterpriseListActivity.class);
+//            intent.putExtra("enterprise", "代驾");
+//            pActivity.startChildActivity("activity_enterprise", intent);
+//        }
+//        else if (id == R.id.img_home_middle_03){//便民电话-跑腿
+//            intent = new Intent(HomeActivity.this, EnterpriseListActivity.class);
+//            intent.putExtra("enterprise", "跑腿");
+//            pActivity.startChildActivity("activity_enterprise", intent);
+//        }
+//        else if (id == R.id.rlt_search){//点击搜索按钮
+//            intent = new Intent(HomeActivity.this, FullSearchActivity.class);
+//            pActivity.startChildActivity("full_search", intent);
+//        }
     }
     private void initViews() {
         scrollView = (PageListScrollView) findViewById(R.id.scrollview_home);
         lstSearch.setFocusable(false);
         scrollView.setOnScrollToBottomListener(HomeActivity.this);
+        getBanner();
+        getCategory();
         getArticle();
     }
     private void alertDialogLang() {
@@ -372,6 +435,271 @@ public class HomeActivity extends AppCompatActivity implements DialogInterface.O
             }
         });
         CommonUtils.showAlertDialog(mContext, this, dialog, view, 216);
+    }
+
+    private void getBanner() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //final ProgressHUD progressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, HomeActivity.this);
+                RequestParams params = new RequestParams();
+//                params.put("ishome", "true");
+//                params.put("page", mIntPage);
+                String url = "ui/updateHomeAdverts";
+                APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        try {
+                            if (response.getInt("code") == 1) {
+                                //isLoadMore = response.getBoolean("hasmore");
+                                System.out.println("img"+response);
+                                JSONArray list = response.getJSONArray("ret");
+                                if(list==null || list.length() == 0){
+//                                    isLoadMore = false;
+                                    //CommonUtils.dismissProgress(progressDialog);
+                                    return;
+                                }
+                                SharedPreferences sharedPref = homeActivity.getPreferences(Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPref.edit();
+
+                                String[] imageUrls = new String[list.length()];
+                                int[] images = new int[list.length()];
+                                final Bitmap[] imageBmps = new Bitmap[list.length()];
+
+                                advertUrls = new String[list.length()];
+
+                                final int finalCount = list.length();
+
+                                for(int i=0; i<finalCount; i++) {
+                                    JSONObject item = list.getJSONObject(i);
+
+                                    editor.putString("advert" + Integer.toString(i + 1), item.toString());
+
+                                    String imgUrl = item.optString("advert");
+                                    imageUrls[i] = imgUrl;
+                                    images[i] = i;
+                                    advertUrls[i] = item.optString("link");;
+                                }
+                                homeSliderAdapter = new HomeSliderAdapter(HomeActivity.this, imageUrls, advertUrls);
+                                viewPager.setAdapter(homeSliderAdapter);
+                                editor.apply();
+
+                                Runnable runnable = new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        for (int i = 0; i < homeSliderAdapter.getCount(); i++) {
+                                            final int value = i;
+                                            try {
+                                                Thread.sleep(5000);
+                                            } catch (InterruptedException e) {
+                                                e.printStackTrace();
+                                            }
+
+                                            handler.post(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    viewPager.setCurrentItem(value, true);
+                                                }
+                                            });
+                                            if(i==(homeSliderAdapter.getCount()-1)){
+                                                i=-1;
+                                            }
+                                        }
+                                    }
+                                };
+                                new Thread(runnable).start();
+                            } else {
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        //progressDialog.dismiss();
+                        Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        //progressDialog.dismiss();
+                        Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }, 5);
+    }
+
+    private void getCategory() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+
+                //final ProgressHUD progressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, HomeActivity.this);
+                RequestParams params = new RequestParams();
+                SharedPreferences prefs = getSharedPreferences("bxxx", MODE_PRIVATE);
+//                SharedPreferences sharedPref = homeActivity.getPreferences(Context.MODE_PRIVATE);
+                final SharedPreferences.Editor editor = prefs.edit();
+
+                String updateTime = prefs.getString("updateTime", null);
+                if (updateTime == null) {
+                    updateTime = "2018-08-23 14:00:00";
+                }
+
+                params.put("updateTime", updateTime);
+
+                final String url = "ui/update";
+                APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        try {
+                            if (response.getInt("code") == 1) {
+                                //isLoadMore = response.getBoolean("hasmore");
+                                System.out.println("img"+response);
+                                JSONArray list = response.getJSONArray("ret");
+                                if(list==null || list.length() == 0){
+//                                    isLoadMore = false;
+                                    //CommonUtils.dismissProgress(progressDialog);
+                                    return;
+                                }
+
+
+                                final int finalCount = list.length();
+
+                                for(int i=0; i<finalCount; i++) {
+                                    final JSONObject item = list.getJSONObject(i);
+
+                                    String imgUrl = item.optString("item_icon");
+                                    if(!imgUrl.toLowerCase().contains("http://")){
+                                        imgUrl = APIManager.APP_DOMAIN + imgUrl;
+                                    }
+                                    String[] separated = imgUrl.split("/");
+                                    String real_img_file_name = separated[separated.length - 1];
+
+                                    final int finalI = Integer.parseInt(item.optString("item_order"));
+                                    ContextWrapper cw = new ContextWrapper(mContext);
+                                    final File directory = cw.getDir("category_icons", Context.MODE_PRIVATE);
+
+//                                    String extention = ".png";
+//                                    if(!imgUrl.toLowerCase().contains(".png"))
+//                                        extention = ".jpg";
+
+//
+//                                    item.put("imageLocalFilePath", directory + "/category_icon" + Integer.toString(finalI) + ".png");
+
+                                    String iconName = "";
+                                    final String itemPage = item.optString("item_page");
+                                    if(itemPage.equals("cat_button")) {
+                                        iconName = "category_icon_" + real_img_file_name;
+                                        item.put("imageLocalFilePath", directory + "/" + iconName);
+//                                        customCategoryLayout.setCategoryItemData(finalI, imgUrl, item);
+                                        editor.putString("category" + Integer.toString(finalI), item.toString());
+                                    }
+                                    else {
+                                        iconName = "service_icon_" + real_img_file_name;
+                                        item.put("imageLocalFilePath", directory + "/" + iconName);
+                                        editor.putString("service" + Integer.toString(finalI), item.toString());
+                                    }
+
+                                    final String fileName = iconName;
+
+                                    final String finalImgUrl = imgUrl;
+
+                                    File check_file = new File(directory, fileName);
+
+                                    //아이콘의 파일이 존재하면 다운할필요가 없으므로 먼저 파일의 존재여부를 검사한다.
+                                    if(check_file == null || !check_file.exists()) {
+                                        Target target = new Target() {
+                                            @Override
+                                            public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+
+                                                File file = new File(directory, fileName);
+//                                                            if(file.exists()){
+//                                                                file.delete();
+//                                                            }
+                                                try {
+                                                    file.createNewFile();
+                                                    FileOutputStream ostream = new FileOutputStream(file);
+                                                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, ostream);
+//                                                        if(finalImgUrl.toLowerCase().contains(".png"))
+//                                                            bitmap.compress(Bitmap.CompressFormat.PNG, 80, ostream);
+//                                                        else
+//                                                            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, ostream);
+                                                    ostream.flush();
+                                                    ostream.close();
+                                                    if(itemPage.equals("cat_button"))
+                                                        customCategoryLayout.setCategoryItemData(finalI, file.getAbsolutePath(), item);
+                                                    else
+                                                        customServiceLayout.setCategoryItemData(finalI, file.getAbsolutePath(), item);
+                                                } catch (IOException e) {
+                                                    Log.e("IOException", e.getLocalizedMessage());
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onBitmapFailed(Drawable errorDrawable) {
+                                            }
+
+                                            @Override
+                                            public void onPrepareLoad(Drawable placeHolderDrawable) {
+                                            }
+                                        };
+
+                                        targets.add(target);
+                                        if(itemPage.equals("cat_button")){
+                                            Picasso.with(mContext)
+                                                    .load(imgUrl)
+//                                            .resize(CommonUtils.getPixelValue(HomeActivity.this, 100), CommonUtils.getPixelValue(HomeActivity.this, 100))
+                                                    .into(target);
+                                        }
+                                        else{
+                                            Picasso.with(mContext)
+                                                    .load(imgUrl)
+                                                    .resize(CommonUtils.getPixelValue(HomeActivity.this, 140), CommonUtils.getPixelValue(HomeActivity.this, 80))
+                                                    .into(target);
+                                        }
+                                    }
+                                    else{
+                                        if(itemPage.equals("cat_button"))
+                                            customCategoryLayout.setCategoryItemData(finalI, check_file.getAbsolutePath(), item);
+                                        else
+                                            customServiceLayout.setCategoryItemData(finalI, check_file.getAbsolutePath(), item);
+                                    }
+                                }
+                                Date currentTime = Calendar.getInstance().getTime();
+                                System.out.println("Current time => " + currentTime);
+
+                                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                String formattedDate = df.format(currentTime);
+                                editor.putString("updateTime", formattedDate);
+                                editor.apply();
+
+                            } else {
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        //progressDialog.dismiss();
+                        Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        //progressDialog.dismiss();
+                        Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }, 5);
     }
 
     private void getArticle() {
