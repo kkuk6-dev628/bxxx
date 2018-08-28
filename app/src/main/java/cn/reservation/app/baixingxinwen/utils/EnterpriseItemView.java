@@ -43,15 +43,15 @@ public class EnterpriseItemView extends LinearLayout {
 
         mImgPlaceholder = mContext.getResources().getDrawable(R.drawable.default_img);
 
-        mThumbnail = (ImageView) findViewById(R.id.img_enterprise_logo);
-        if(enterpriseItem.getmThumbnail()!="") {
-            Picasso
-                    .with(mContext)
-                    .load(enterpriseItem.getmThumbnail())
-                    .placeholder(mImgPlaceholder)
-                    .resize(CommonUtils.getPixelValue(mContext, 122), CommonUtils.getPixelValue(mContext, 82))
-                    .into(mThumbnail);
-        }
+//        mThumbnail = (ImageView) findViewById(R.id.img_enterprise_logo);
+//        if(enterpriseItem.getmThumbnail()!="") {
+//            Picasso
+//                    .with(mContext)
+//                    .load(enterpriseItem.getmThumbnail())
+//                    .placeholder(mImgPlaceholder)
+//                    .resize(CommonUtils.getPixelValue(mContext, 122), CommonUtils.getPixelValue(mContext, 82))
+//                    .into(mThumbnail);
+//        }
         mName = (TextView)findViewById(R.id.txt_enterprise_name);
         mName.setText(enterpriseItem.getmName());
 
@@ -79,14 +79,14 @@ public class EnterpriseItemView extends LinearLayout {
     }
 
     public void setThumbnail(String thumbnail) {
-        if(thumbnail!="") {
-            Picasso
-                    .with(mContext)
-                    .load(thumbnail)
-                    .placeholder(mImgPlaceholder)
-                    .resize(CommonUtils.getPixelValue(mContext, 122), CommonUtils.getPixelValue(mContext, 82))
-                    .into(mThumbnail);
-        }
+//        if(thumbnail!="") {
+//            Picasso
+//                    .with(mContext)
+//                    .load(thumbnail)
+//                    .placeholder(mImgPlaceholder)
+//                    .resize(CommonUtils.getPixelValue(mContext, 122), CommonUtils.getPixelValue(mContext, 82))
+//                    .into(mThumbnail);
+//        }
     }
 
     public void setName(String name) {

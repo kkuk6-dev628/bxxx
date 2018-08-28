@@ -8,7 +8,7 @@
     <color name="colorHomeBackground">#ebebeb</color>
     <color name="colorBackgroundGray">#F4F4F4</color>
     <color name="colorPrimaryText">#043779</color>
-    <color name="colorSecondaryText">#333333</color>
+    <color name="colorSecondaryText">#464343</color>
     <color name="colorSmallText">#7a7a7a</color>
     <color name="colorTabText">#7e7a7a</color>
     <color name="colorLineDark">#777777</color>
@@ -27,7 +27,7 @@
     <color name="colorButtonPressBackground">#1b3351</color>
     <color name="colorLayoutBackground">#efeef4</color>
     <color name="colorLabel">#8a8a8a</color>
-    <color name="colorConfirmText">#f15a24</color>
+    <color name="colorConfirmText">#ef692f</color>
     <color name="colorDescriptionText">#1c4c89</color>
     <color name="colorNumPadText">#0a3f71</color>
     <color name="colorDivider">#e5e5e5</color>
