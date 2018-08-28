@@ -62,9 +62,8 @@
                             android:paddingTop="5dp"
                             android:text="便民电话火热招商中，抢啦电话：0433-2517776"
                             android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:textColor="@color/colorPrimaryDark"
-                            android:textSize="13sp"
-                            tools:textColor="@color/colorConfirmText" />
+                            android:textColor="@color/colorJobText"
+                            android:textSize="13sp" />
                     </RelativeLayout>
                 </RelativeLayout>
             </LinearLayout>

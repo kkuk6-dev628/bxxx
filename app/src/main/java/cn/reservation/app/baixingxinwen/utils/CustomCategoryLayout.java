@@ -55,7 +55,7 @@ public class CustomCategoryLayout extends LinearLayout {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.custom_category_linear_layout, this, true);
         this.setOrientation(LinearLayout.VERTICAL);
-        this.setPadding(0, 50, 0, 50);
+        this.setPadding(0, 20, 0, 20);
 //        this.setPadding(10,0,10,0);
 //        LayoutParams par = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
 //                LayoutParams.FILL_PARENT);
@@ -80,7 +80,7 @@ public class CustomCategoryLayout extends LinearLayout {
             for(int i = 0; i < LinearCount; i++){
                 LinearLayout l = new LinearLayout(this.getContext());
                 l.setOrientation(LinearLayout.HORIZONTAL);
-                    l.setPadding(50, 0, 50, 0);
+                    l.setPadding(20, 0, 20, 0);
                 l.setWeightSum((float) 1.5);
                 LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                         LayoutParams.FILL_PARENT);
@@ -113,7 +113,7 @@ public class CustomCategoryLayout extends LinearLayout {
                 if(CategoryItemCount % 3 == 0){
                     l = new LinearLayout(this.getContext());
                     l.setOrientation(LinearLayout.HORIZONTAL);
-                    l.setPadding(50, 0, 50, 0);
+                    l.setPadding(20, 0, 20, 0);
                     l.setWeightSum((float) 1.5);
                     LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                             LayoutParams.FILL_PARENT);
