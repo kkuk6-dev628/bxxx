@@ -53,10 +53,30 @@ public class DropDownMenu extends RelativeLayout implements View.OnClickListener
         setBackgroundColor(Color.WHITE);
     }
 
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         setContentView(findViewById(R.id.mFilterContentView));
+    }
+
+    public void setNumberSearchView(View numberSearchView){
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(-1, -2);
+        params.bottomMargin = 100;//添加距离底部高度
+        frameLayoutContainer.addView(numberSearchView, frameLayoutContainer.getChildCount(), params);
+        numberSearchView.setVisibility(GONE);
+    }
+
+    public void showNumberSearchView(){
+
+        frameLayoutContainer.getChildAt(frameLayoutContainer.getChildCount() - 1).setVisibility(View.VISIBLE);
+        frameLayoutContainer.getChildAt(fixedTabIndicator.getLastIndicatorPosition()).setVisibility(View.GONE);
+        frameLayoutContainer.setVisibility(VISIBLE);
+    }
+
+    public void hideNumberSearchView(){
+        frameLayoutContainer.getChildAt(frameLayoutContainer.getChildCount() - 1).setVisibility(View.GONE);
+        frameLayoutContainer.setVisibility(GONE);
     }
 
     public void setShowDropdownFlags(char[] flags){
@@ -164,9 +184,17 @@ public class DropDownMenu extends RelativeLayout implements View.OnClickListener
         frameLayoutContainer.startAnimation(alphaDismissAnimation);
         fixedTabIndicator.resetCurrentPos();
 
-        if (currentView != null) {
-            currentView.startAnimation(dismissAnimation);
+
+        if(frameLayoutContainer.getChildAt(frameLayoutContainer.getChildCount() - 1).getVisibility() == View.VISIBLE){
+            frameLayoutContainer.getChildAt(frameLayoutContainer.getChildCount() - 1).setVisibility(View.GONE);
+
         }
+        else{
+            if (currentView != null) {
+                currentView.startAnimation(dismissAnimation);
+            }
+        }
+
     }
 
     public void resetMainMenuTitles(){
@@ -193,12 +221,17 @@ public class DropDownMenu extends RelativeLayout implements View.OnClickListener
     @Override
     public void onClick(View v) {
         if (isShowing()) {
+
             close();
         }
     }
 
     @Override
     public void onItemClick(View v, int position, boolean open) {
+        View numberSearchView = (View) frameLayoutContainer.getChildAt(frameLayoutContainer.getChildCount() - 1);
+        if(numberSearchView.getVisibility() == View.VISIBLE){
+            hideNumberSearchView();
+        }
 //        if(position == 0 || !mMenuAdapter.hasChildInMainMenu(position)){
 //            mMenuAdapter.onFilterDone(position, -1, -1);
 //            close();
@@ -211,7 +244,7 @@ public class DropDownMenu extends RelativeLayout implements View.OnClickListener
 
             if(mShowDropdownFlags != null && mShowDropdownFlags.length > position && mShowDropdownFlags[position] == 0){
                 frameLayoutContainer.getChildAt(fixedTabIndicator.getLastIndicatorPosition()).setVisibility(View.GONE);
-                close();
+//                close();
                 if(mMenuAdapter != null) {
                     mMenuAdapter.onFilterDone(position, -1, -1);
                 }
@@ -250,7 +283,11 @@ public class DropDownMenu extends RelativeLayout implements View.OnClickListener
         SimpleAnimationListener listener = new SimpleAnimationListener() {
             @Override
             public void onAnimationEnd(Animation animation) {
+            View numberSearchView = (View) frameLayoutContainer.getChildAt(frameLayoutContainer.getChildCount() - 1);
+            if(numberSearchView.getVisibility() != View.VISIBLE){
                 frameLayoutContainer.setVisibility(GONE);
+            }
+
             }
         };
 

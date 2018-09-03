@@ -2,8 +2,12 @@ package cn.reservation.app.baixingxinwen.adapter;
 
 import android.content.Context;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.baiiu.filter.adapter.MenuAdapter;
 import com.baiiu.filter.adapter.SimpleTextAdapter;
@@ -39,6 +43,7 @@ public class DropMenuAdapter implements MenuAdapter {
     private String[] titles;
     private JSONArray basicDataJsonArray;
     private int selectedColumnIndex = -1;
+    private char[] childFlags;
 
     public DropMenuAdapter(Context context, JSONArray list, OnFilterDoneListener onFilterDoneListener) {
         this.mContext = context;
@@ -57,6 +62,21 @@ public class DropMenuAdapter implements MenuAdapter {
                 e.printStackTrace();
             }
         }
+
+//        childFlags = new char[list.length() + 1];
+//        childFlags[0] = 0;
+//        for(int i = 0; i < list.length(); i++){
+//            try {
+//                JSONObject mainItem = list.getJSONObject(i);
+//                String type = mainItem.optString("type");
+//                if(type.contains("click"))
+//                    childFlags[i + 1] = 0;
+//                else
+//                    childFlags[i + 1] = 1;
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
         this.onFilterDoneListener = onFilterDoneListener;
     }
@@ -77,7 +97,7 @@ public class DropMenuAdapter implements MenuAdapter {
 //            return 0;
 //        }
 
-        return UIUtil.dp(mContext, 140);
+        return UIUtil.dp(mContext, 100);
     }
 
     @Override
@@ -92,8 +112,53 @@ public class DropMenuAdapter implements MenuAdapter {
             else{
                 item = this.basicDataJsonArray.getJSONObject(position-1);
                 String type = item.optString("type");
-                if(type.contains("region") || type.contains("more") || type.contains("number") || type.contains("text")){
+                if(type.contains("region") || type.contains("more")){
                     view = createDoubleListView(position);
+                }
+                else if(type.contains("number") || type.contains("text")){
+                    String unit = item.optString("unit");
+
+                    final String option_id = item.optString("optionid");
+
+                    final LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    view = inflater.inflate(R.layout.dropdown_search, null);
+
+                    RelativeLayout rlt_price_search = (RelativeLayout) view.findViewById(R.id.rlt_price_search);
+                    ((EditText) view.findViewById(R.id.edit_min_price)).setHint("最低价（" + unit + "）");
+                    ((EditText) view.findViewById(R.id.edit_max_price)).setHint("最高价（" + unit + "）");
+
+                    final View finalView = view;
+                    rlt_price_search.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view1) {
+                            String min_price = ((EditText) finalView.findViewById(R.id.edit_min_price)).getText().toString();
+                            String max_price = ((EditText) finalView.findViewById(R.id.edit_max_price)).getText().toString();
+                            if(min_price.equals("")){
+                                Toast toast = Toast.makeText(mContext, "请输入最低值", Toast.LENGTH_LONG);
+                                toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                                toast.show();
+                                ((EditText)(finalView.findViewById(R.id.edit_min_price))).setFocusableInTouchMode(true);
+                                ((EditText)(finalView.findViewById(R.id.edit_min_price))).requestFocus();
+                                return;
+                            }
+                            if(max_price.equals("")){
+                                Toast toast = Toast.makeText(mContext, "请输入最高值", Toast.LENGTH_LONG);
+                                toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                                toast.show();
+                                ((EditText)(finalView.findViewById(R.id.edit_max_price))).setFocusableInTouchMode(true);
+                                ((EditText)(finalView.findViewById(R.id.edit_max_price))).requestFocus();
+                                return;
+                            }
+                            String price = min_price+"<->"+max_price;
+
+                            onFilterDoneListener.onFilterDone(FilterUrl.instance().columnPosition, option_id, price);
+//                LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
+//                lyt_search_panel.removeAllViews();
+
+
+
+                        }
+                    });
                 }
                 else{
                     view = createSingleGridView(position);
@@ -135,7 +200,7 @@ public class DropMenuAdapter implements MenuAdapter {
         try {
             item = basicDataJsonArray.getJSONObject(position-1);
             String type = item.optString("type");
-            if(type.contains("number") || type.contains("text")){
+            if(type.contains("number") || type.contains("text") || type.contains("click")){
                 return false;
             }
             else if(!type.contains("region") && !type.contains("more")){
@@ -432,7 +497,6 @@ public class DropMenuAdapter implements MenuAdapter {
 
 
 
-
                     }
                 });
 
@@ -514,6 +578,7 @@ public class DropMenuAdapter implements MenuAdapter {
     public void onFilterDone(int columnPosition, int rowPosition, int itemPosition) {
 
         if(rowPosition == -1){
+
             // 이 경우는 기본메뉴가 child 를 하나도 가지고 있지 않는 경우이다.
             FilterUrl.instance().columnPosition = columnPosition;
             FilterUrl.instance().positionTitle = titles[columnPosition];
@@ -523,24 +588,14 @@ public class DropMenuAdapter implements MenuAdapter {
                 return;
             }
 
-
-//            if(columnPosition == 0){
-//                onFilterDoneListener.onFilterDoneReturnPosition(0, -1, -1);
-//            }
-//            else{
-//                if(!hasChildInMainMenu(columnPosition)){
-//                    onFilterDoneListener.onFilterDoneReturnPosition(columnPosition, -1, -1);
-//                    return;
-//                }
-//            }
             return;
         }
 
         onFilterDoneListener.onFilterDoneReturnPosition(FilterUrl.instance().columnPosition, FilterUrl.instance().rowPosition, FilterUrl.instance().itemPosition);
 
-        if (onFilterDoneListener != null && FilterUrl.instance().columnPosition > -1) {
-            onFilterDoneListener.onFilterDone(FilterUrl.instance().columnPosition, "", "");
-        }
+//        if (onFilterDoneListener != null && FilterUrl.instance().columnPosition > -1) {
+//            onFilterDoneListener.onFilterDone(FilterUrl.instance().columnPosition, "", "");
+//        }
     }
 
 }

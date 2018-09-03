@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -101,6 +102,12 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
     private NavigationView areaNavView;
 
     private SearchActivity self;
+
+    private RequestParams paramsUpdated;
+    private JSONArray searchResultJsonArray;
+    private View numberSearchView;
+
+    private String optionIdForNumber = "";
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -346,7 +353,15 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         searchItemListAdapter = new SearchItemListAdapter(this);
         searchItemListAdapter.setListItems(searchItems);
         lstSearch.setAdapter(searchItemListAdapter);
+
+        // 이페지에 들어올때 먼저 해당 fid, sortid에 의하여 검색을 진행한다.
+        paramsUpdated = new RequestParams();
+        paramsUpdated.put("fid", fid);
+        paramsUpdated.put("sortid", sortid);
+        paramsUpdated.put("page", mIntPage);
         getSearchItems();
+        ///////////////////////////////////////////////////////////////
+
         lstSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -750,6 +765,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                                 JSONArray list = response.getJSONArray("ret");
 
                                 //메뉴를 위한 코드
+                                searchResultJsonArray = list;
                                 initFilterDropDownView(list);
 //                                mFilterContentView.setOnClickListener(self);
                                 ////////////////////////////////////////////////////
@@ -813,11 +829,13 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                     params.put(selectedSTab, selectedVTab);
                 }
                 */
-                params.put("keyword", keyword);
-                if(!price.equals(""))
-                    params.put("price", price);
+//                params.put("keyword", keyword);
+//                if(!price.equals(""))
+//                    params.put("price", price);
+
+
                 String url = "news/list";
-                APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
+                APIManager.post(mContext, url, paramsUpdated, null, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         try {
@@ -1312,7 +1330,69 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 //        mFilterContentView = (TextView)findViewById(R.id.mFilterContentView);
         String[] titleList = new String[] { "第一个", "第二个", "第三个", "第四个" };
         dropDownMenu.setMenuAdapter(new DropMenuAdapter(this, list, this));
-        dropDownMenu.setShowDropdownFlags(new char[]{0,1,1,1,1});
+
+        char[] flags = new char[list.length() + 1];
+        flags[0] = 0;
+        for(int i = 0; i < list.length(); i++){
+            try {
+                JSONObject mainItem = list.getJSONObject(i);
+                String type = mainItem.optString("type");
+                if(type.contains("click"))
+                    flags[i + 1] = 0;
+                else
+                    flags[i + 1] = 1;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        dropDownMenu.setShowDropdownFlags(flags);
+
+        final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        numberSearchView = inflater.inflate(R.layout.dropdown_search, null);
+        RelativeLayout rlt_price_search = (RelativeLayout) numberSearchView.findViewById(R.id.rlt_price_search);
+
+        rlt_price_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                min_price = ((EditText) numberSearchView.findViewById(R.id.edit_min_price)).getText().toString();
+                max_price = ((EditText) numberSearchView.findViewById(R.id.edit_max_price)).getText().toString();
+                if(min_price.equals("")){
+                    Toast toast = Toast.makeText(mContext, "请输入最低值", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.show();
+                    ((EditText)(numberSearchView.findViewById(R.id.edit_min_price))).setFocusableInTouchMode(true);
+                    ((EditText)(numberSearchView.findViewById(R.id.edit_min_price))).requestFocus();
+                    return;
+                }
+                if(max_price.equals("")){
+                    Toast toast = Toast.makeText(mContext, "请输入最高值", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.show();
+                    ((EditText)(numberSearchView.findViewById(R.id.edit_max_price))).setFocusableInTouchMode(true);
+                    ((EditText)(numberSearchView.findViewById(R.id.edit_max_price))).requestFocus();
+                    return;
+                }
+                price = min_price+"<->"+max_price;
+//                LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
+//                lyt_search_panel.removeAllViews();
+
+                if(!optionIdForNumber.equals("")){
+                    paramsUpdated.put("option_"+ optionIdForNumber, price);
+                    searchItemListAdapter.clearItems();
+//                    showAction = 0;
+//                    mIntPage = 1;
+
+
+                    getSearchItems();
+                }
+
+            }
+        });
+
+        numberSearchView.setVisibility(View.GONE);
+//        dropDownMenu.setAllViews(numberSearchView);
+        dropDownMenu.setNumberSearchView(numberSearchView);
     }
 
     private void initSearchOptionMenu(JSONArray list, boolean price_state) {
@@ -1466,29 +1546,181 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 
     @Override
     public void onFilterDone(int position, String positionTitle, String urlValue) {
+
+        String priceRange = urlValue;
+        String optionId = positionTitle;
+
+        paramsUpdated.put("option_" + optionId, priceRange);
+        searchItemListAdapter.clearItems();
+        getSearchItems();
+//        dropDownMenu.hideNumberSearchView();
 //        if (position != 0) {
 //            dropDownMenu.setPositionIndicatorText(FilterUrl.instance().columnPosition, FilterUrl.instance().positionTitle);
 //        }
 
-        dropDownMenu.setPositionIndicatorText(FilterUrl.instance().columnPosition, FilterUrl.instance().positionTitle);
-
-        dropDownMenu.close();
+//        dropDownMenu.setPositionIndicatorText(FilterUrl.instance().columnPosition, FilterUrl.instance().positionTitle);
+//
+//        dropDownMenu.close();
 //        mFilterContentView.setText(FilterUrl.instance()
 //                .toString());
     }
 
     @Override
     public void onFilterDoneReturnPosition(int columnPosition, int rowPosition, int itemPosition) {
-//        if(rowPosition == -1){
-////            dropDownMenu.resetMainMenuTitles();
-//            dropDownMenu.close();
-//        }
-
-//        dropDownMenu.close();
+        dropDownMenu.setPositionIndicatorText(columnPosition, FilterUrl.instance().positionTitle);
+        if (columnPosition == 0) {
+            dropDownMenu.close();
+        }
 
 
-//        dropDownMenu.setPositionIndicatorText(FilterUrl.instance().columnPosition, FilterUrl.instance().positionTitle);
-//
+        Log.d("ColumnPosition", Integer.toString(columnPosition));
+        Log.d("RowPosition", Integer.toString(rowPosition));
+        Log.d("ItemPosition", Integer.toString(itemPosition));
+
+        if(columnPosition == 0){
+            //이 경우에는 remove 단추가 눌렸을때이므로 검색키들을 재설정하고 reload 한다.
+            resetSearch();
+            dropDownMenu.resetMainMenuTitles();
+            return;
+        }
+
+        boolean isNumberSearch = false;
+
+        try {
+            paramsUpdated.put("page", "1");
+            JSONObject mainItem = searchResultJsonArray.getJSONObject(columnPosition - 1);
+            String analysis = mainItem.optString("analysis");
+            String type = mainItem.optString("type");
+            if(analysis.contains("sortid")){
+                String sortid = mainItem.optString("optionid");
+                paramsUpdated.put("sortid", sortid);
+
+                searchItemListAdapter.clearItems();
+                getSearchItems();
+
+
+
+            }
+            else{
+                if(type.contains("click")){
+                    String sortid = mainItem.optString("optionid");
+                    paramsUpdated.put("sortid", sortid);
+
+                    searchItemListAdapter.clearItems();
+                    getSearchItems();
+                }
+                else if(type.contains("region")){
+                    String optionid = mainItem.optString("optionid");
+                    String paramKey = "option_" + optionid;
+
+                    String paramValue;
+                    if(itemPosition == -1)
+                        paramValue = Integer.toString(rowPosition + 1);
+                    else
+                        paramValue = Integer.toString(rowPosition + 1) + "." + Integer.toString(itemPosition + 1);
+
+                    paramsUpdated.put(paramKey, paramValue);
+                    searchItemListAdapter.clearItems();
+                    getSearchItems();
+                }
+                else if(type.contains("more")){
+
+                    JSONArray infoArray = mainItem.getJSONArray("info");
+                    JSONObject infoItem = infoArray.getJSONObject(rowPosition);
+                    String typeInfoItem = infoItem.optString("type");
+                    String analysisInfoItem = infoItem.optString("analysis");
+
+                    if(analysisInfoItem.contains("sortid")) {
+                        String sortid = infoItem.optString("optionid");
+                        String[] sortids = sortid.split(",");
+                        if (sortids.length > 1) {
+                            sortid = sortids[itemPosition];
+                            paramsUpdated.put("sortid", sortid);
+
+                            searchItemListAdapter.clearItems();
+                            getSearchItems();
+                        }
+                    }
+                    else{
+                        if(typeInfoItem.contains("click")){
+
+                            String sortid = infoItem.optString("optionid");
+                            String[] sortids = sortid.split(",");
+                            if(sortids.length > 1){
+                                sortid = sortids[rowPosition];
+                                paramsUpdated.put("sortid", sortid);
+
+                                searchItemListAdapter.clearItems();
+                                getSearchItems();
+                            }
+                        }
+                        else if(!typeInfoItem.contains("number") && !typeInfoItem.contains("text")){
+                            String optionid = infoItem.optString("optionid");
+
+                            String paramKey = "option_" + optionid;
+                            String paramValue = Integer.toString(itemPosition + 1);
+
+                            paramsUpdated.put(paramKey, paramValue);
+
+                            searchItemListAdapter.clearItems();
+                            getSearchItems();
+                        }
+                        else{
+                            String unit = infoItem.optString("unit");
+                            optionIdForNumber = infoItem.optString("optionid");
+                            RelativeLayout rlt_price_search = (RelativeLayout) numberSearchView.findViewById(R.id.rlt_price_search);
+                            ((EditText) numberSearchView.findViewById(R.id.edit_min_price)).setText("");
+                            ((EditText) numberSearchView.findViewById(R.id.edit_min_price)).setHint("最低值 (" + unit + ")");
+                            ((EditText) numberSearchView.findViewById(R.id.edit_max_price)).setText("");
+                            ((EditText) numberSearchView.findViewById(R.id.edit_max_price)).setHint("最高值 (" + unit + ")");
+
+                            dropDownMenu.showNumberSearchView();
+                            isNumberSearch = true;
+
+//                            numberSearchView.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+
+
+                }
+                else if(!type.contains("number") && !type.contains("text")){
+                    String optionid = mainItem.optString("optionid");
+
+                    String paramKey = "option_" + optionid;
+                    String paramValue = Integer.toString(rowPosition + 1);
+                    if(itemPosition > -1){
+                        paramValue += "." + Integer.toString(itemPosition + 1);
+                    }
+
+                    paramsUpdated.put(paramKey, paramValue);
+
+                    searchItemListAdapter.clearItems();
+                    getSearchItems();
+                }
+            }
+
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        if (rowPosition != -1 && !isNumberSearch) {
+            dropDownMenu.close();
+        }
+    }
+
+    private void resetSearch(){
+        numberSearchView.setVisibility(View.GONE);
+
+        paramsUpdated = new RequestParams();
+        paramsUpdated.put("fid", fid);
+        paramsUpdated.put("sortid", sortid);
+        paramsUpdated.put("page", 1);
+
+        searchItemListAdapter.clearItems();
+        getSearchItems();
     }
 
     @Override
