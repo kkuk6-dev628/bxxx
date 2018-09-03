@@ -18,7 +18,7 @@ public class APIManager {
     public static final String Ucenter_URL= "http://192.168.1.111:1212/api/passport.php";
 */
     private static final String URL = "http://app.bxxx.cn/index.php/api/";
-    private static final String URL_LOCAL = "http://192.168.1.32:2020/index.php/api/";
+//    private static final String URL = "http://192.168.1.32:2020/index.php/api/";
     public static final String Sever_URL = "http://bbs.bxxx.cn/";
     public static final String User_URL ="http://app.bxxx.cn/index.php/";
     public static final String Ucenter_URL= "http://bbs.bxxx.cn/api/passport.php";
@@ -31,6 +31,7 @@ public class APIManager {
 */
     public static final String IMAGE_URL = "http://bbs.bxxx.cn/";
     public static final String APP_DOMAIN = "http://app.bxxx.cn";
+//    public static final String APP_DOMAIN = "http://192.168.1.32:2020";
 
     //----------------QQ Login-----------------------
     public static Tencent mTencent = null;

@@ -7,27 +7,22 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baoyz.actionsheet.ActionSheet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.squareup.picasso.Picasso;
 import com.walnutlabs.android.ProgressHUD;
 
 import org.json.JSONArray;
@@ -38,14 +33,10 @@ import java.util.ArrayList;
 
 import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.adapter.NewsItemListAdapter;
-import cn.reservation.app.baixingxinwen.adapter.SearchItemListAdapter;
 import cn.reservation.app.baixingxinwen.api.APIManager;
 import cn.reservation.app.baixingxinwen.utils.AnimatedActivity;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
-import cn.reservation.app.baixingxinwen.utils.DictionaryUtils;
 import cn.reservation.app.baixingxinwen.utils.NewsItem;
-import cn.reservation.app.baixingxinwen.utils.NewsItemView;
-import cn.reservation.app.baixingxinwen.utils.SearchItem;
 import cn.reservation.app.baixingxinwen.wxapi.OnResponseListener;
 import cn.reservation.app.baixingxinwen.wxapi.WXShare;
 import cz.msebera.android.httpclient.Header;
@@ -513,7 +504,7 @@ public class UserNewsActivity extends AppCompatActivity implements DialogInterfa
                 if(CommonUtils.share_bmp==null)
                     CommonUtils.share_bmp = BitmapFactory.decodeResource(getResources(), R.drawable.default_img);
                 Long newsId = ((NewsItem)lstNews.getItemAtPosition(sel_position)).getmNewsID();
-                String url = APIManager.User_URL + "news/paper/" + String.valueOf(newsId);
+                String url = APIManager.User_URL + "news/paper/" + String.valueOf(newsId) + "/1";
                 String title = ((NewsItem)lstNews.getItemAtPosition(sel_position)).getmTitle();
                 String desc = ((NewsItem)lstNews.getItemAtPosition(sel_position)).getmPostState()+ " " +((NewsItem)lstNews.getItemAtPosition(sel_position)).getmStartTime()+ " " +((NewsItem)lstNews.getItemAtPosition(sel_position)).getmViewCnt()+"浏览";;
                 wxShare.sharePaper(title, desc, url, CommonUtils.share_bmp, 0);
@@ -531,7 +522,7 @@ public class UserNewsActivity extends AppCompatActivity implements DialogInterfa
                 if(CommonUtils.share_bmp==null)
                     CommonUtils.share_bmp = BitmapFactory.decodeResource(getResources(), R.drawable.default_img);
                 Long newsId = ((NewsItem)lstNews.getItemAtPosition(sel_position)).getmNewsID();
-                String url = APIManager.User_URL + "news/paper/" + String.valueOf(newsId);
+                String url = APIManager.User_URL + "news/paper/" + String.valueOf(newsId) + "/1";
                 String title = ((NewsItem)lstNews.getItemAtPosition(sel_position)).getmTitle();
                 String desc = ((NewsItem)lstNews.getItemAtPosition(sel_position)).getmPostState()+ " " +((NewsItem)lstNews.getItemAtPosition(sel_position)).getmStartTime()+ " " +((NewsItem)lstNews.getItemAtPosition(sel_position)).getmViewCnt()+"浏览";;
                 wxShare.sharePaper(title, desc, url, CommonUtils.share_bmp, 1);

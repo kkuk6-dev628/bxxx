@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/ProgressHUD" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/cropper" />
+            <option value="$PROJECT_DIR$/filter-lib" />
             <option value="$PROJECT_DIR$/justifytext-library" />
             <option value="$PROJECT_DIR$/library_justifytext" />
           </set>

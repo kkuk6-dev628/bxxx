@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.facebook.cache.disk.DiskStorageCache;
 import com.squareup.picasso.Picasso;
 
 import cn.reservation.app.baixingxinwen.R;
@@ -174,7 +173,7 @@ public class SearchItemView extends LinearLayout {
                     .with(mContext)
                     .load(mAdverUrl)
                     .placeholder(mImgPlaceholder)
-                    .fit()
+                    .resize(512, 0)
                     .into(mAdver);
         }else{ //if((mFid.equals("2") && (mSortid.equals("1") || mSortid.equals("4"))) || (mFid.equals("93") && mSortid.equals("33")) || mFid.equals("39") || (mFid.equals("40") && mSortid.equals("3")) || (mFid.equals("92")) || (mFid.equals("50") && mSortid.equals("61"))){
             params = new LinearLayout.LayoutParams(

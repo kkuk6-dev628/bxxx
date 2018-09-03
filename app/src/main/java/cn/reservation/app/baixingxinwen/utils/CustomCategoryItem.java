@@ -13,16 +13,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import org.json.JSONObject;
 
 import java.io.File;
 
 import cn.reservation.app.baixingxinwen.R;
-import cn.reservation.app.baixingxinwen.activity.EnterpriseListActivity;
-import cn.reservation.app.baixingxinwen.activity.FullSearchActivity;
-import cn.reservation.app.baixingxinwen.activity.HomeActivity;
 import cn.reservation.app.baixingxinwen.activity.SearchActivity;
 
 /**
@@ -124,9 +119,22 @@ public class CustomCategoryItem extends LinearLayout implements View.OnClickList
             return;
 
         String item_name = jsonData.optString("item_name");
+        String item_label = jsonData.optString("item_label");
+        String item_fid = jsonData.optString("item_fid");
+        String item_sortid = jsonData.optString("item_storeid1");
         if(item_name == null || item_name.equals(""))
             return;
+
         Intent intent;
+
+//        Intent intent = new Intent(this.mContext, SearchActivity.class);
+//        intent.putExtra("name", item_name);
+//        intent.putExtra("label", item_label);
+//        intent.putExtra("fid", item_fid);
+//        intent.putExtra("sortid", item_sortid);
+//        pActivity.startChildActivity("activity_search", intent);
+
+
         switch (item_name){
             case "room"://房屋出售
                 intent = new Intent(this.mContext, SearchActivity.class);
@@ -213,28 +221,28 @@ public class CustomCategoryItem extends LinearLayout implements View.OnClickList
 //        else if (title == R.id.btn_home_waitred){//敬请期待
 //            intent = new Intent(this.mContext, SearchActivity.class);
 //        }
-            case "敬请期待"://敬请期待
-                intent = new Intent(this.mContext, SearchActivity.class);
-                break;
-            case "便民电话-房屋维修"://便民电话-房屋维修
-                intent = new Intent(this.mContext, EnterpriseListActivity.class);
-                intent.putExtra("enterprise", "房屋维修");
-                pActivity.startChildActivity("activity_enterprise", intent);
-                break;
-            case "便民电话-代驾"://便民电话-代驾
-                intent = new Intent(this.mContext, EnterpriseListActivity.class);
-                intent.putExtra("enterprise", "代驾");
-                pActivity.startChildActivity("activity_enterprise", intent);
-                break;
-            case "便民电话-跑腿"://便民电话-跑腿
-                intent = new Intent(this.mContext, EnterpriseListActivity.class);
-                intent.putExtra("enterprise", "跑腿");
-                pActivity.startChildActivity("activity_enterprise", intent);
-                break;
-            case "点击搜索按钮"://点击搜索按钮
-                intent = new Intent(this.mContext, FullSearchActivity.class);
-                pActivity.startChildActivity("full_search", intent);
-                break;
+//            case "敬请期待"://敬请期待
+//                intent = new Intent(this.mContext, SearchActivity.class);
+//                break;
+//            case "便民电话-房屋维修"://便民电话-房屋维修
+//                intent = new Intent(this.mContext, EnterpriseListActivity.class);
+//                intent.putExtra("enterprise", "房屋维修");
+//                pActivity.startChildActivity("activity_enterprise", intent);
+//                break;
+//            case "便民电话-代驾"://便民电话-代驾
+//                intent = new Intent(this.mContext, EnterpriseListActivity.class);
+//                intent.putExtra("enterprise", "代驾");
+//                pActivity.startChildActivity("activity_enterprise", intent);
+//                break;
+//            case "便民电话-跑腿"://便民电话-跑腿
+//                intent = new Intent(this.mContext, EnterpriseListActivity.class);
+//                intent.putExtra("enterprise", "跑腿");
+//                pActivity.startChildActivity("activity_enterprise", intent);
+//                break;
+//            case "点击搜索按钮"://点击搜索按钮
+//                intent = new Intent(this.mContext, FullSearchActivity.class);
+//                pActivity.startChildActivity("full_search", intent);
+//                break;
             default:
                 break;
         }

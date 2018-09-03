@@ -32,4 +32,5 @@
     <color name="colorNumPadText">#0a3f71</color>
     <color name="colorDivider">#e5e5e5</color>
     <color name="colorDialog">#045284</color>
+    <color name="comment_divider">#cccccc</color>
 </resources>

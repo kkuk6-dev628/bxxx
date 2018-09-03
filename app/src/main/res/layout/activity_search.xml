@@ -109,7 +109,142 @@
 
             </RelativeLayout>
         </RelativeLayout>
+        <com.baiiu.filter.DropDownMenu
+            android:id="@+id/dropDownMenu"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorHomeBackground"
+                android:orientation="horizontal"
+                android:id="@id/mFilterContentView"
+                >
 
+                <!--<android.support.design.widget.NavigationView-->
+                <!--android:id="@+id/area_nav_view"-->
+                <!--android:layout_width="125dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_gravity="start"-->
+                <!--android:visibility="gone"-->
+                <!--app:menu="@menu/navigation_menu" />-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorHomeBackground"
+                    android:orientation="vertical">
+
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="15dp"
+                        android:overScrollMode="never">
+
+                        <LinearLayout
+                            android:id="@+id/lyt_search_panel"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical">
+
+                            <RelativeLayout
+                                android:id="@+id/rlt_search_item"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:background="@color/colorBackground">
+                            </RelativeLayout>
+                        </LinearLayout>
+                    </ScrollView>
+                    <View
+                        android:id="@+id/vline"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@+id/lyt_sel_search_cate"
+                        android:background="@color/colorLineLight" />
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorBackground"
+                        android:overScrollMode="never">
+                        <LinearLayout
+                            android:id="@+id/lyt_result_panel"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="30dp"
+                            android:padding="15dp"
+                            android:visibility="gone"
+                            android:orientation="vertical">
+                            <ImageView
+                                android:id="@+id/img_noresult"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                android:src="@drawable/no_result"
+                                android:layout_gravity="center" />
+
+                            <TextView
+                                android:id="@+id/txt_noresult"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_gravity="center"
+                                android:textSize="17sp"
+                                android:text="抱歉～ 没有找到您需要的信息" />
+                            <TextView
+                                android:id="@+id/txt_noresult_content"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="30dp"
+                                android:layout_gravity="left"
+                                android:textSize="14sp"
+                                android:text="搜素无结果可能有下几种原因" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_gravity="left"
+                                android:textSize="14sp"
+                                android:text="1，拼写错误。请检查一下文字是不是有误；" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_gravity="left"
+                                android:textSize="14sp"
+                                android:text="2，输入信息太多。建议尽量使用更清洁的关键词，多个关键词请用空格隔开，以获取更多搜素结果；" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_gravity="left"
+                                android:textSize="14sp"
+                                android:text="3，您查询的关键词在本站并没有相关内容。" />
+                        </LinearLayout>
+                    </ScrollView>
+
+                    <ListView
+                        android:id="@+id/lst_search_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_below="@+id/vline"
+                        android:overScrollMode="never" />
+                </LinearLayout>
+
+                <!--<android.support.design.widget.NavigationView-->
+                <!--android:layout_width="125dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="start"-->
+                <!--app:menu="@menu/navigation_menu" />-->
+            </LinearLayout>
+
+            <!--<TextView-->
+                <!--android:id="@id/mFilterContentView"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="1dp"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:visibility="gone"-->
+                <!--android:textSize="22sp"-->
+                <!--/>-->
+        </com.baiiu.filter.DropDownMenu>
         <LinearLayout
             android:id="@+id/lyt_sel_search_cate"
             android:layout_width="match_parent"
@@ -287,99 +422,125 @@
                 </RelativeLayout>
             </LinearLayout>
         </LinearLayout>
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:background="@color/colorHomeBackground"-->
+            <!--android:orientation="horizontal"-->
+            <!--&gt;-->
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="15dp"
-            android:overScrollMode="never">
+            <!--&lt;!&ndash;<android.support.design.widget.NavigationView&ndash;&gt;-->
+                <!--&lt;!&ndash;android:id="@+id/area_nav_view"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_width="125dp"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_gravity="start"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:visibility="gone"&ndash;&gt;-->
+                <!--&lt;!&ndash;app:menu="@menu/navigation_menu" />&ndash;&gt;-->
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="@color/colorHomeBackground"-->
+                <!--android:orientation="vertical">-->
 
-            <LinearLayout
-                android:id="@+id/lyt_search_panel"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                <!--<ScrollView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_marginBottom="15dp"-->
+                    <!--android:overScrollMode="never">-->
 
-                <RelativeLayout
-                    android:id="@+id/rlt_search_item"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:background="@color/colorBackground">
-                </RelativeLayout>
-            </LinearLayout>
-        </ScrollView>
-        <View
-            android:id="@+id/vline"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@+id/lyt_sel_search_cate"
-            android:background="@color/colorLineLight" />
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/colorBackground"
-            android:overScrollMode="never">
-            <LinearLayout
-                android:id="@+id/lyt_result_panel"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="30dp"
-                android:padding="15dp"
-                android:visibility="gone"
-                android:orientation="vertical">
-                <ImageView
-                    android:id="@+id/img_noresult"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:src="@drawable/no_result"
-                    android:layout_gravity="center" />
+                    <!--<LinearLayout-->
+                        <!--android:id="@+id/lyt_search_panel"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:orientation="vertical">-->
 
-                <TextView
-                    android:id="@+id/txt_noresult"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_gravity="center"
-                    android:textSize="17sp"
-                    android:text="抱歉～ 没有找到您需要的信息" />
-                <TextView
-                    android:id="@+id/txt_noresult_content"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
-                    android:layout_gravity="left"
-                    android:textSize="14sp"
-                    android:text="搜素无结果可能有下几种原因" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_gravity="left"
-                    android:textSize="14sp"
-                    android:text="1，拼写错误。请检查一下文字是不是有误；" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_gravity="left"
-                    android:textSize="14sp"
-                    android:text="2，输入信息太多。建议尽量使用更清洁的关键词，多个关键词请用空格隔开，以获取更多搜素结果；" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_gravity="left"
-                    android:textSize="14sp"
-                    android:text="3，您查询的关键词在本站并没有相关内容。" />
-            </LinearLayout>
-        </ScrollView>
-        <ListView
-            android:id="@+id/lst_search_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/vline"
-            android:overScrollMode="never" />
+                        <!--<RelativeLayout-->
+                            <!--android:id="@+id/rlt_search_item"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="match_parent"-->
+                            <!--android:background="@color/colorBackground">-->
+                        <!--</RelativeLayout>-->
+                    <!--</LinearLayout>-->
+                <!--</ScrollView>-->
+                <!--<View-->
+                    <!--android:id="@+id/vline"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="1dp"-->
+                    <!--android:layout_below="@+id/lyt_sel_search_cate"-->
+                    <!--android:background="@color/colorLineLight" />-->
+                <!--<ScrollView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:background="@color/colorBackground"-->
+                    <!--android:overScrollMode="never">-->
+                    <!--<LinearLayout-->
+                        <!--android:id="@+id/lyt_result_panel"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_marginTop="30dp"-->
+                        <!--android:padding="15dp"-->
+                        <!--android:visibility="gone"-->
+                        <!--android:orientation="vertical">-->
+                        <!--<ImageView-->
+                            <!--android:id="@+id/img_noresult"-->
+                            <!--android:layout_width="60dp"-->
+                            <!--android:layout_height="60dp"-->
+                            <!--android:src="@drawable/no_result"-->
+                            <!--android:layout_gravity="center" />-->
 
+                        <!--<TextView-->
+                            <!--android:id="@+id/txt_noresult"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_marginTop="10dp"-->
+                            <!--android:layout_gravity="center"-->
+                            <!--android:textSize="17sp"-->
+                            <!--android:text="抱歉～ 没有找到您需要的信息" />-->
+                        <!--<TextView-->
+                            <!--android:id="@+id/txt_noresult_content"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_marginTop="30dp"-->
+                            <!--android:layout_gravity="left"-->
+                            <!--android:textSize="14sp"-->
+                            <!--android:text="搜素无结果可能有下几种原因" />-->
+                        <!--<TextView-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_marginTop="10dp"-->
+                            <!--android:layout_gravity="left"-->
+                            <!--android:textSize="14sp"-->
+                            <!--android:text="1，拼写错误。请检查一下文字是不是有误；" />-->
+                        <!--<TextView-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_marginTop="10dp"-->
+                            <!--android:layout_gravity="left"-->
+                            <!--android:textSize="14sp"-->
+                            <!--android:text="2，输入信息太多。建议尽量使用更清洁的关键词，多个关键词请用空格隔开，以获取更多搜素结果；" />-->
+                        <!--<TextView-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="wrap_content"-->
+                            <!--android:layout_marginTop="10dp"-->
+                            <!--android:layout_gravity="left"-->
+                            <!--android:textSize="14sp"-->
+                            <!--android:text="3，您查询的关键词在本站并没有相关内容。" />-->
+                    <!--</LinearLayout>-->
+                <!--</ScrollView>-->
 
+                <!--<ListView-->
+                    <!--android:id="@+id/lst_search_content"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_below="@+id/vline"-->
+                    <!--android:overScrollMode="never" />-->
+            <!--</LinearLayout>-->
+
+            <!--&lt;!&ndash;<android.support.design.widget.NavigationView&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_width="125dp"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_gravity="start"&ndash;&gt;-->
+                <!--&lt;!&ndash;app:menu="@menu/navigation_menu" />&ndash;&gt;-->
+        <!--</LinearLayout>-->
     </LinearLayout>
 </LinearLayout>

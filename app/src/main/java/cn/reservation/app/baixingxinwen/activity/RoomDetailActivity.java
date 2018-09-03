@@ -8,24 +8,25 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings.Secure;
 import android.support.v7.app.AppCompatActivity;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.WebChromeClient;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.webkit.WebView;
 import android.widget.Toast;
 
 import com.baoyz.actionsheet.ActionSheet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.walnutlabs.android.ProgressHUD;
-import android.provider.Settings.Secure;
+
 import org.json.JSONObject;
 
 import cn.reservation.app.baixingxinwen.R;
@@ -79,6 +80,7 @@ public class RoomDetailActivity extends AppCompatActivity implements DialogInter
             userID = "";
         deviceID = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
         webview =(WebView)findViewById(R.id.webView);
+
         fId = (String) intent.getSerializableExtra("fid");
         sortId = (String) intent.getSerializableExtra("sortid");
         newsId = (String) intent.getSerializableExtra("newsId");
@@ -102,6 +104,7 @@ public class RoomDetailActivity extends AppCompatActivity implements DialogInter
         */
         webview.setOverScrollMode(WebView.OVER_SCROLL_NEVER);
         webview.loadUrl(APIManager.User_URL+"news/paper/"+newsId);
+//        webview.addJavascriptInterface(new AndroidBridge(this), "AndroidBridge");
         //webview.loadDataWithBaseURL(APIManager.User_URL+"news/paper/"+newsId, "","text/html", "UTF-8", null);
 
         //webview.setWebViewClient(new WebViewClient());
@@ -510,7 +513,7 @@ public class RoomDetailActivity extends AppCompatActivity implements DialogInter
                 if(CommonUtils.share_bmp==null) {
                     CommonUtils.share_bmp = BitmapFactory.decodeResource(getResources(), R.drawable.default_img);
                 }
-                String url = APIManager.User_URL+"news/paper/"+newsId;
+                String url = APIManager.User_URL+"news/paper/"+newsId + "/1";
                 System.out.println(title);
                 System.out.println(desc);
                 System.out.println(url);
@@ -526,7 +529,7 @@ public class RoomDetailActivity extends AppCompatActivity implements DialogInter
                 if(CommonUtils.share_bmp==null) {
                     CommonUtils.share_bmp = BitmapFactory.decodeResource(getResources(), R.drawable.default_img);
                 }
-                url = APIManager.User_URL+"news/paper/"+newsId;
+                url = APIManager.User_URL+"news/paper/"+newsId + "/1";
                 System.out.println(title);
                 System.out.println(desc);
                 System.out.println(url);

@@ -8,6 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/baixingxinwen.iml" filepath="$PROJECT_DIR$/baixingxinwen.iml" />
       <module fileurl="file://$PROJECT_DIR$/cropper/cropper.iml" filepath="$PROJECT_DIR$/cropper/cropper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/filter-lib/filter-lib.iml" filepath="$PROJECT_DIR$/filter-lib/filter-lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/justifytext-library/justifytext-library.iml" filepath="$PROJECT_DIR$/justifytext-library/justifytext-library.iml" />
       <module fileurl="file://$PROJECT_DIR$/library_justifytext/library_justifytext.iml" filepath="$PROJECT_DIR$/library_justifytext/library_justifytext.iml" />
     </modules>

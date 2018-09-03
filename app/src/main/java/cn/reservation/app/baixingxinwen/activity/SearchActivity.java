@@ -1,22 +1,16 @@
 package cn.reservation.app.baixingxinwen.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.drm.DrmStore;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -27,42 +21,53 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.ListView;
 import android.widget.Toast;
-import android.widget.AdapterView;
-import android.widget.AbsListView;
-import android.widget.LinearLayout.LayoutParams;
 
+import com.baiiu.filter.DropDownMenu;
+import com.baiiu.filter.interfaces.OnFilterDoneListener;
 import com.baoyz.actionsheet.ActionSheet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.walnutlabs.android.ProgressHUD;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Enumeration;
+import java.util.Hashtable;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cn.reservation.app.baixingxinwen.R;
+import cn.reservation.app.baixingxinwen.adapter.DropMenuAdapter;
 import cn.reservation.app.baixingxinwen.adapter.SearchItemListAdapter;
 import cn.reservation.app.baixingxinwen.api.APIManager;
+import cn.reservation.app.baixingxinwen.dropdownmenu.entity.FilterUrl;
 import cn.reservation.app.baixingxinwen.utils.AnimatedActivity;
 import cn.reservation.app.baixingxinwen.utils.BasePopupWindow;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
 import cn.reservation.app.baixingxinwen.utils.DictionaryUtils;
 import cn.reservation.app.baixingxinwen.utils.SearchItem;
 import cz.msebera.android.httpclient.Header;
-import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.Hashtable;
+
 
 @SuppressWarnings("deprecation")
-public class SearchActivity extends AppCompatActivity implements DialogInterface.OnCancelListener, ActionSheet.ActionSheetListener, View.OnClickListener {
+public class SearchActivity extends AppCompatActivity implements DialogInterface.OnCancelListener, ActionSheet.ActionSheetListener, View.OnClickListener, OnFilterDoneListener {
+    @BindView(R.id.dropDownMenu) DropDownMenu dropDownMenu;
+    @BindView(R.id.mFilterContentView) LinearLayout mFilterContentView;
+//    DropDownMenu dropDownMenu;
+//    LinearLayout mFilterContentView;
+
     private static String TAG = SearchActivity.class.getSimpleName();
 
     private Context mContext;
@@ -92,15 +97,26 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
     BasePopupWindow popUp;
     private View contentView;
     private boolean isKeyboardShown = false;
+    private int countOfListItemsFromStartToShowing = 0;
+    private NavigationView areaNavView;
+
+    private SearchActivity self;
+
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
+
+
         showAction = 0;
         selectedKeyTab = new Hashtable();
         setContentView(R.layout.activity_search);
+        ButterKnife.bind(this);
+
+        self = this;
+
         contentView = findViewById(R.id.activity_search);
         contentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -119,6 +135,16 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                 if(isKeyboardShown && popUp.isShowing()){
                     popUp.dismiss();
                 }
+                else{
+//                    if(popUp!=null && !popUp.isShowing()) {
+//                        popUp.showAtLocation(findViewById(R.id.lyt_search_parent), Gravity.BOTTOM | Gravity.RIGHT, 0, 200);
+//                    }
+                }
+
+//                if(popUp.isShowing()){
+//                    popUp.dismiss();
+//                }
+
             }
         });
         postItem = (String) intent.getSerializableExtra("PostItem");
@@ -300,6 +326,15 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
             editSearchTxt.setHint("搜索");
         }
 
+        ///메뉴를정의한다
+//        areaNavView = (NavigationView) findViewById(R.id.area_nav_view);
+//        Menu m = areaNavView.getMenu();
+//        SubMenu topChannelMenu = m.addSubMenu("Top Channels");
+//        topChannelMenu.add("Foo");
+//        topChannelMenu.add("Bar");
+//        topChannelMenu.add("Baz");
+
+
         getSearchOption();
         mContext = TabHostActivity.TabHostStack;
         res = getResources();
@@ -358,6 +393,26 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                         break;
 
                     case MotionEvent.ACTION_UP:
+//                        int totalItemCountOfListSearch = lstSearch.getAdapter().getCount();
+                        if(preLast>6)
+                        {
+                            if(popUp!=null && !popUp.isShowing()) {
+                                popUp.showAtLocation(findViewById(R.id.lyt_search_parent), Gravity.BOTTOM | Gravity.RIGHT, 0, 200);
+                            }
+//                            findViewById(R.id.lyt_search_parent).post(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    if(popUp!=null && !popUp.isShowing()) {
+//                                        popUp.showAtLocation(findViewById(R.id.lyt_search_parent), Gravity.BOTTOM | Gravity.RIGHT, 0, 200);
+//                                    }
+//                                }
+//                            });
+//                            preLast = totalItemCountOfListSearch;
+                        }
+                        else if (popUp != null && popUp.isShowing() ) {
+                            popUp.dismiss();
+                        }
+
 
                         break;
 
@@ -383,22 +438,57 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                     }
                 }
                 final int lastItem = firstVisibleItem + visibleItemCount;
-                if(lastItem>6 && !isKeyboardShown)
-                {
-                    findViewById(R.id.lyt_search_parent).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(popUp!=null && !popUp.isShowing()) {
-                                popUp.showAtLocation(findViewById(R.id.lyt_search_parent), Gravity.BOTTOM | Gravity.RIGHT, 0, 200);
-                            }
-                        }
-                    });
-                    preLast = lastItem;
-                }else {
+//                if(lstSearch.getChildCount() == 0)
+//                    if(popUp != null)
+//                        popUp.dismiss();
+
+                if(lastItem <= 6){
                     if (popUp != null && popUp.isShowing()) {
                         popUp.dismiss();
                     }
                 }
+//                else{
+//                    Rect r = new Rect();
+//                    TabHostActivity.tabWidget.getWindowVisibleDisplayFrame(r);
+//                    int screenHeight = contentView.getRootView().getHeight();
+//
+//                    // r.bottom is the position above soft keypad or device button.
+//                    // if keypad is shown, the r.bottom is smaller than that before.
+//                    int keypadHeight = screenHeight - r.bottom;
+//
+//                    // 0.15 ratio is perhaps enough to determine keypad height.
+//                    if(!isKeyboardShown && !popUp.isShowing()){
+//                        if(popUp!=null && !popUp.isShowing()) {
+//                            popUp.showAtLocation(findViewById(R.id.lyt_search_parent), Gravity.BOTTOM | Gravity.RIGHT, 0, 200);
+//                        }
+////                        findViewById(R.id.lyt_search_parent).post(new Runnable() {
+////                            @Override
+////                            public void run() {
+////                                if(popUp!=null && !popUp.isShowing()) {
+////                                    popUp.showAtLocation(findViewById(R.id.lyt_search_parent), Gravity.BOTTOM | Gravity.RIGHT, 0, 200);
+////                                }
+////                            }
+////                        });
+//                    }
+//                }
+                preLast = lastItem;
+
+//                if(lastItem>6 && !isKeyboardShown)
+//                {
+//                    findViewById(R.id.lyt_search_parent).post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            if(popUp!=null && !popUp.isShowing()) {
+//                                popUp.showAtLocation(findViewById(R.id.lyt_search_parent), Gravity.BOTTOM | Gravity.RIGHT, 0, 200);
+//                            }
+//                        }
+//                    });
+//                    preLast = lastItem;
+//                }else {
+//                    if (popUp != null && popUp.isShowing()) {
+//                        popUp.dismiss();
+//                    }
+//                }
             }
         });
         findViewById(R.id.rlt_search).setOnClickListener(this);
@@ -501,6 +591,35 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         });
         //showCustomTopMenu();
     }
+
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        // MenuInflater inflater = getMenuInflater();
+//        getMenuInflater().inflate(R.menu.navigation_menu, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+////        drawerLayout.openDrawer(Gravity.LEFT);
+//        switch (item.getItemId()){
+//            //case R.id.action_settings:
+//            //    return true;
+//
+//            case 1:
+////                drawerLayout.openDrawer(Gravity.LEFT);
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//
+//
+//
+//        }
+//
+//    }
+
 
     public boolean checkKeyboardShown(){
         InputMethodManager imm = (InputMethodManager) SearchActivity.this
@@ -629,6 +748,12 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                         try {
                             if (response.getInt("code") == 1) {
                                 JSONArray list = response.getJSONArray("ret");
+
+                                //메뉴를 위한 코드
+                                initFilterDropDownView(list);
+//                                mFilterContentView.setOnClickListener(self);
+                                ////////////////////////////////////////////////////
+
                                 boolean price_state = false;
 //                                System.out.println("hasprice+"+response);
                                 if(response.optString("hasprice").equals("1")){
@@ -826,7 +951,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                                     LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
                                     lyt_search_panel.removeAllViews();
                                     selectedVTab = option_ids[0];
-                                    createActionSheet(arrayObj[0]);
+                                    createActionSheet(arrayObj[0], 0);
                                 }
                             });
                             break;
@@ -846,7 +971,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                                 LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
                                 lyt_search_panel.removeAllViews();
                                 selectedVTab = option_ids[1];
-                                createActionSheet(arrayObj[1]);
+                                createActionSheet(arrayObj[1], 1);
                                 }
                             });
                             break;
@@ -866,7 +991,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                                 LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
                                 lyt_search_panel.removeAllViews();
                                 selectedVTab = option_ids[2];
-                                createActionSheet(arrayObj[2]);
+                                createActionSheet(arrayObj[2], 2);
                                 }
                             });
                             break;
@@ -887,7 +1012,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                                 LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
                                 lyt_search_panel.removeAllViews();
                                 selectedVTab = option_ids[3];
-                                createActionSheet(arrayObj[3]);
+                                createActionSheet(arrayObj[3], 3);
                                 }
                             });
                             break;
@@ -947,10 +1072,28 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                 .show();
     }
     */
-    public void createActionSheet(JSONObject state_name){
-        if(state_name==null || (state_name!=null && state_name.length()==0)){
+    public void createActionSheet(JSONObject state_name_input, int type){
+        if(state_name_input==null || (state_name_input!=null && state_name_input.length()==0)){
             return;
         }
+
+
+        JSONObject state_name;
+
+        if(type == 0){
+            if(areaNavView.getVisibility() == NavigationView.VISIBLE){
+                areaNavView.setVisibility(NavigationView.GONE);
+            }
+            else{
+                areaNavView.setVisibility(NavigationView.VISIBLE);
+            }
+
+            state_name = (JSONObject)state_name_input.opt("main");
+        }
+        else{
+            state_name = state_name_input;
+        }
+
         LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
         lyt_search_panel.removeAllViews();
         final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -1162,5 +1305,196 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                 break;
         }
         actionSheet.dismiss();
+    }
+
+    private void initFilterDropDownView(JSONArray list) {
+        dropDownMenu = (DropDownMenu)findViewById(R.id.dropDownMenu);
+//        mFilterContentView = (TextView)findViewById(R.id.mFilterContentView);
+        String[] titleList = new String[] { "第一个", "第二个", "第三个", "第四个" };
+        dropDownMenu.setMenuAdapter(new DropMenuAdapter(this, list, this));
+        dropDownMenu.setShowDropdownFlags(new char[]{0,1,1,1,1});
+    }
+
+    private void initSearchOptionMenu(JSONArray list, boolean price_state) {
+        arrayObj = new JSONObject[4];
+        LinearLayout lyt_search_first = (LinearLayout) findViewById(R.id.lyt_search_first);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                0,
+                LayoutParams.MATCH_PARENT,
+                0.0f
+        );
+        LinearLayout lyt_search_second = (LinearLayout) findViewById(R.id.lyt_search_second);
+        LinearLayout lyt_search_third = (LinearLayout) findViewById(R.id.lyt_search_third);
+        LinearLayout lyt_search_fourth = (LinearLayout) findViewById(R.id.lyt_search_fourth);
+        lyt_search_first.setLayoutParams(param);
+        lyt_search_second.setLayoutParams(param);
+        lyt_search_third.setLayoutParams(param);
+        lyt_search_fourth.setLayoutParams(param);
+        float weight = 0.0f;
+        if(list!=null && list.length()>0) {
+            if(price_state){
+                if(list.length()<4){
+                    weight = (float) 2.7 / (list.length()+1);
+                }else{
+                    weight = (float) 2.7 / list.length();
+                }
+            }else {
+                weight = (float) 2.7 / list.length();
+            }
+            for (int i = 0; i < list.length(); i++) {
+                try {
+                    JSONObject item = list.getJSONObject(i);
+                    switch (i) {
+                        case 0:
+                            ((TextView) findViewById(R.id.txt_search_first)).setText(item.optString("title"));
+                            option_ids[0] = item.optString("optionid");
+                            arrayObj[0] = item.optJSONObject("choice");
+                            param = new LinearLayout.LayoutParams(
+                                    0,
+                                    LayoutParams.MATCH_PARENT,
+                                    weight
+                            );
+                            lyt_search_first.setLayoutParams(param);
+                            lyt_search_first.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
+                                    lyt_search_panel.removeAllViews();
+                                    selectedVTab = option_ids[0];
+                                    createActionSheet(arrayObj[0], 0);
+                                }
+                            });
+                            break;
+                        case 1:
+                            ((TextView) findViewById(R.id.txt_search_second)).setText(item.optString("title"));
+                            option_ids[1] = item.optString("optionid");
+                            arrayObj[1] = item.optJSONObject("choice");
+                            param = new LinearLayout.LayoutParams(
+                                    0,
+                                    LayoutParams.MATCH_PARENT,
+                                    weight
+                            );
+                            lyt_search_second.setLayoutParams(param);
+                            lyt_search_second.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
+                                    lyt_search_panel.removeAllViews();
+                                    selectedVTab = option_ids[1];
+                                    createActionSheet(arrayObj[1], 1);
+                                }
+                            });
+                            break;
+                        case 2:
+                            ((TextView) findViewById(R.id.txt_search_third)).setText(item.optString("title"));
+                            option_ids[2] = item.optString("optionid");
+                            arrayObj[2] = item.optJSONObject("choice");
+                            param = new LinearLayout.LayoutParams(
+                                    0,
+                                    LayoutParams.MATCH_PARENT,
+                                    weight
+                            );
+                            lyt_search_third.setLayoutParams(param);
+                            lyt_search_third.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
+                                    lyt_search_panel.removeAllViews();
+                                    selectedVTab = option_ids[2];
+                                    createActionSheet(arrayObj[2], 2);
+                                }
+                            });
+                            break;
+                        default:
+                            //((TextView) findViewById(R.id.txt_search_fourth)).setText("更多");
+                            ((TextView) findViewById(R.id.txt_search_fourth)).setText(item.optString("title"));
+                            option_ids[3] = item.optString("optionid");
+                            arrayObj[3] = item.optJSONObject("choice");
+                            param = new LinearLayout.LayoutParams(
+                                    0,
+                                    LayoutParams.MATCH_PARENT,
+                                    weight
+                            );
+                            lyt_search_fourth.setLayoutParams(param);
+                            lyt_search_fourth.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
+                                    lyt_search_panel.removeAllViews();
+                                    selectedVTab = option_ids[3];
+                                    createActionSheet(arrayObj[3], 3);
+                                }
+                            });
+                            break;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(price_state){
+                param = new LinearLayout.LayoutParams(
+                        0,
+                        LayoutParams.MATCH_PARENT,
+                        weight
+                );
+                if(list.length()>2) {
+                    ((TextView) findViewById(R.id.txt_search_fourth)).setText("价格");
+                    lyt_search_fourth.setLayoutParams(param);
+                    lyt_search_fourth.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
+                            lyt_search_panel.removeAllViews();
+                            createSearchPrice();
+                        }
+                    });
+                }else if(list.length()>1) {
+                    ((TextView) findViewById(R.id.txt_search_third)).setText("价格");
+                    lyt_search_third.setLayoutParams(param);
+                    lyt_search_third.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
+                            lyt_search_panel.removeAllViews();
+                            createSearchPrice();
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onFilterDone(int position, String positionTitle, String urlValue) {
+//        if (position != 0) {
+//            dropDownMenu.setPositionIndicatorText(FilterUrl.instance().columnPosition, FilterUrl.instance().positionTitle);
+//        }
+
+        dropDownMenu.setPositionIndicatorText(FilterUrl.instance().columnPosition, FilterUrl.instance().positionTitle);
+
+        dropDownMenu.close();
+//        mFilterContentView.setText(FilterUrl.instance()
+//                .toString());
+    }
+
+    @Override
+    public void onFilterDoneReturnPosition(int columnPosition, int rowPosition, int itemPosition) {
+//        if(rowPosition == -1){
+////            dropDownMenu.resetMainMenuTitles();
+//            dropDownMenu.close();
+//        }
+
+//        dropDownMenu.close();
+
+
+//        dropDownMenu.setPositionIndicatorText(FilterUrl.instance().columnPosition, FilterUrl.instance().positionTitle);
+//
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FilterUrl.instance()
+                .clear();
     }
 }
