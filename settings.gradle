@@ -1,1 +1,1 @@
-include ':app', ':ProgressHUD', ':ActionSheet', ':justifytext-library', ':library_justifytext', ':CircleImageView', ':cropper', ':filter-lib'
+include ':app', ':ProgressHUD', ':ActionSheet', ':justifytext-library', ':library_justifytext', ':CircleImageView', ':cropper', ':filter-lib', ':indicator'

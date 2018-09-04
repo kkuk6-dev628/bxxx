@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ import com.baiiu.filter.interfaces.OnFilterDoneListener;
 import com.baoyz.actionsheet.ActionSheet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -109,6 +111,8 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 
     private String optionIdForNumber = "";
 
+    private LinearLayout indicatorLayout;
+
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -154,6 +158,15 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 
             }
         });
+
+        dropDownMenu = (DropDownMenu)findViewById(R.id.dropDownMenu);
+        indicatorLayout = (LinearLayout) findViewById(R.id.indicatorLayout);
+        AVLoadingIndicatorView avi = (AVLoadingIndicatorView) indicatorLayout.findViewById(R.id.AVLoadingIndicatorView);
+        avi.setIndicator("LineScaleIndicator");
+        avi.setIndicatorColor(Color.RED);
+
+
+
         postItem = (String) intent.getSerializableExtra("PostItem");
         pActivity = (AnimatedActivity) SearchActivity.this.getParent();
         editSearchTxt = (EditText) findViewById(R.id.edit_search_title);
@@ -801,6 +814,11 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         });
     }
     private void getSearchItems() {
+        indicatorLayout.setVisibility(View.VISIBLE);
+//        if(dropDownMenu != null){
+//            dropDownMenu.setVisibility(View.GONE);
+//        }
+
         CommonUtils.hideKeyboard(SearchActivity.this);
         new Handler().post(new Runnable() {
             @Override
@@ -900,6 +918,12 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                             }
                             searchItemListAdapter.notifyDataSetChanged();
                             lstSearch.invalidateViews();
+
+
+                            indicatorLayout.setVisibility(View.GONE);
+//                            if(dropDownMenu != null){
+//                                dropDownMenu.setVisibility(View.VISIBLE);
+//                            }
                             //CommonUtils.dismissProgress(progressDialog);
 
                         } catch (JSONException e) {
@@ -1326,7 +1350,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
     }
 
     private void initFilterDropDownView(JSONArray list) {
-        dropDownMenu = (DropDownMenu)findViewById(R.id.dropDownMenu);
+
 //        mFilterContentView = (TextView)findViewById(R.id.mFilterContentView);
         String[] titleList = new String[] { "第一个", "第二个", "第三个", "第四个" };
         dropDownMenu.setMenuAdapter(new DropMenuAdapter(this, list, this));
