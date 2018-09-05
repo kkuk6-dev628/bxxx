@@ -1,38 +1,31 @@
 package cn.reservation.app.baixingxinwen.activity;
 
-import android.app.Dialog;
-import android.app.TabActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.text.NoCopySpan;
-import android.util.DisplayMetrics;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.widget.HorizontalScrollView;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.database.Cursor;
-import android.media.ExifInterface;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baoyz.actionsheet.ActionSheet;
@@ -43,12 +36,10 @@ import com.walnutlabs.android.ProgressHUD;
 import com.zfdang.multiple_images_selector.ImagesSelectorActivity;
 import com.zfdang.multiple_images_selector.SelectorSettings;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
@@ -56,12 +47,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Locale;
-import java.util.Dictionary;
+
 import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.api.APIManager;
 import cn.reservation.app.baixingxinwen.utils.AnimatedActivity;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
-import cn.reservation.app.baixingxinwen.utils.NVP;
 import cz.msebera.android.httpclient.Header;
 
 @SuppressWarnings("deprecation")
@@ -3734,17 +3724,22 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
     public void onOtherButtonClick(ActionSheet actionSheet, int index) {
         showAction=0;
         String val = String.valueOf(index+1);
-        CommonUtils.data1.put(selPropertyName, index+1);
+//        CommonUtils.data1.put(selPropertyName, index+1);
         if(selPropertyName.equals("region") && selPropertyName_second.equals("yanji")) {
             int v_index = index + 1;
             String s_index = CommonUtils.data1.get(selPropertyName).toString()+"."+v_index;
             CommonUtils.data1.put(selPropertyName, s_index);
             JSONObject region_name = arrayObj[0].optJSONObject("yanji");
             selPropertyName_thirdVal = selPropertyName_secondVal +" "+region_name.optString(val);
+//            CommonUtils.data1.put(selPropertyName, s_index);
         }else if(selPropertyName.equals("region")){
             JSONObject region_name = arrayObj[0].optJSONObject("main");
             selPropertyName_secondVal = region_name.optString(val);
             selPropertyName_thirdVal = region_name.optString(val);
+            CommonUtils.data1.put(selPropertyName, index+1);
+        }
+        else{
+            CommonUtils.data1.put(selPropertyName, index+1);
         }
         if(arrayObj==null || arrayObj.length<=selPropertyIndex || (selPropertyIndex>-1 && arrayObj[selPropertyIndex].length()<1)){
             return;
@@ -3811,7 +3806,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
         }
         switch (fid){
             case "2":
-                if(selTitleProperty!=""){
+                if(selTitleProperty !=""){
                     CommonUtils.data1.put(selTitleProperty, selProperty[index]);
                     EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
                     String square = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9))).getText().toString()+"m²";

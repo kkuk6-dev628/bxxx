@@ -1,19 +1,15 @@
 package cn.reservation.app.baixingxinwen.api;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.view.WindowManager;
+
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.SendAuth;
 import com.tencent.mm.sdk.openapi.SendMessageToWX;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
-import com.tencent.mm.sdk.openapi.WXImageObject;
 import com.tencent.mm.sdk.openapi.WXMediaMessage;
 import com.tencent.mm.sdk.openapi.WXWebpageObject;
-
-import java.io.File;
 
 public class WXAPI {
 	public static IWXAPI api = null;
@@ -28,6 +24,7 @@ public class WXAPI {
 		api = WXAPIFactory.createWXAPI(context, APIManager.WC_APP_ID, true);
         api.registerApp(APIManager.WC_APP_ID);
         context.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+//        callBackHandler = new Handler();
 	}
 	
 	private static String buildTransaction(final String type) {

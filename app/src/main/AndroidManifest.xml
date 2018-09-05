@@ -100,6 +100,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="cn.reservation.app.baixingxinwen.activity.UserSafeActivity"
+            android:configChanges="locale"
             android:screenOrientation="portrait" />
         <activity
             android:name="cn.reservation.app.baixingxinwen.activity.UserSaveListActivity"

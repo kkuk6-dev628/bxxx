@@ -10,14 +10,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -31,14 +28,12 @@ import com.walnutlabs.android.ProgressHUD;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import cn.reservation.app.baixingxinwen.api.WXAPI;
-import cn.reservation.app.baixingxinwen.utils.UserInfo;
-import cn.reservation.app.baixingxinwen.api.APIManager;
-import cn.reservation.app.baixingxinwen.utils.CommonUtils;
-import cn.reservation.app.baixingxinwen.wxapi.WXEntryActivity;
-import cz.msebera.android.httpclient.Header;
-
 import cn.reservation.app.baixingxinwen.R;
+import cn.reservation.app.baixingxinwen.api.APIManager;
+import cn.reservation.app.baixingxinwen.api.WXAPI;
+import cn.reservation.app.baixingxinwen.utils.CommonUtils;
+import cn.reservation.app.baixingxinwen.utils.UserInfo;
+import cz.msebera.android.httpclient.Header;
 
 public class LoginActivity extends AppCompatActivity implements DialogInterface.OnCancelListener, View.OnClickListener{
     private Context mContext;
@@ -64,7 +59,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
         setContentView(R.layout.activity_login);
         mContext = LoginActivity.this;
         if (APIManager.mTencent == null)
-            APIManager.mTencent = Tencent.createInstance(APIManager.QQ_APP_ID, this.getApplicationContext());
+            APIManager.mTencent = Tencent.createInstance(APIManager.QQ_APP_ID, TabHostActivity.TabHostStack);
         res = mContext.getResources();
         CommonUtils.customActionBar(mContext, this, true, res.getString(R.string.login_member));
         Intent intent = getIntent();

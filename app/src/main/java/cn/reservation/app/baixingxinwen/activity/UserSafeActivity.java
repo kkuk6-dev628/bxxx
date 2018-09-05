@@ -11,11 +11,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +28,6 @@ import com.walnutlabs.android.ProgressHUD;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.api.APIManager;
@@ -56,7 +53,7 @@ public class UserSafeActivity extends AppCompatActivity implements DialogInterfa
         res = getResources();
         pActivity = (AnimatedActivity) UserSafeActivity.this.getParent();
         if (APIManager.mTencent == null)
-            APIManager.mTencent = Tencent.createInstance(APIManager.QQ_APP_ID, this.getApplicationContext());
+            APIManager.mTencent = Tencent.createInstance(APIManager.QQ_APP_ID, TabHostActivity.TabHostStack);
         CommonUtils.customActionBar(mContext, this, true, "账号安全");
 
         txt_safe_phone =(TextView) findViewById(R.id.txt_safe_phone);
@@ -125,7 +122,11 @@ public class UserSafeActivity extends AppCompatActivity implements DialogInterfa
             pActivity.startChildActivity("me", intent);*/
             //qq_login;
             if (CommonUtils.userInfo.getUserQQ().equals(""))
-                APIManager.mTencent.login(this, "all", qq_loginListener);
+            {
+                if(!this.isFinishing()){
+                    APIManager.mTencent.login(UserSafeActivity.this, "all", qq_loginListener);
+                }
+            }
             else {
                 new AlertDialog.Builder(this)
                         .setTitle("提示")

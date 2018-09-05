@@ -33,6 +33,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.baiiu.filter.DropDownMenu;
 import com.baiiu.filter.interfaces.OnFilterDoneListener;
 import com.baoyz.actionsheet.ActionSheet;
@@ -46,8 +47,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
-import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,6 +57,8 @@ import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.adapter.DropMenuAdapter;
 import cn.reservation.app.baixingxinwen.adapter.SearchItemListAdapter;
 import cn.reservation.app.baixingxinwen.api.APIManager;
+import cn.reservation.app.baixingxinwen.api.JsonResponseListener;
+import cn.reservation.app.baixingxinwen.api.NetworkManager;
 import cn.reservation.app.baixingxinwen.dropdownmenu.entity.FilterUrl;
 import cn.reservation.app.baixingxinwen.utils.AnimatedActivity;
 import cn.reservation.app.baixingxinwen.utils.BasePopupWindow;
@@ -62,6 +66,8 @@ import cn.reservation.app.baixingxinwen.utils.CommonUtils;
 import cn.reservation.app.baixingxinwen.utils.DictionaryUtils;
 import cn.reservation.app.baixingxinwen.utils.SearchItem;
 import cz.msebera.android.httpclient.Header;
+
+import static com.android.volley.Request.Method.POST;
 
 
 @SuppressWarnings("deprecation")
@@ -105,7 +111,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 
     private SearchActivity self;
 
-    private RequestParams paramsUpdated;
+    private Map<String, String> paramsUpdated;
     private JSONArray searchResultJsonArray;
     private View numberSearchView;
 
@@ -355,8 +361,9 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 //        topChannelMenu.add("Baz");
 
 
-        getSearchOption();
+//        getSearchOption();
         mContext = TabHostActivity.TabHostStack;
+        getSearchOptionVolley();
         res = getResources();
         pActivity = (AnimatedActivity) SearchActivity.this.getParent();
 
@@ -368,11 +375,11 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         lstSearch.setAdapter(searchItemListAdapter);
 
         // 이페지에 들어올때 먼저 해당 fid, sortid에 의하여 검색을 진행한다.
-        paramsUpdated = new RequestParams();
+        paramsUpdated = new HashMap<>();
         paramsUpdated.put("fid", fid);
         paramsUpdated.put("sortid", sortid);
-        paramsUpdated.put("page", mIntPage);
-        getSearchItems();
+        paramsUpdated.put("page", String.valueOf(mIntPage));
+        getSearchItemsVolley();
         ///////////////////////////////////////////////////////////////
 
         lstSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -461,7 +468,8 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 if(firstVisibleItem + visibleItemCount == totalItemCount) {
                     if (isLoadMore) {
-                        getSearchItems();
+                        paramsUpdated.put("page", String.valueOf(mIntPage));
+                        getSearchItemsVolley();
                         isLoadMore = false;
                     }
                 }
@@ -733,7 +741,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                 //getSearchKey();
                 mIntPage = 1;
                 searchItemListAdapter.clearItems();
-                getSearchItems();
+                getSearchItemsVolley();
             }else{
                 Toast.makeText(mContext, "请输入搜索字", Toast.LENGTH_SHORT).show();
             }
@@ -813,140 +821,282 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
             }
         });
     }
-    private void getSearchItems() {
-        indicatorLayout.setVisibility(View.VISIBLE);
-//        if(dropDownMenu != null){
-//            dropDownMenu.setVisibility(View.GONE);
-//        }
+    private void getSearchOptionVolley() {
+        Map<String, String> params = new HashMap<>();
+        params.put("fid", fid);
+        if(sortid!=null && sortid!="") {
+            params.put("sortid", sortid);
+        }
+        String url = APIManager.getUrl("news/searchoption");
 
-        CommonUtils.hideKeyboard(SearchActivity.this);
-        new Handler().post(new Runnable() {
+        NetworkManager.getInstance().sendJsonRequest(url, Request.Method.POST, params, new JsonResponseListener<JSONObject>() {
             @Override
-            public void run() {
-                //final ProgressHUD progressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, SearchActivity.this);
-                if(fid==null || fid==""){
-                    //CommonUtils.dismissProgress(progressDialog);
-                    return;
-                }
-                RequestParams params = new RequestParams();
-                params.put("fid", fid);
-                params.put("sortid", sortid);
-                params.put("page", mIntPage);
-//                System.out.println("hkey"+selectedKeyTab.size());
-                //if(selectedKeyTab.size()==0){
-                    Enumeration keys = selectedKeyTab.keys();
-                    while (keys.hasMoreElements()) {
-                        Object key =  keys.nextElement();
-                        if(!(String.valueOf(selectedKeyTab.get(key))).equals(""))
-                            params.put(String.valueOf(key), String.valueOf(selectedKeyTab.get(key)));
-//                        System.out.println(key+"++kkkk++"+selectedKeyTab.get(key));
+            public void getResult(JSONObject response) {
+                try {
+                    if (response.getInt("code") == 1) {
+                        JSONArray list = response.getJSONArray("ret");
+
+                        //메뉴를 위한 코드
+                        searchResultJsonArray = list;
+                        initFilterDropDownView(list);
+//                                mFilterContentView.setOnClickListener(self);
+                        ////////////////////////////////////////////////////
+
+                        boolean price_state = false;
+//                                System.out.println("hasprice+"+response);
+                        if(response.optString("hasprice").equals("1")){
+                            price_state = true;
+                        }
+                        initSearchOptionView(list, price_state);
                     }
-                //}
-                /*
-                if(selectedVTab!=null && selectedVTab!=-1) {
-                    params.put(selectedSTab, selectedVTab);
+                    //CommonUtils.dismissProgress(progressDialog);
+
+                } catch (JSONException e) {
+                    //CommonUtils.dismissProgress(progressDialog);
+                    e.printStackTrace();
                 }
-                */
-//                params.put("keyword", keyword);
-//                if(!price.equals(""))
-//                    params.put("price", price);
+            }
 
+            @Override
+            public void errorHandler(String errorMessage) {
+                //CommonUtils.dismissProgress(progressDialog);
+                Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+            }
+        });
 
-                String url = "news/list";
-                APIManager.post(mContext, url, paramsUpdated, null, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        try {
-                            if (response.getInt("code") == 1) {
-                                //isLoadMore = response.getBoolean("hasmore");
-                                System.out.println("response++"+response);
-                                JSONArray list = response.getJSONArray("ret");
-                                System.out.println("list++"+list);
-                                if((list==null || list.length()<1) && mIntPage==1){
-                                    isLoadMore = false;
-                                    ((LinearLayout)SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.VISIBLE);
-                                    //CommonUtils.dismissProgress(progressDialog);
-                                    return;
-                                }else if(list.length()<8){
-                                    isLoadMore = false;
-                                }else{
-                                    isLoadMore = true;
-                                }
-                                ((LinearLayout)SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.GONE);
-                                for(int i=0; i<list.length(); i++) {
-                                    JSONObject item = list.getJSONObject(i);
-                                    DictionaryUtils dictionaryUtils = new DictionaryUtils();
-                                    String tid = item.optString("tid");
-                                    //String topic_sortid = item.optString("sortid");
-                                    dictionaryUtils.setProperty(item,fid);
-                                    String img_url = "";
-                                    if(item.optJSONObject("fields")!=null && item.optJSONObject("fields").optJSONObject("picture")!=null && !item.optJSONObject("fields").optJSONObject("picture").optString("url").equals("")){
-                                        img_url = item.optJSONObject("fields").optJSONObject("picture").optString("url");
-                                    }
-                                    String desc = item.optString("title");
-                                    String txt_home_favor_price = dictionaryUtils.getProperty("txt_home_favor_price");
-                                    String property01 = dictionaryUtils.getProperty("txt_property1");
-                                    String property02 = dictionaryUtils.getProperty("txt_property2");
-                                    String property03 = dictionaryUtils.getProperty("txt_property3");
-                                    String poststick = item.optString("poststick");
-                                    //if(i%5==0 && i!=0) {
-                                    //    searchItemListAdapter.addItem(new SearchItem(
-                                    //            Long.parseLong(tid), img_url, desc, txt_home_favor_price, property01, "", property02, "", property03, "", fid, String.valueOf(sortid), poststick, img_url));
-                                    //}else {
-                                    if(!tid.equals("")) {
-                                        searchItemListAdapter.addItem(new SearchItem(
-                                                Long.parseLong(tid), img_url, desc, txt_home_favor_price, property01, "", property02, "", property03, "", fid, String.valueOf(sortid), poststick, "", ""));
-                                        //}
-                                    }else{
-                                        String advert_url =  item.optString("link");
-                                        String advert_img_url = item.optString("advert");
-                                        if (!advert_url.substring(0, 4).equals("http")) {
-                                            advert_url = "http://"+advert_url;
-                                        }
-                                        searchItemListAdapter.addItem(new SearchItem(
-                                                -1, "", "", "", "", "", "", "", "", "", "-1", "", "", advert_img_url, advert_url));
-                                    }
-                                }
-                                mIntPage++;
-                            } else {
-                                isLoadMore = false;
-                                ((LinearLayout)SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.VISIBLE);
-                                if (mIntPage == 1) {
-                                    searchItemListAdapter.clearItems();
-                                }
-                                mIntPage = 1;
+    }
+//    private void getSearchItems() {
+//        indicatorLayout.setVisibility(View.VISIBLE);
+////        if(dropDownMenu != null){
+////            dropDownMenu.setVisibility(View.GONE);
+////        }
+//
+//        CommonUtils.hideKeyboard(SearchActivity.this);
+//        new Handler().post(new Runnable() {
+//            @Override
+//            public void run() {
+//                //final ProgressHUD progressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, SearchActivity.this);
+//                if(fid==null || fid==""){
+//                    //CommonUtils.dismissProgress(progressDialog);
+//                    return;
+//                }
+//                RequestParams params = new RequestParams();
+//                params.put("fid", fid);
+//                params.put("sortid", sortid);
+//                params.put("page", mIntPage);
+////                System.out.println("hkey"+selectedKeyTab.size());
+//                //if(selectedKeyTab.size()==0){
+//                    Enumeration keys = selectedKeyTab.keys();
+//                    while (keys.hasMoreElements()) {
+//                        Object key =  keys.nextElement();
+//                        if(!(String.valueOf(selectedKeyTab.get(key))).equals(""))
+//                            params.put(String.valueOf(key), String.valueOf(selectedKeyTab.get(key)));
+////                        System.out.println(key+"++kkkk++"+selectedKeyTab.get(key));
+//                    }
+//                //}
+//                /*
+//                if(selectedVTab!=null && selectedVTab!=-1) {
+//                    params.put(selectedSTab, selectedVTab);
+//                }
+//                */
+////                params.put("keyword", keyword);
+////                if(!price.equals(""))
+////                    params.put("price", price);
+//
+//
+//                String url = "news/list";
+//                APIManager.post(mContext, url, paramsUpdated, null, new JsonHttpResponseHandler() {
+//                    @Override
+//                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//                        try {
+//                            if (response.getInt("code") == 1) {
+//                                //isLoadMore = response.getBoolean("hasmore");
+//                                System.out.println("response++"+response);
+//                                JSONArray list = response.getJSONArray("ret");
+//                                System.out.println("list++"+list);
+//                                if((list==null || list.length()<1) && mIntPage==1){
+//                                    isLoadMore = false;
+//                                    ((LinearLayout)SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.VISIBLE);
+//                                    //CommonUtils.dismissProgress(progressDialog);
+//                                    return;
+//                                }else if(list.length()<8){
+//                                    isLoadMore = false;
+//                                }else{
+//                                    isLoadMore = true;
+//                                }
+//                                ((LinearLayout)SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.GONE);
+//                                for(int i=0; i<list.length(); i++) {
+//                                    JSONObject item = list.getJSONObject(i);
+//                                    DictionaryUtils dictionaryUtils = new DictionaryUtils();
+//                                    String tid = item.optString("tid");
+//                                    //String topic_sortid = item.optString("sortid");
+//                                    dictionaryUtils.setProperty(item,fid);
+//                                    String img_url = "";
+//                                    if(item.optJSONObject("fields")!=null && item.optJSONObject("fields").optJSONObject("picture")!=null && !item.optJSONObject("fields").optJSONObject("picture").optString("url").equals("")){
+//                                        img_url = item.optJSONObject("fields").optJSONObject("picture").optString("url");
+//                                    }
+//                                    String desc = item.optString("title");
+//                                    String txt_home_favor_price = dictionaryUtils.getProperty("txt_home_favor_price");
+//                                    String property01 = dictionaryUtils.getProperty("txt_property1");
+//                                    String property02 = dictionaryUtils.getProperty("txt_property2");
+//                                    String property03 = dictionaryUtils.getProperty("txt_property3");
+//                                    String poststick = item.optString("poststick");
+//                                    //if(i%5==0 && i!=0) {
+//                                    //    searchItemListAdapter.addItem(new SearchItem(
+//                                    //            Long.parseLong(tid), img_url, desc, txt_home_favor_price, property01, "", property02, "", property03, "", fid, String.valueOf(sortid), poststick, img_url));
+//                                    //}else {
+//                                    if(!tid.equals("")) {
+//                                        searchItemListAdapter.addItem(new SearchItem(
+//                                                Long.parseLong(tid), img_url, desc, txt_home_favor_price, property01, "", property02, "", property03, "", fid, String.valueOf(sortid), poststick, "", ""));
+//                                        //}
+//                                    }else{
+//                                        String advert_url =  item.optString("link");
+//                                        String advert_img_url = item.optString("advert");
+//                                        if (!advert_url.substring(0, 4).equals("http")) {
+//                                            advert_url = "http://"+advert_url;
+//                                        }
+//                                        searchItemListAdapter.addItem(new SearchItem(
+//                                                -1, "", "", "", "", "", "", "", "", "", "-1", "", "", advert_img_url, advert_url));
+//                                    }
+//                                }
+//                                mIntPage++;
+//                            } else {
+//                                isLoadMore = false;
+//                                ((LinearLayout)SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.VISIBLE);
+//                                if (mIntPage == 1) {
+//                                    searchItemListAdapter.clearItems();
+//                                }
+//                                mIntPage = 1;
+//                            }
+//                            searchItemListAdapter.notifyDataSetChanged();
+//                            lstSearch.invalidateViews();
+//
+//
+//                            indicatorLayout.setVisibility(View.GONE);
+////                            if(dropDownMenu != null){
+////                                dropDownMenu.setVisibility(View.VISIBLE);
+////                            }
+//                            //CommonUtils.dismissProgress(progressDialog);
+//
+//                        } catch (JSONException e) {
+//                            //CommonUtils.dismissProgress(progressDialog);
+//                            e.printStackTrace();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+//                        //CommonUtils.dismissProgress(progressDialog);
+//                        Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    @Override
+//                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                        //CommonUtils.dismissProgress(progressDialog);
+//                        Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//            }
+//        });
+//    }
+
+    private void getSearchItemsVolley() {
+        indicatorLayout.setVisibility(View.VISIBLE);
+        CommonUtils.hideKeyboard(SearchActivity.this);
+        if(fid==null || fid==""){
+            //CommonUtils.dismissProgress(progressDialog);
+            return;
+        }
+
+        String url = APIManager.getUrl("news/list");
+        NetworkManager.getInstance().sendJsonRequest(url, POST, paramsUpdated, new JsonResponseListener<JSONObject>() {
+            @Override
+            public void getResult(JSONObject response) {
+                try {
+                    if (response.getInt("code") == 1) {
+                        //isLoadMore = response.getBoolean("hasmore");
+//                        System.out.println("response++"+response);
+                        JSONArray list = response.getJSONArray("ret");
+//                        System.out.println("list++"+list);
+                        if((list==null || list.length()<1) && mIntPage==1){
+                            isLoadMore = false;
+                            ((LinearLayout)SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.VISIBLE);
+                            //CommonUtils.dismissProgress(progressDialog);
+                            return;
+                        }else if(list.length()<8){
+                            isLoadMore = false;
+                        }else{
+                            isLoadMore = true;
+                        }
+                        ((LinearLayout)SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.GONE);
+                        for(int i=0; i<list.length(); i++) {
+                            JSONObject item = list.getJSONObject(i);
+                            DictionaryUtils dictionaryUtils = new DictionaryUtils();
+                            String tid = item.optString("tid");
+                            //String topic_sortid = item.optString("sortid");
+                            dictionaryUtils.setProperty(item,fid);
+                            String img_url = "";
+                            if(item.optJSONObject("fields")!=null && item.optJSONObject("fields").optJSONObject("picture")!=null && !item.optJSONObject("fields").optJSONObject("picture").optString("url").equals("")){
+                                img_url = item.optJSONObject("fields").optJSONObject("picture").optString("url");
                             }
-                            searchItemListAdapter.notifyDataSetChanged();
-                            lstSearch.invalidateViews();
+                            String desc = item.optString("title");
+                            String txt_home_favor_price = dictionaryUtils.getProperty("txt_home_favor_price");
+                            String property01 = dictionaryUtils.getProperty("txt_property1");
+                            String property02 = dictionaryUtils.getProperty("txt_property2");
+                            String property03 = dictionaryUtils.getProperty("txt_property3");
+                            String poststick = item.optString("poststick");
+                            //if(i%5==0 && i!=0) {
+                            //    searchItemListAdapter.addItem(new SearchItem(
+                            //            Long.parseLong(tid), img_url, desc, txt_home_favor_price, property01, "", property02, "", property03, "", fid, String.valueOf(sortid), poststick, img_url));
+                            //}else {
+                            if(!tid.equals("")) {
+                                searchItemListAdapter.addItem(new SearchItem(
+                                        Long.parseLong(tid), img_url, desc, txt_home_favor_price, property01, "", property02, "", property03, "", fid, String.valueOf(sortid), poststick, "", ""));
+                                //}
+                            }else{
+                                String advert_url =  item.optString("link");
+                                String advert_img_url = item.optString("advert");
+                                if (!advert_url.substring(0, 4).equals("http")) {
+                                    advert_url = "http://"+advert_url;
+                                }
+                                searchItemListAdapter.addItem(new SearchItem(
+                                        -1, "", "", "", "", "", "", "", "", "", "-1", "", "", advert_img_url, advert_url));
+                            }
+                        }
+                        mIntPage++;
+                    } else {
+                        isLoadMore = false;
+                        ((LinearLayout)SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.VISIBLE);
+                        if (mIntPage == 1) {
+                            searchItemListAdapter.clearItems();
+                        }
+                        mIntPage = 1;
+                    }
+                    searchItemListAdapter.notifyDataSetChanged();
+                    lstSearch.invalidateViews();
 
 
-                            indicatorLayout.setVisibility(View.GONE);
+                    indicatorLayout.setVisibility(View.GONE);
 //                            if(dropDownMenu != null){
 //                                dropDownMenu.setVisibility(View.VISIBLE);
 //                            }
-                            //CommonUtils.dismissProgress(progressDialog);
+                    //CommonUtils.dismissProgress(progressDialog);
 
-                        } catch (JSONException e) {
-                            //CommonUtils.dismissProgress(progressDialog);
-                            e.printStackTrace();
-                        }
-                    }
+                } catch (JSONException e) {
+                    //CommonUtils.dismissProgress(progressDialog);
+                    e.printStackTrace();
+                }
+            }
 
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        //CommonUtils.dismissProgress(progressDialog);
-                        Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        //CommonUtils.dismissProgress(progressDialog);
-                        Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
-                    }
-                });
+            @Override
+            public void errorHandler(String errorMessage) {
+                //CommonUtils.dismissProgress(progressDialog);
+                Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
             }
         });
+
     }
+
     private void initSearchOptionView(JSONArray list, boolean price_state) {
         arrayObj = new JSONObject[4];
         LinearLayout lyt_search_first = (LinearLayout) findViewById(R.id.lyt_search_first);
@@ -1182,7 +1332,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                         searchItemListAdapter.clearItems();
                         showAction = 0;
                         mIntPage = 1;
-                        getSearchItems();
+                        getSearchItemsVolley();
                     }
                 });
             }
@@ -1210,7 +1360,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                         searchItemListAdapter.clearItems();
                         showAction = 0;
                         mIntPage = 1;
-                        getSearchItems();
+                        getSearchItemsVolley();
                     }
                 });
             }
@@ -1238,7 +1388,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                         searchItemListAdapter.clearItems();
                         showAction = 0;
                         mIntPage = 1;
-                        getSearchItems();
+                        getSearchItemsVolley();
                     }
                 });
             }
@@ -1285,7 +1435,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                 searchItemListAdapter.clearItems();
                 showAction = 0;
                 mIntPage = 1;
-                getSearchItems();
+                getSearchItemsVolley();
             }
         });
         RelativeLayout rlt_price_search_cancel = (RelativeLayout) rowView1.findViewById(R.id.rlt_price_search_cancel);
@@ -1408,7 +1558,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 //                    mIntPage = 1;
 
 
-                    getSearchItems();
+                    getSearchItemsVolley();
                 }
 
             }
@@ -1576,7 +1726,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 
         paramsUpdated.put("option_" + optionId, priceRange);
         searchItemListAdapter.clearItems();
-        getSearchItems();
+        getSearchItemsVolley();
 //        dropDownMenu.hideNumberSearchView();
 //        if (position != 0) {
 //            dropDownMenu.setPositionIndicatorText(FilterUrl.instance().columnPosition, FilterUrl.instance().positionTitle);
@@ -1620,7 +1770,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                 paramsUpdated.put("sortid", sortid);
 
                 searchItemListAdapter.clearItems();
-                getSearchItems();
+                getSearchItemsVolley();
 
 
 
@@ -1631,7 +1781,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                     paramsUpdated.put("sortid", sortid);
 
                     searchItemListAdapter.clearItems();
-                    getSearchItems();
+                    getSearchItemsVolley();
                 }
                 else if(type.contains("region")){
                     String optionid = mainItem.optString("optionid");
@@ -1645,7 +1795,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 
                     paramsUpdated.put(paramKey, paramValue);
                     searchItemListAdapter.clearItems();
-                    getSearchItems();
+                    getSearchItemsVolley();
                 }
                 else if(type.contains("more")){
 
@@ -1662,7 +1812,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                             paramsUpdated.put("sortid", sortid);
 
                             searchItemListAdapter.clearItems();
-                            getSearchItems();
+                            getSearchItemsVolley();
                         }
                     }
                     else{
@@ -1675,7 +1825,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                                 paramsUpdated.put("sortid", sortid);
 
                                 searchItemListAdapter.clearItems();
-                                getSearchItems();
+                                getSearchItemsVolley();
                             }
                         }
                         else if(!typeInfoItem.contains("number") && !typeInfoItem.contains("text")){
@@ -1687,7 +1837,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                             paramsUpdated.put(paramKey, paramValue);
 
                             searchItemListAdapter.clearItems();
-                            getSearchItems();
+                            getSearchItemsVolley();
                         }
                         else{
                             String unit = infoItem.optString("unit");
@@ -1720,7 +1870,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                     paramsUpdated.put(paramKey, paramValue);
 
                     searchItemListAdapter.clearItems();
-                    getSearchItems();
+                    getSearchItemsVolley();
                 }
             }
 
@@ -1738,13 +1888,14 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
     private void resetSearch(){
         numberSearchView.setVisibility(View.GONE);
 
-        paramsUpdated = new RequestParams();
+        paramsUpdated.clear();
         paramsUpdated.put("fid", fid);
         paramsUpdated.put("sortid", sortid);
-        paramsUpdated.put("page", 1);
+        paramsUpdated.put("page", "1");
+        mIntPage = 1;
 
         searchItemListAdapter.clearItems();
-        getSearchItems();
+        getSearchItemsVolley();
     }
 
     @Override

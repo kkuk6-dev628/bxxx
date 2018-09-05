@@ -56,7 +56,7 @@ public class APIManager {
         client.post(context, getUrl(url), headers, params, contentType, responseHandler);
     }
 
-    private static String getUrl(String relativeUrl) {
+    public static String getUrl(String relativeUrl) {
         if(relativeUrl.contains("http://")){
             return relativeUrl;
         }else {
@@ -64,6 +64,14 @@ public class APIManager {
             // for test
             return URL + relativeUrl;
         }
+    }
+
+    public static void postVolley(Context context, String url, RequestParams params, String contentType, AsyncHttpResponseHandler responseHandler) {
+        Header[] headers = {
+                new BasicHeader("Accept", "application/json")
+        };
+
+        client.post(context, getUrl(url), headers, params, contentType, responseHandler);
     }
 
 }

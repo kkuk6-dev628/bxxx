@@ -22,6 +22,8 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import java.util.Locale;
 
 import cn.reservation.app.baixingxinwen.R;
+import cn.reservation.app.baixingxinwen.api.NetworkManager;
+import cn.reservation.app.baixingxinwen.api.WXAPI;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
 import cn.reservation.app.baixingxinwen.utils.UserInfo;
 
@@ -50,6 +52,9 @@ public class TabHostActivity extends TabActivity implements TabHost.OnTabChangeL
         TabHostStack = TabHostActivity.this;
 
         checkLogin();
+
+        WXAPI.Init(TabHostStack);
+        NetworkManager.getInstance(TabHostStack);
 
         tabs = getTabHost();
 
