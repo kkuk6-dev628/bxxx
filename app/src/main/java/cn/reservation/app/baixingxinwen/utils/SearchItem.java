@@ -1,5 +1,7 @@
 package cn.reservation.app.baixingxinwen.utils;
 
+import org.json.JSONObject;
+
 import cn.reservation.app.baixingxinwen.api.APIManager;
 
 /**
@@ -21,6 +23,19 @@ public class SearchItem {
     private String mPostState;
     private String mAdver;
     private String mAdverUrl;
+
+    private String mPostTime = "";
+    private String mTypeVal = "";
+    private String mPhoneNumber = "";
+    private String mDefaultImageName = "";
+    private boolean mHasImgProperty1 = false;
+    private boolean mHasImgProperty2 = false;
+    private boolean mHasImgProperty3 = false;
+    private boolean mIsNoImage = false;
+
+    private boolean isMarriedPage = false;
+
+
 
     public SearchItem(long sID, String thumbnail, String desc, String price, String title01, String property01, String title02, String property02, String title03, String property03, String fid, String sortId, String postState, String adver, String adverUrl) {
         mSearchID = sID;
@@ -45,6 +60,65 @@ public class SearchItem {
         mSortid = sortId;
         mPostState = postState;
         if (adver.equals("")) {
+            mAdver = "";
+        } else {
+            if (adver.substring(0, 4).equals("http")) {
+                mAdver = CommonUtils.getUrlEncoded(adver);
+            }else if (adver.substring(0, 1).equals(".")){
+                mAdver = CommonUtils.getUrlEncoded(APIManager.Sever_URL + adver.substring(1));
+            } else {
+                mAdver = CommonUtils.getUrlEncoded(APIManager.Sever_URL + adver);
+            }
+        }
+        mAdverUrl = adverUrl;
+    }
+
+    public SearchItem(long sID, String thumbnail, String desc, DictionaryUtils dictionaryUtils, JSONObject item) {
+        mSearchID = sID;
+        if (thumbnail.equals("")) {
+            mThumbnail = "";
+        } else {
+            if (thumbnail.substring(0, 1).equals(".")){
+                mThumbnail = CommonUtils.getUrlEncoded(APIManager.Sever_URL + thumbnail.substring(1));
+            } else {
+                mThumbnail = CommonUtils.getUrlEncoded(APIManager.Sever_URL + thumbnail);
+            }
+        }
+//        mTitle01 = title01;
+        mProperty01 = dictionaryUtils.getProperty("txt_property1");
+//        mTitle02 = title02;
+        mProperty02 = dictionaryUtils.getProperty("txt_property2");
+//        mTitle03 = title03;
+        mProperty03 = dictionaryUtils.getProperty("txt_property3");
+        mDesc = desc;
+        mPrice = dictionaryUtils.getProperty("txt_home_favor_price");
+        mFid = dictionaryUtils.getProperty("fid");
+        mSortid = dictionaryUtils.getProperty("sortid");
+
+        if(mSortid.equals("15") || mSortid.equals("16"))
+            isMarriedPage = true;
+
+        mPostState = item.optString("poststick");
+        mDefaultImageName = dictionaryUtils.getProperty("default_image_name");
+
+        mPostTime = item.optString("dateline");
+        mTypeVal = dictionaryUtils.getProperty("txt_type");
+        mPhoneNumber = dictionaryUtils.getProperty("phone_number");
+        mDefaultImageName = dictionaryUtils.getProperty("default_image_name");
+        mHasImgProperty1 = dictionaryUtils.getProperty("has_img_property1").equals("1");
+        mHasImgProperty2 = dictionaryUtils.getProperty("has_img_property2").equals("1");
+        mHasImgProperty3 = dictionaryUtils.getProperty("has_img_property3").equals("1");
+        mIsNoImage = dictionaryUtils.getProperty("is_no_image").equals("1");
+
+
+        String adverUrl =  item.optString("link");
+        String adver = item.optString("advert");
+        if (adverUrl != null && !adverUrl.equals("") && !adverUrl.substring(0, 4).equals("http")) {
+            adverUrl = "http://"+adverUrl;
+        }
+
+
+        if (adver == null || adver.equals("")) {
             mAdver = "";
         } else {
             if (adver.substring(0, 4).equals("http")) {
@@ -176,5 +250,73 @@ public class SearchItem {
 
     public void setmAdverUrl(String adverUrl) {
         this.mAdverUrl = adverUrl;
+    }
+
+    public String getmPostTime() {
+        return mPostTime;
+    }
+
+    public void setmPostTime(String mPostTime) {
+        this.mPostTime = mPostTime;
+    }
+
+    public String getmTypeVal() {
+        return mTypeVal;
+    }
+
+    public String getmPhoneNumber() {
+        return mPhoneNumber;
+    }
+
+    public void setmPhoneNumber(String mPhoneNumber) {
+        this.mPhoneNumber = mPhoneNumber;
+    }
+
+    public String getmDefaultImageName() {
+        return mDefaultImageName;
+    }
+
+    public void setmDefaultImageName(String mDefaultImageName) {
+        this.mDefaultImageName = mDefaultImageName;
+    }
+
+    public boolean ismHasImgProperty1() {
+        return mHasImgProperty1;
+    }
+
+    public void setmHasImgProperty1(boolean mHasImgProperty1) {
+        this.mHasImgProperty1 = mHasImgProperty1;
+    }
+
+    public boolean ismHasImgProperty2() {
+        return mHasImgProperty2;
+    }
+
+    public void setmHasImgProperty2(boolean mHasImgProperty2) {
+        this.mHasImgProperty2 = mHasImgProperty2;
+    }
+
+    public boolean ismHasImgProperty3() {
+        return mHasImgProperty3;
+    }
+
+    public void setmHasImgProperty3(boolean mHasImgProperty3) {
+        this.mHasImgProperty3 = mHasImgProperty3;
+    }
+
+    public boolean ismIsNoImage() {
+        return mIsNoImage;
+    }
+
+    public void setmIsNoImage(boolean mIsNoImage) {
+        this.mIsNoImage = mIsNoImage;
+    }
+
+    public boolean isMarriedPage() {
+        return isMarriedPage;
+    }
+
+    public void setMarriedPage(boolean marriedPage) {
+        isMarriedPage = marriedPage;
     }
 }

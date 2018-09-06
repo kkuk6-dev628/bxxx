@@ -791,12 +791,12 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 //                                mFilterContentView.setOnClickListener(self);
                                 ////////////////////////////////////////////////////
 
-                                boolean price_state = false;
-//                                System.out.println("hasprice+"+response);
-                                if(response.optString("hasprice").equals("1")){
-                                    price_state = true;
-                                }
-                                initSearchOptionView(list, price_state);
+//                                boolean price_state = false;
+////                                System.out.println("hasprice+"+response);
+//                                if(response.optString("hasprice").equals("1")){
+//                                    price_state = true;
+//                                }
+//                                initSearchOptionView(list, price_state);
                             }
                             //CommonUtils.dismissProgress(progressDialog);
 
@@ -1034,24 +1034,26 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                             DictionaryUtils dictionaryUtils = new DictionaryUtils();
                             String tid = item.optString("tid");
                             //String topic_sortid = item.optString("sortid");
-                            dictionaryUtils.setProperty(item,fid);
+                            dictionaryUtils.setProperty(item);
                             String img_url = "";
                             if(item.optJSONObject("fields")!=null && item.optJSONObject("fields").optJSONObject("picture")!=null && !item.optJSONObject("fields").optJSONObject("picture").optString("url").equals("")){
                                 img_url = item.optJSONObject("fields").optJSONObject("picture").optString("url");
                             }
                             String desc = item.optString("title");
-                            String txt_home_favor_price = dictionaryUtils.getProperty("txt_home_favor_price");
-                            String property01 = dictionaryUtils.getProperty("txt_property1");
-                            String property02 = dictionaryUtils.getProperty("txt_property2");
-                            String property03 = dictionaryUtils.getProperty("txt_property3");
-                            String poststick = item.optString("poststick");
+//                            String txt_home_favor_price = dictionaryUtils.getProperty("txt_home_favor_price");
+//                            String property01 = dictionaryUtils.getProperty("txt_property1");
+//                            String property02 = dictionaryUtils.getProperty("txt_property2");
+//                            String property03 = dictionaryUtils.getProperty("txt_property3");
+//                            String poststick = item.optString("poststick");
                             //if(i%5==0 && i!=0) {
                             //    searchItemListAdapter.addItem(new SearchItem(
                             //            Long.parseLong(tid), img_url, desc, txt_home_favor_price, property01, "", property02, "", property03, "", fid, String.valueOf(sortid), poststick, img_url));
                             //}else {
                             if(!tid.equals("")) {
                                 searchItemListAdapter.addItem(new SearchItem(
-                                        Long.parseLong(tid), img_url, desc, txt_home_favor_price, property01, "", property02, "", property03, "", fid, String.valueOf(sortid), poststick, "", ""));
+                                        Long.parseLong(tid), img_url, desc, dictionaryUtils, item));
+//                                searchItemListAdapter.addItem(new SearchItem(
+//                                        Long.parseLong(tid), img_url, desc, txt_home_favor_price, property01, "", property02, "", property03, "", fid, String.valueOf(sortid), poststick, "", ""));
                                 //}
                             }else{
                                 String advert_url =  item.optString("link");

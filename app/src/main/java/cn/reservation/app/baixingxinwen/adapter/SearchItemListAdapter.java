@@ -58,14 +58,16 @@ public class SearchItemListAdapter extends BaseAdapter {
         }
         itemView.setDesc(itemData.getmDesc());
         itemView.setPrice(itemData.getmPrice());
-        itemView.setProperty01("");
-        itemView.setProperty02("");
-        itemView.setProperty03("");
-        itemView.setTitle01(itemData.getmTitle01());
-        itemView.setTitle02(itemData.getmTitle02());
-        itemView.setTitle03(itemData.getmTitle03());
+        itemView.setData(itemData);
+////        itemView.setProperty01("");
+////        itemView.setProperty02("");
+////        itemView.setProperty03("");
+////        itemView.setTitle01(itemData.getmTitle01());
+////        itemView.setTitle02(itemData.getmTitle02());
+////        itemView.setTitle03(itemData.getmTitle03());
         itemView.setPostState(itemData.getmPostState());
         itemView.setThumbnail(itemData.getmThumbnail(),itemData.getmFid(),itemData.getmSortid(),itemData.getmAdver());
+
         return itemView;
     }
 }

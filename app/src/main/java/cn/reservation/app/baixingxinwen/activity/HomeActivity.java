@@ -1,50 +1,40 @@
 package cn.reservation.app.baixingxinwen.activity;
 
-import android.app.TabActivity;
-import android.content.ContextWrapper;
-import android.content.Intent;
 import android.app.Dialog;
+import android.app.TabActivity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.picasso.Target;
-import com.walnutlabs.android.ProgressHUD;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+import com.walnutlabs.android.ProgressHUD;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import android.support.v4.view.ViewPager;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -53,10 +43,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.adapter.HomeSliderAdapter;
 import cn.reservation.app.baixingxinwen.adapter.SearchItemListAdapter;
 import cn.reservation.app.baixingxinwen.api.APIManager;
-import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.utils.AnimatedActivity;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
 import cn.reservation.app.baixingxinwen.utils.CustomCategoryLayout;
@@ -66,10 +56,6 @@ import cn.reservation.app.baixingxinwen.utils.SearchItem;
 import cn.reservation.app.baixingxinwen.widget.ImbeddedListView;
 import cn.reservation.app.baixingxinwen.widget.PageListScrollView;
 import cz.msebera.android.httpclient.Header;
-
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
-import static com.alipay.sdk.util.l.c;
 
 @SuppressWarnings("deprecation")
 public class HomeActivity extends AppCompatActivity implements DialogInterface.OnCancelListener,PageListScrollView.OnScrollToBottomListener, View.OnClickListener {
@@ -734,7 +720,7 @@ public class HomeActivity extends AppCompatActivity implements DialogInterface.O
                                     String fid = item.optString("fid");
                                     String sortid = item.optString("sortid");
                                     DictionaryUtils dictionaryUtils = new DictionaryUtils();
-                                    dictionaryUtils.setProperty(item,fid);
+                                    dictionaryUtils.setProperty(item);
                                     String img_url = "";
                                     if(item.optJSONObject("fields")!=null && item.optJSONObject("fields").optJSONObject("picture")!=null && !item.optJSONObject("fields").optJSONObject("picture").optString("url").equals("")){
                                         img_url = item.optJSONObject("fields").optJSONObject("picture").optString("url");
@@ -743,13 +729,15 @@ public class HomeActivity extends AppCompatActivity implements DialogInterface.O
                                     String desc = item.optString("title");
                                     String txt_home_favor_price = dictionaryUtils.getProperty("txt_home_favor_price");
                                     System.out.println("price"+i+txt_home_favor_price);
-                                    String property01 = dictionaryUtils.getProperty("txt_property1");
-                                    String property02 = dictionaryUtils.getProperty("txt_property2");
-                                    String property03 = dictionaryUtils.getProperty("txt_property3");
-                                    String poststick = item.optString("poststick");
+//                                    String property01 = dictionaryUtils.getProperty("txt_property1");
+//                                    String property02 = dictionaryUtils.getProperty("txt_property2");
+//                                    String property03 = dictionaryUtils.getProperty("txt_property3");
+//                                    String poststick = item.optString("poststick");
                                     if(!tid.equals("")) {
                                         searchItemListAdapter.addItem(new SearchItem(
-                                                Long.parseLong(tid), img_url, desc, txt_home_favor_price, property01, "", property02, "", property03, "", fid, sortid, poststick, "",""));
+                                                Long.parseLong(tid), img_url, desc, dictionaryUtils, item));
+//                                        searchItemListAdapter.addItem(new SearchItem(
+//                                                Long.parseLong(tid), img_url, desc, txt_home_favor_price, property01, "", property02, "", property03, "", fid, sortid, poststick, "",""));
                                     }
                                 }
                                 mIntPage++;

@@ -18,31 +18,36 @@
             android:id="@+id/lyt_img_thumbnail"
             android:layout_gravity="center_vertical"
             android:layout_weight="1.4">
-
-            <ImageView
-                android:id="@+id/img_adver_thumbnail"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:scaleType="fitXY"
-                android:src="@drawable/default_img"
-                android:visibility="gone" />
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/img_adver_thumbnail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/default_img"
+                    android:visibility="gone" />
 
-            <ImageView
-                android:id="@+id/img_home_favor_thumbnail"
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:adjustViewBounds="true"
-                android:scaleType="fitXY"
-                android:src="@drawable/default_img" />
-            <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginLeft="-35dp"
-                android:id="@+id/img_news_top"
-                android:adjustViewBounds="true"
-                android:src="@drawable/new_detail_top_etc"
-                android:scaleType="fitXY"/>
+                <ImageView
+                    android:id="@+id/img_home_favor_thumbnail"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/default_img" />
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="-35dp"
+                    android:id="@+id/img_news_top"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/new_detail_top_etc"
+                    android:scaleType="fitXY"/>
+            </FrameLayout>
+
+
         </LinearLayout>
 
         <LinearLayout

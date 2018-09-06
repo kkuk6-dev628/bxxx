@@ -9,23 +9,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baoyz.actionsheet.ActionSheet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.walnutlabs.android.ProgressHUD;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -183,7 +178,7 @@ public class FullSearchActivity extends AppCompatActivity implements DialogInter
                                     String fid = item.optString("fid");
                                     String sortid = item.optString("sortid");
                                     DictionaryUtils dictionaryUtils = new DictionaryUtils();
-                                    dictionaryUtils.setProperty(item,fid);
+                                    dictionaryUtils.setProperty(item);
                                     String img_url = "";
                                     if(item.optJSONObject("fields")!=null && item.optJSONObject("fields").optJSONObject("picture")!=null && !item.optJSONObject("fields").optJSONObject("picture").optString("url").equals("")){
                                         img_url = item.optJSONObject("fields").optJSONObject("picture").optString("url");
@@ -198,7 +193,9 @@ public class FullSearchActivity extends AppCompatActivity implements DialogInter
                                     String poststick = item.optString("poststick");
                                     if(!tid.equals("")) {
                                         searchItemListAdapter.addItem(new SearchItem(
-                                                Long.parseLong(tid), img_url, desc, txt_home_favor_price, property01, "", property02, "", property03, "", fid, sortid, poststick, "", ""));
+                                                Long.parseLong(tid), img_url, desc, dictionaryUtils, item));
+//                                        searchItemListAdapter.addItem(new SearchItem(
+//                                                Long.parseLong(tid), img_url, desc, txt_home_favor_price, property01, "", property02, "", property03, "", fid, sortid, poststick, "", ""));
                                     }
                                 }
                                 mIntPage++;
