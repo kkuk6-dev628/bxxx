@@ -143,7 +143,7 @@ public class RoomDetailActivity extends AppCompatActivity implements DialogInter
         imgReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(CommonUtils.isLogin==true) {
+                if(CommonUtils.isLogin) {
                     //reportPaper();
                     Intent intent = new Intent(RoomDetailActivity.this, ReportActivity.class);
                     intent.putExtra("from_activity", "room_detail");

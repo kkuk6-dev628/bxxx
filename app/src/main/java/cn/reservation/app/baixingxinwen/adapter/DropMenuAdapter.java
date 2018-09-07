@@ -405,7 +405,7 @@ public class DropMenuAdapter implements MenuAdapter {
 
                         String typeOfInfoItem = infoItem.optString("type");
                         // 만일 type 이 number 혹은 text 이면 검색하는 형식이 다르므로
-                        if(!typeOfInfoItem.contains("number") && !typeOfInfoItem.contains("number")){
+                        if(!typeOfInfoItem.contains("number") && !typeOfInfoItem.contains("text")){
                             //第二项
                             JSONObject choiceItem = infoItem.getJSONObject("choice");
                             int choiceItemCount = choiceItem.length();

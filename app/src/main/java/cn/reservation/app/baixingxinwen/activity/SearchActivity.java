@@ -58,6 +58,7 @@ import cn.reservation.app.baixingxinwen.adapter.DropMenuAdapter;
 import cn.reservation.app.baixingxinwen.adapter.SearchItemListAdapter;
 import cn.reservation.app.baixingxinwen.api.APIManager;
 import cn.reservation.app.baixingxinwen.api.JsonResponseListener;
+import cn.reservation.app.baixingxinwen.api.NetRetrofit;
 import cn.reservation.app.baixingxinwen.api.NetworkManager;
 import cn.reservation.app.baixingxinwen.dropdownmenu.entity.FilterUrl;
 import cn.reservation.app.baixingxinwen.utils.AnimatedActivity;
@@ -66,8 +67,9 @@ import cn.reservation.app.baixingxinwen.utils.CommonUtils;
 import cn.reservation.app.baixingxinwen.utils.DictionaryUtils;
 import cn.reservation.app.baixingxinwen.utils.SearchItem;
 import cz.msebera.android.httpclient.Header;
-
-import static com.android.volley.Request.Method.POST;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 @SuppressWarnings("deprecation")
@@ -111,7 +113,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 
     private SearchActivity self;
 
-    private Map<String, String> paramsUpdated;
+    private HashMap<String, Object> paramsUpdated;
     private JSONArray searchResultJsonArray;
     private View numberSearchView;
 
@@ -352,18 +354,10 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
             editSearchTxt.setHint("搜索");
         }
 
-        ///메뉴를정의한다
-//        areaNavView = (NavigationView) findViewById(R.id.area_nav_view);
-//        Menu m = areaNavView.getMenu();
-//        SubMenu topChannelMenu = m.addSubMenu("Top Channels");
-//        topChannelMenu.add("Foo");
-//        topChannelMenu.add("Bar");
-//        topChannelMenu.add("Baz");
-
-
 //        getSearchOption();
         mContext = TabHostActivity.TabHostStack;
-        getSearchOptionVolley();
+//        getSearchOptionVolley();
+        getSearchOptionRetrofit();
         res = getResources();
         pActivity = (AnimatedActivity) SearchActivity.this.getParent();
 
@@ -379,7 +373,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         paramsUpdated.put("fid", fid);
         paramsUpdated.put("sortid", sortid);
         paramsUpdated.put("page", String.valueOf(mIntPage));
-        getSearchItemsVolley();
+        getSearchItemsRetrofit();
         ///////////////////////////////////////////////////////////////
 
         lstSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -469,7 +463,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                 if(firstVisibleItem + visibleItemCount == totalItemCount) {
                     if (isLoadMore) {
                         paramsUpdated.put("page", String.valueOf(mIntPage));
-                        getSearchItemsVolley();
+                        getSearchItemsRetrofit();
                         isLoadMore = false;
                     }
                 }
@@ -483,48 +477,8 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                         popUp.dismiss();
                     }
                 }
-//                else{
-//                    Rect r = new Rect();
-//                    TabHostActivity.tabWidget.getWindowVisibleDisplayFrame(r);
-//                    int screenHeight = contentView.getRootView().getHeight();
-//
-//                    // r.bottom is the position above soft keypad or device button.
-//                    // if keypad is shown, the r.bottom is smaller than that before.
-//                    int keypadHeight = screenHeight - r.bottom;
-//
-//                    // 0.15 ratio is perhaps enough to determine keypad height.
-//                    if(!isKeyboardShown && !popUp.isShowing()){
-//                        if(popUp!=null && !popUp.isShowing()) {
-//                            popUp.showAtLocation(findViewById(R.id.lyt_search_parent), Gravity.BOTTOM | Gravity.RIGHT, 0, 200);
-//                        }
-////                        findViewById(R.id.lyt_search_parent).post(new Runnable() {
-////                            @Override
-////                            public void run() {
-////                                if(popUp!=null && !popUp.isShowing()) {
-////                                    popUp.showAtLocation(findViewById(R.id.lyt_search_parent), Gravity.BOTTOM | Gravity.RIGHT, 0, 200);
-////                                }
-////                            }
-////                        });
-//                    }
-//                }
-                preLast = lastItem;
 
-//                if(lastItem>6 && !isKeyboardShown)
-//                {
-//                    findViewById(R.id.lyt_search_parent).post(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            if(popUp!=null && !popUp.isShowing()) {
-//                                popUp.showAtLocation(findViewById(R.id.lyt_search_parent), Gravity.BOTTOM | Gravity.RIGHT, 0, 200);
-//                            }
-//                        }
-//                    });
-//                    preLast = lastItem;
-//                }else {
-//                    if (popUp != null && popUp.isShowing()) {
-//                        popUp.dismiss();
-//                    }
-//                }
+                preLast = lastItem;
             }
         });
         findViewById(R.id.rlt_search).setOnClickListener(this);
@@ -741,7 +695,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                 //getSearchKey();
                 mIntPage = 1;
                 searchItemListAdapter.clearItems();
-                getSearchItemsVolley();
+                getSearchItemsRetrofit();
             }else{
                 Toast.makeText(mContext, "请输入搜索字", Toast.LENGTH_SHORT).show();
             }
@@ -821,6 +775,52 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
             }
         });
     }
+    private void getSearchOptionRetrofit() {
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("fid", fid);
+        if(sortid!=null && sortid!="") {
+            params.put("sortid", sortid);
+        }
+        String url = "api/news/searchoption";
+
+        NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
+            @Override
+            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+                try {
+                    JSONObject responseBody = response.body();
+                    if (responseBody != null && responseBody.getInt("code") == 1) {
+                        JSONArray list = responseBody.getJSONArray("ret");
+
+                        //메뉴를 위한 코드
+                        searchResultJsonArray = list;
+                        initFilterDropDownView(list);
+//                                mFilterContentView.setOnClickListener(self);
+                        ////////////////////////////////////////////////////
+
+//                        boolean price_state = false;
+////                                System.out.println("hasprice+"+response);
+//                        if(response.optString("hasprice").equals("1")){
+//                            price_state = true;
+//                        }
+//                        initSearchOptionView(list, price_state);
+                    }
+                    //CommonUtils.dismissProgress(progressDialog);
+
+                } catch (JSONException e) {
+                    //CommonUtils.dismissProgress(progressDialog);
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JSONObject> call, Throwable t) {
+                //CommonUtils.dismissProgress(progressDialog);
+                Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
     private void getSearchOptionVolley() {
         Map<String, String> params = new HashMap<>();
         params.put("fid", fid);
@@ -842,12 +842,12 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 //                                mFilterContentView.setOnClickListener(self);
                         ////////////////////////////////////////////////////
 
-                        boolean price_state = false;
-//                                System.out.println("hasprice+"+response);
-                        if(response.optString("hasprice").equals("1")){
-                            price_state = true;
-                        }
-                        initSearchOptionView(list, price_state);
+//                        boolean price_state = false;
+////                                System.out.println("hasprice+"+response);
+//                        if(response.optString("hasprice").equals("1")){
+//                            price_state = true;
+//                        }
+//                        initSearchOptionView(list, price_state);
                     }
                     //CommonUtils.dismissProgress(progressDialog);
 
@@ -1000,7 +1000,106 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 //        });
 //    }
 
-    private void getSearchItemsVolley() {
+//    private void getSearchItemsVolley() {
+//        indicatorLayout.setVisibility(View.VISIBLE);
+//        CommonUtils.hideKeyboard(SearchActivity.this);
+//        if(fid==null || fid==""){
+//            //CommonUtils.dismissProgress(progressDialog);
+//            return;
+//        }
+//
+//        String url = APIManager.getUrl("news/list");
+//        NetworkManager.getInstance().sendJsonRequest(url, POST, paramsUpdated, new JsonResponseListener<JSONObject>() {
+//            @Override
+//            public void getResult(JSONObject response) {
+//                try {
+//                    if (response.getInt("code") == 1) {
+//                        //isLoadMore = response.getBoolean("hasmore");
+////                        System.out.println("response++"+response);
+//                        JSONArray list = response.getJSONArray("ret");
+////                        System.out.println("list++"+list);
+//                        if((list==null || list.length()<1) && mIntPage==1){
+//                            isLoadMore = false;
+//                            ((LinearLayout)SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.VISIBLE);
+//                            //CommonUtils.dismissProgress(progressDialog);
+//                            return;
+//                        }else if(list.length()<8){
+//                            isLoadMore = false;
+//                        }else{
+//                            isLoadMore = true;
+//                        }
+//                        ((LinearLayout)SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.GONE);
+//                        for(int i=0; i<list.length(); i++) {
+//                            JSONObject item = list.getJSONObject(i);
+//                            DictionaryUtils dictionaryUtils = new DictionaryUtils();
+//                            String tid = item.optString("tid");
+//                            //String topic_sortid = item.optString("sortid");
+//                            dictionaryUtils.setProperty(item);
+//                            String img_url = "";
+//                            if(item.optJSONObject("fields")!=null && item.optJSONObject("fields").optJSONObject("picture")!=null && !item.optJSONObject("fields").optJSONObject("picture").optString("url").equals("")){
+//                                img_url = item.optJSONObject("fields").optJSONObject("picture").optString("url");
+//                            }
+//                            String desc = item.optString("title");
+////                            String txt_home_favor_price = dictionaryUtils.getProperty("txt_home_favor_price");
+////                            String property01 = dictionaryUtils.getProperty("txt_property1");
+////                            String property02 = dictionaryUtils.getProperty("txt_property2");
+////                            String property03 = dictionaryUtils.getProperty("txt_property3");
+////                            String poststick = item.optString("poststick");
+//                            //if(i%5==0 && i!=0) {
+//                            //    searchItemListAdapter.addItem(new SearchItem(
+//                            //            Long.parseLong(tid), img_url, desc, txt_home_favor_price, property01, "", property02, "", property03, "", fid, String.valueOf(sortid), poststick, img_url));
+//                            //}else {
+//                            if(!tid.equals("")) {
+//                                searchItemListAdapter.addItem(new SearchItem(
+//                                        Long.parseLong(tid), img_url, desc, dictionaryUtils, item));
+////                                searchItemListAdapter.addItem(new SearchItem(
+////                                        Long.parseLong(tid), img_url, desc, txt_home_favor_price, property01, "", property02, "", property03, "", fid, String.valueOf(sortid), poststick, "", ""));
+//                                //}
+//                            }else{
+//                                String advert_url =  item.optString("link");
+//                                String advert_img_url = item.optString("advert");
+//                                if (!advert_url.substring(0, 4).equals("http")) {
+//                                    advert_url = "http://"+advert_url;
+//                                }
+//                                searchItemListAdapter.addItem(new SearchItem(
+//                                        -1, "", "", "", "", "", "", "", "", "", "-1", "", "", advert_img_url, advert_url));
+//                            }
+//                        }
+//                        mIntPage++;
+//                    } else {
+//                        isLoadMore = false;
+//                        ((LinearLayout)SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.VISIBLE);
+//                        if (mIntPage == 1) {
+//                            searchItemListAdapter.clearItems();
+//                        }
+//                        mIntPage = 1;
+//                    }
+//                    searchItemListAdapter.notifyDataSetChanged();
+//                    lstSearch.invalidateViews();
+//
+//
+//                    indicatorLayout.setVisibility(View.GONE);
+////                            if(dropDownMenu != null){
+////                                dropDownMenu.setVisibility(View.VISIBLE);
+////                            }
+//                    //CommonUtils.dismissProgress(progressDialog);
+//
+//                } catch (JSONException e) {
+//                    //CommonUtils.dismissProgress(progressDialog);
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            @Override
+//            public void errorHandler(String errorMessage) {
+//                //CommonUtils.dismissProgress(progressDialog);
+//                Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//
+//    }
+
+    private void getSearchItemsRetrofit() {
         indicatorLayout.setVisibility(View.VISIBLE);
         CommonUtils.hideKeyboard(SearchActivity.this);
         if(fid==null || fid==""){
@@ -1008,11 +1107,12 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
             return;
         }
 
-        String url = APIManager.getUrl("news/list");
-        NetworkManager.getInstance().sendJsonRequest(url, POST, paramsUpdated, new JsonResponseListener<JSONObject>() {
+        String url = "api/news/list";
+        NetRetrofit.getInstance().post(url, paramsUpdated, new Callback<JSONObject>() {
             @Override
-            public void getResult(JSONObject response) {
+            public void onResponse(Call<JSONObject> call, Response<JSONObject> resp) {
                 try {
+                    JSONObject response = resp.body();
                     if (response.getInt("code") == 1) {
                         //isLoadMore = response.getBoolean("hasmore");
 //                        System.out.println("response++"+response);
@@ -1087,13 +1187,16 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                 } catch (JSONException e) {
                     //CommonUtils.dismissProgress(progressDialog);
                     e.printStackTrace();
+                    Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
+                    indicatorLayout.setVisibility(View.GONE);
                 }
             }
 
             @Override
-            public void errorHandler(String errorMessage) {
+            public void onFailure(Call<JSONObject> call, Throwable t){
                 //CommonUtils.dismissProgress(progressDialog);
                 Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                indicatorLayout.setVisibility(View.GONE);
             }
         });
 
@@ -1334,7 +1437,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                         searchItemListAdapter.clearItems();
                         showAction = 0;
                         mIntPage = 1;
-                        getSearchItemsVolley();
+                        getSearchItemsRetrofit();
                     }
                 });
             }
@@ -1362,7 +1465,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                         searchItemListAdapter.clearItems();
                         showAction = 0;
                         mIntPage = 1;
-                        getSearchItemsVolley();
+                        getSearchItemsRetrofit();
                     }
                 });
             }
@@ -1390,7 +1493,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                         searchItemListAdapter.clearItems();
                         showAction = 0;
                         mIntPage = 1;
-                        getSearchItemsVolley();
+                        getSearchItemsRetrofit();
                     }
                 });
             }
@@ -1437,7 +1540,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                 searchItemListAdapter.clearItems();
                 showAction = 0;
                 mIntPage = 1;
-                getSearchItemsVolley();
+                getSearchItemsRetrofit();
             }
         });
         RelativeLayout rlt_price_search_cancel = (RelativeLayout) rowView1.findViewById(R.id.rlt_price_search_cancel);
@@ -1560,7 +1663,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 //                    mIntPage = 1;
 
 
-                    getSearchItemsVolley();
+                    getSearchItemsRetrofit();
                 }
 
             }
@@ -1728,7 +1831,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 
         paramsUpdated.put("option_" + optionId, priceRange);
         searchItemListAdapter.clearItems();
-        getSearchItemsVolley();
+        getSearchItemsRetrofit();
 //        dropDownMenu.hideNumberSearchView();
 //        if (position != 0) {
 //            dropDownMenu.setPositionIndicatorText(FilterUrl.instance().columnPosition, FilterUrl.instance().positionTitle);
@@ -1772,7 +1875,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                 paramsUpdated.put("sortid", sortid);
 
                 searchItemListAdapter.clearItems();
-                getSearchItemsVolley();
+                getSearchItemsRetrofit();
 
 
 
@@ -1783,7 +1886,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                     paramsUpdated.put("sortid", sortid);
 
                     searchItemListAdapter.clearItems();
-                    getSearchItemsVolley();
+                    getSearchItemsRetrofit();
                 }
                 else if(type.contains("region")){
                     String optionid = mainItem.optString("optionid");
@@ -1797,7 +1900,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 
                     paramsUpdated.put(paramKey, paramValue);
                     searchItemListAdapter.clearItems();
-                    getSearchItemsVolley();
+                    getSearchItemsRetrofit();
                 }
                 else if(type.contains("more")){
 
@@ -1814,7 +1917,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                             paramsUpdated.put("sortid", sortid);
 
                             searchItemListAdapter.clearItems();
-                            getSearchItemsVolley();
+                            getSearchItemsRetrofit();
                         }
                     }
                     else{
@@ -1827,7 +1930,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                                 paramsUpdated.put("sortid", sortid);
 
                                 searchItemListAdapter.clearItems();
-                                getSearchItemsVolley();
+                                getSearchItemsRetrofit();
                             }
                         }
                         else if(!typeInfoItem.contains("number") && !typeInfoItem.contains("text")){
@@ -1839,7 +1942,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                             paramsUpdated.put(paramKey, paramValue);
 
                             searchItemListAdapter.clearItems();
-                            getSearchItemsVolley();
+                            getSearchItemsRetrofit();
                         }
                         else{
                             String unit = infoItem.optString("unit");
@@ -1872,7 +1975,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                     paramsUpdated.put(paramKey, paramValue);
 
                     searchItemListAdapter.clearItems();
-                    getSearchItemsVolley();
+                    getSearchItemsRetrofit();
                 }
             }
 
@@ -1897,7 +2000,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         mIntPage = 1;
 
         searchItemListAdapter.clearItems();
-        getSearchItemsVolley();
+        getSearchItemsRetrofit();
     }
 
     @Override
