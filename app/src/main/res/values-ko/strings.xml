@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">延边预约挂号</string>
-    <string name="home_title">연변 진료 예약 플랫폼</string>
+    <string name="app_name">百姓信息网</string>
+    <string name="home_title">百姓信息网</string>
     <string name="home_title_desc">진료 받을 지역을 선택 해 주세요</string>
 
     <string name="dunhua">돈화</string>
@@ -157,4 +157,6 @@
     <string name="registered_phone">이미 등록된 전화번호입니다</string>
     <string name="message_error_identify_format">신분증번호 입력 격식이 맞지 않습니다</string>
     <string name="introduce">연변 진료예약 서비스 플랫폼은 연변주 계획 및 생육위원회의 지도편달과 대폭적인 지지하에, 연변 워이캉 정보기술 유한공사가 연변자치주 특정에 맞게 연구 개발한 고효율성 공익종합 진료예약 서비스 플랫폼입니다.\n진료예약 서비스 플랫폼은 전주에 소재한 병원과 환자를 대상으로 24시간 무료 서비스를 제공하는 진료예약 서비스 플랫폼으로써, 환자는 전화, 휴대폰, 위쳇, 인터넷 단말장치 등 다양한 통신기기를 통해 쉽게 접속(위쳇 공공계정: yuyue_yb, 인터넷 사이트: www.ybyuyue.com) 할수 있어 예약진료시간을 단축하고 편리하고 고효율적인 종합진료 서비스를 제공하고 있습니다.\n현재까지 연변대학 부속병원, 연변 제2병원, 연변 부유보건원 등을 포함한 14개 이갑(二甲), 삼갑(三甲,고급) 공립병원이 해당 진료예약 서비스 플랫폼을 사용하고 있고 월 평균 진료 예약수는 1.5만차이상에 달하고 있습니다.\n앞으로도 워이캉 정보기술 유한공사는 연변자치주의 의료서비스 발전수요에 부응하기 위해 시스템의 기능 완벽화와 서비스 제고에 최선을 다 할 것이며, 자치주내 의료 서비스 자원 통합 추진과 연변자치주 의료 정보화 프로세스 완성 및 민생복지의 지속적인 제고를 위해 노력을 경주할 것입니다.</string>
+    <string name="policy">감사합니다.</string>
+    <string name="new_register">새로등록</string>
 </resources>

@@ -193,21 +193,37 @@
                                 android:textColor="@color/colorPrimaryDark"
                                 android:textSize="14sp"
                                 android:layout_marginLeft="20dp"/>
+
                             <EditText
                                 android:id="@+id/edit_input_data4"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_centerVertical="true"
+                                android:layout_marginLeft="3dp"
+                                android:layout_marginRight="20dp"
                                 android:layout_toEndOf="@+id/txt_input_data4"
                                 android:layout_toRightOf="@+id/txt_input_data4"
-                                android:layout_marginRight="20dp"
-                                android:layout_marginLeft="3dp"
                                 android:background="#00000000"
+                                android:hint=""
                                 android:inputType="number"
                                 android:maxLength="30"
-                                android:hint=""
                                 android:singleLine="true"
                                 android:textSize="14sp" />
+
+                            <TextView
+                                android:id="@+id/txt_unit_speed"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_marginLeft="-70dp"
+                                android:layout_toEndOf="@+id/edit_input_data4"
+                                android:layout_toRightOf="@+id/edit_input_data4"
+                                android:gravity="center_horizontal"
+                                android:text="万公里"
+                                android:textColor="#6f6f6e"
+                                android:textSize="14sp" />
+
                         </RelativeLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -327,19 +343,20 @@
                                 android:textColor="@color/colorPrimaryDark"
                                 android:textSize="14sp"
                                 android:layout_marginLeft="20dp"/>
+
                             <EditText
                                 android:id="@+id/edit_input_data_year"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_centerVertical="true"
+                                android:layout_marginLeft="3dp"
+                                android:layout_marginRight="20dp"
                                 android:layout_toEndOf="@+id/txt_input_data_year"
                                 android:layout_toRightOf="@+id/txt_input_data_year"
-                                android:layout_marginRight="20dp"
-                                android:layout_marginLeft="3dp"
                                 android:background="#00000000"
+                                android:hint=""
                                 android:inputType="textLongMessage"
                                 android:maxLength="30"
-                                android:hint=""
                                 android:singleLine="true"
                                 android:textSize="14sp" />
                         </RelativeLayout>
@@ -837,17 +854,18 @@
                                 android:layout_alignParentTop="true"
                                 android:layout_alignParentLeft="true"
                                 android:layout_centerHorizontal="true" />
+
                             <TextView
                                 android:id="@+id/txt_input_data18"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center_horizontal"
-                                android:gravity="center_horizontal"
-                                android:text="车辆详情"
                                 android:layout_alignParentTop="true"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_toRightOf="@id/img_need18"
+                                android:gravity="center_horizontal"
+                                android:text="详情描述"
                                 android:textColor="@color/colorPrimaryDark"
-                                android:textSize="14sp"
-                                android:layout_toRightOf="@id/img_need18"/>
+                                android:textSize="14sp" />
                             <EditText
                                 android:id="@+id/edit_input_message"
                                 android:layout_width="match_parent"
@@ -856,7 +874,6 @@
                                 android:layout_below="@id/txt_input_data18"
                                 android:background="#00000000"
                                 android:inputType="textMultiLine"
-                                android:maxLength="30"
                                 android:hint=""
                                 android:singleLine="true"
                                 android:textSize="14sp" />

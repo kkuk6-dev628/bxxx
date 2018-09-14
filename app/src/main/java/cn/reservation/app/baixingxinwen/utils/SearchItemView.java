@@ -83,82 +83,80 @@ public class SearchItemView extends LinearLayout {
         System.out.println("searchItem.getmAdver()++"+searchItem.getmThumbnail());
 
         String defaultImageName = searchItem.getmDefaultImageName();
-        if(!defaultImageName.equals("")){
-            if(searchItem.isMarriedPage()){
-                params = new LayoutParams(
-                        0,
-                        LayoutParams.WRAP_CONTENT,
-                        1
-                );
-                lyt_img_thumbnail.setLayoutParams(params);
-                params = new LayoutParams(
-                        0,
-                        LayoutParams.WRAP_CONTENT,
-                        3
-                );
-                lyt_home_favor_desc.setLayoutParams(params);
-            }
+        if(!searchItem.getmAdver().equals("")){
+            // 광고인경우 화상만 나와야 하므로
+            mAdver.setVisibility(VISIBLE);
+            mThumbnail.setVisibility(GONE);
+            params = new LayoutParams(
+                    0,
+                    LayoutParams.WRAP_CONTENT,
+                    4
+            );
+            lyt_img_thumbnail.setLayoutParams(params);
+            params = new LayoutParams(
+                    0,
+                    LayoutParams.WRAP_CONTENT,
+                    0
+            );
+            lyt_home_favor_desc.setLayoutParams(params);
 
-            Resources res = getResources();
-            int resID = res.getIdentifier(defaultImageName , "drawable", "cn.reservation.app.baixingxinwen");
-            Drawable drawable = res.getDrawable(resID );
-            mThumbnail.setImageDrawable(drawable );
-        }
-        else{
-            if(!searchItem.getmAdver().equals("")){
-                mAdver.setVisibility(VISIBLE);
-                mThumbnail.setVisibility(GONE);
-                params = new LayoutParams(
-                        0,
-                        LayoutParams.WRAP_CONTENT,
-                        4
-                );
-                lyt_img_thumbnail.setLayoutParams(params);
-                params = new LayoutParams(
-                        0,
-                        LayoutParams.WRAP_CONTENT,
-                        0
-                );
-                lyt_home_favor_desc.setLayoutParams(params);
-//                if(!searchItem.getmThumbnail().equals("")) {
-//                    Picasso
-//                            .with(mContext)
-//                            .load(searchItem.getmThumbnail())
-//                            .placeholder(mImgPlaceholder)
-//                            .resize(CommonUtils.getPixelValue(mContext, 130), CommonUtils.getPixelValue(mContext, 80))
-//                            .into(mAdver);
-//                }
+            Picasso
+                    .with(mContext)
+                    .load(searchItem.getmAdver())
+                    .placeholder(mImgPlaceholder)
+                    .resize(512, 0)
+                    .into(mAdver);
+        }else{ //if((searchItem.getmFid().equals("2") && (searchItem.getmSortid().equals("1") || searchItem.getmSortid().equals("4"))) || (searchItem.getmFid().equals("93") && searchItem.getmSortid().equals("33")) || (searchItem.getmFid().equals("39") && searchItem.getmSortid().equals("58")) || (searchItem.getmFid().equals("39") && searchItem.getmSortid().equals("2")) || (searchItem.getmFid().equals("40") && searchItem.getmSortid().equals("3")) || (searchItem.getmFid().equals("92")) || (searchItem.getmFid().equals("50") && searchItem.getmSortid().equals("61"))){
+            mAdver.setVisibility(GONE);
+            mThumbnail.setVisibility(VISIBLE);
+            params = new LayoutParams(
+                    0,
+                    LayoutParams.WRAP_CONTENT,
+                    1.3f
+            );
+            lyt_img_thumbnail.setLayoutParams(params);
+            params = new LayoutParams(
+                    0,
+                    LayoutParams.WRAP_CONTENT,
+                    2.7f
+            );
+            lyt_home_favor_desc.setLayoutParams(params);
+            if(!searchItem.getmThumbnail().equals("")) {
+                // 사용자가 upload 한 화상이 있는 경우
                 Picasso
                         .with(mContext)
-                        .load(searchItem.getmAdver())
+                        .load(searchItem.getmThumbnail())
                         .placeholder(mImgPlaceholder)
-                        .resize(512, 0)
-                        .into(mAdver);
-            }else{ //if((searchItem.getmFid().equals("2") && (searchItem.getmSortid().equals("1") || searchItem.getmSortid().equals("4"))) || (searchItem.getmFid().equals("93") && searchItem.getmSortid().equals("33")) || (searchItem.getmFid().equals("39") && searchItem.getmSortid().equals("58")) || (searchItem.getmFid().equals("39") && searchItem.getmSortid().equals("2")) || (searchItem.getmFid().equals("40") && searchItem.getmSortid().equals("3")) || (searchItem.getmFid().equals("92")) || (searchItem.getmFid().equals("50") && searchItem.getmSortid().equals("61"))){
-                mAdver.setVisibility(GONE);
-                mThumbnail.setVisibility(VISIBLE);
-                params = new LayoutParams(
-                        0,
-                        LayoutParams.WRAP_CONTENT,
-                        1.3f
-                );
-                lyt_img_thumbnail.setLayoutParams(params);
-                params = new LayoutParams(
-                        0,
-                        LayoutParams.WRAP_CONTENT,
-                        2.7f
-                );
-                lyt_home_favor_desc.setLayoutParams(params);
-                if(!searchItem.getmThumbnail().equals("")) {
-                    Picasso
-                            .with(mContext)
-                            .load(searchItem.getmThumbnail())
-                            .placeholder(mImgPlaceholder)
-                            .resize(256, 0)
-                            .into(mThumbnail);
+                        .resize(256, 0)
+                        .into(mThumbnail);
+            }
+            else{
+                // 사용자가 upload 한 화상이 없는 경우
+                // 이때 대치화상이 있는 종류라면 대치화상을 넣어야 한다.
+                if(!defaultImageName.equals("")){
+                    if(searchItem.isMarriedPage()){
+                        params = new LayoutParams(
+                                0,
+                                LayoutParams.WRAP_CONTENT,
+                                1
+                        );
+                        lyt_img_thumbnail.setLayoutParams(params);
+                        params = new LayoutParams(
+                                0,
+                                LayoutParams.WRAP_CONTENT,
+                                3
+                        );
+                        lyt_home_favor_desc.setLayoutParams(params);
+                    }
+
+                    Resources res = getResources();
+                    int resID = res.getIdentifier(defaultImageName , "drawable", "cn.reservation.app.baixingxinwen");
+                    Drawable drawable = res.getDrawable(resID );
+                    mThumbnail.setImageDrawable(drawable );
                 }
             }
 
+            //화상이 없어야 하는 종류일때 즉 구직정보와 같은것
             if(searchItem.ismIsNoImage()) {
                 mThumbnail.setVisibility(ImageView.GONE);
                 params = new LayoutParams(
@@ -179,6 +177,8 @@ public class SearchItemView extends LinearLayout {
 
 
 
+
+
         mDesc = (TextView)findViewById(R.id.txt_home_favor_desc);
         mDesc.setText(searchItem.getmDesc());
 
@@ -195,8 +195,11 @@ public class SearchItemView extends LinearLayout {
         mPostTime.setText(searchItem.getmPostTime());
 
         mPhone = (ImageView)findViewById(R.id.img_phone);
-        if(searchItem.getmPhoneNumber().equals(""))
+        if(searchItem.getmPhoneNumber().equals("")){
+            LinearLayout lyt_tel_time = (LinearLayout)findViewById(R.id.lyt_tel_time);
+            lyt_tel_time.setPadding(0,CommonUtils.getPixelValue(mContext, 65), 0, 0);
             mPhone.setVisibility(ImageView.GONE);
+        }
         else {
             mPhone.setVisibility(ImageView.VISIBLE);
             mPhone.setOnClickListener(new View.OnClickListener() {
@@ -265,89 +268,94 @@ public class SearchItemView extends LinearLayout {
         mThumbnail.setVisibility(VISIBLE);
 
         String defaultImageName = search_item.getmDefaultImageName();
-        if(!defaultImageName.equals("")){
-            if(search_item.isMarriedPage()){
-                params = new LayoutParams(
-                        0,
-                        LayoutParams.WRAP_CONTENT,
-                        1
-                );
-                lyt_img_thumbnail.setLayoutParams(params);
-                params = new LayoutParams(
-                        0,
-                        LayoutParams.WRAP_CONTENT,
-                        3
-                );
-                lyt_home_favor_desc.setLayoutParams(params);
-            }
-
-            Resources res = getResources();
-            int resID = res.getIdentifier(defaultImageName , "drawable", "cn.reservation.app.baixingxinwen");
-            Drawable drawable = res.getDrawable(resID );
-            mThumbnail.setImageDrawable(drawable );
-        }
-        else{
-            if(!mAdverUrl.equals("")) {
-                //mContent.setVisibility(GONE);
-                //mAdverContent.setVisibility(VISIBLE);
-                params = new LayoutParams(
-                        0,
-                        LayoutParams.WRAP_CONTENT,
-                        4
-                );
-                lyt_img_thumbnail.setLayoutParams(params);
+        if(!mAdverUrl.equals("")) {
+            //광고인 경우
+            //mContent.setVisibility(GONE);
+            //mAdverContent.setVisibility(VISIBLE);
+            params = new LayoutParams(
+                    0,
+                    LayoutParams.WRAP_CONTENT,
+                    4
+            );
+            lyt_img_thumbnail.setLayoutParams(params);
+            params = new LayoutParams(
+                    0,
+                    LayoutParams.WRAP_CONTENT,
+                    0
+            );
+            lyt_home_favor_desc.setLayoutParams(params);
+            mAdver.setVisibility(VISIBLE);
+            mThumbnail.setVisibility(GONE);
+            Picasso
+                    .with(mContext)
+                    .load(mAdverUrl)
+                    .placeholder(mImgPlaceholder)
+                    .resize(512, 0)
+                    .into(mAdver);
+        }else{ //if((mFid.equals("2") && (mSortid.equals("1") || mSortid.equals("4"))) || (mFid.equals("93") && mSortid.equals("33")) || mFid.equals("39") || (mFid.equals("40") && mSortid.equals("3")) || (mFid.equals("92")) || (mFid.equals("50") && mSortid.equals("61"))){
+            if(search_item.ismIsNoImage()) {
+                mThumbnail.setVisibility(ImageView.GONE);
                 params = new LayoutParams(
                         0,
                         LayoutParams.WRAP_CONTENT,
                         0
                 );
+                lyt_img_thumbnail.setLayoutParams(params);
+                params = new LayoutParams(
+                        0,
+                        LayoutParams.WRAP_CONTENT,
+                        4
+                );
                 lyt_home_favor_desc.setLayoutParams(params);
-                mAdver.setVisibility(VISIBLE);
-                mThumbnail.setVisibility(GONE);
+            }
+            else{
+                params = new LayoutParams(
+                        0,
+                        LayoutParams.WRAP_CONTENT,
+                        1.3f
+                );
+                lyt_img_thumbnail.setLayoutParams(params);
+                params = new LayoutParams(
+                        0,
+                        LayoutParams.WRAP_CONTENT,
+                        2.7f
+                );
+                lyt_home_favor_desc.setLayoutParams(params);
+            }
+
+            if(!thumbnail.equals("")) {
+                // 사용자가 upload 한 화상이 있는경우
                 Picasso
                         .with(mContext)
-                        .load(mAdverUrl)
+                        .load(thumbnail)
                         .placeholder(mImgPlaceholder)
-                        .resize(512, 0)
-                        .into(mAdver);
-            }else{ //if((mFid.equals("2") && (mSortid.equals("1") || mSortid.equals("4"))) || (mFid.equals("93") && mSortid.equals("33")) || mFid.equals("39") || (mFid.equals("40") && mSortid.equals("3")) || (mFid.equals("92")) || (mFid.equals("50") && mSortid.equals("61"))){
-                if(search_item.ismIsNoImage()) {
-                    mThumbnail.setVisibility(ImageView.GONE);
-                    params = new LayoutParams(
-                            0,
-                            LayoutParams.WRAP_CONTENT,
-                            0
-                    );
-                    lyt_img_thumbnail.setLayoutParams(params);
-                    params = new LayoutParams(
-                            0,
-                            LayoutParams.WRAP_CONTENT,
-                            4
-                    );
-                    lyt_home_favor_desc.setLayoutParams(params);
-                }
-                else{
-                    params = new LayoutParams(
-                            0,
-                            LayoutParams.WRAP_CONTENT,
-                            1.3f
-                    );
-                    lyt_img_thumbnail.setLayoutParams(params);
-                    params = new LayoutParams(
-                            0,
-                            LayoutParams.WRAP_CONTENT,
-                            2.7f
-                    );
-                    lyt_home_favor_desc.setLayoutParams(params);
-                }
+                        .resize(256, 0)
+                        .into(mThumbnail);
+            }
+            else{
 
-                if(!thumbnail.equals("")) {
-                    Picasso
-                            .with(mContext)
-                            .load(thumbnail)
-                            .placeholder(mImgPlaceholder)
-                            .resize(CommonUtils.getPixelValue(mContext, 130), CommonUtils.getPixelValue(mContext, 80))
-                            .into(mThumbnail);
+                if(!defaultImageName.equals("")){
+                    //// 사용자가 upload 한 화상이 없는 경우
+                    // 대치화상이 있으면 그화상을 놓아야 한다.
+                    if(search_item.isMarriedPage()){
+                        params = new LayoutParams(
+                                0,
+                                LayoutParams.WRAP_CONTENT,
+                                1
+                        );
+                        lyt_img_thumbnail.setLayoutParams(params);
+                        params = new LayoutParams(
+                                0,
+                                LayoutParams.WRAP_CONTENT,
+                                3
+                        );
+                        lyt_home_favor_desc.setLayoutParams(params);
+                    }
+
+                    Resources res = getResources();
+                    int resID = res.getIdentifier(defaultImageName , "drawable", "cn.reservation.app.baixingxinwen");
+                    Drawable drawable = res.getDrawable(resID );
+                    mThumbnail.setImageDrawable(drawable );
                 }
             }
         }

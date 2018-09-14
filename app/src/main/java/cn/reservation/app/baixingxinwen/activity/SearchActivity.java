@@ -79,6 +79,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 //    DropDownMenu dropDownMenu;
 //    LinearLayout mFilterContentView;
 
+
     private static String TAG = SearchActivity.class.getSimpleName();
 
     private Context mContext;
@@ -129,6 +130,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         Intent intent = getIntent();
 
 
+
         showAction = 0;
         selectedKeyTab = new Hashtable();
         setContentView(R.layout.activity_search);
@@ -172,8 +174,6 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         AVLoadingIndicatorView avi = (AVLoadingIndicatorView) indicatorLayout.findViewById(R.id.AVLoadingIndicatorView);
         avi.setIndicator("LineScaleIndicator");
         avi.setIndicatorColor(Color.RED);
-
-
 
         postItem = (String) intent.getSerializableExtra("PostItem");
         pActivity = (AnimatedActivity) SearchActivity.this.getParent();
@@ -390,7 +390,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                     intent.putExtra("sortid", sortid);
                     intent.putExtra("newsId", Long.toString(long_id));
                     intent.putExtra("title", searchItem.getmDesc());
-                    intent.putExtra("desc", searchItem.getmTitle01() + " " + searchItem.getmTitle02() + " " + searchItem.getmTitle03());
+                    intent.putExtra("desc", searchItem.getGeneralDescription());
                     String img = searchItem.getmThumbnail();
                     CommonUtils.share_bmp = BitmapFactory.decodeResource(getResources(), R.drawable.default_img);
                     if (!img.equals(""))
@@ -675,10 +675,43 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                     pActivity.startChildActivity("activity_search", intent);
                     break;
                 default:
-                    intent = new Intent(SearchActivity.this, PostActivity.class);
-                    intent.putExtra("PostItem", postItem);
-                    SearchActivity.this.startActivityForResult(intent, CommonUtils.REQUEST_CODE_ANOTHER);
-                    break;
+                    HashMap<String, Object> params = new HashMap<String, Object>();
+                    params.put("uid", CommonUtils.userInfo.getUserID());
+                    params.put("fid", fid);
+                    params.put("sortid", sortid);
+                    String url = "api/post/limit";
+
+                    NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
+                        @Override
+                        public void onResponse(Call<JSONObject> call, Response<JSONObject> resp) {
+                            try {
+                                JSONObject response = resp.body();
+                                if (response.getInt("ret") == 1) {
+                                    Intent finalIntent = new Intent(SearchActivity.this, PostActivity.class);
+                                    finalIntent.putExtra("PostItem", postItem);
+                                    SearchActivity.this.startActivityForResult(finalIntent, CommonUtils.REQUEST_CODE_ANOTHER);
+                                } else {
+                                    CommonUtils.showAlertDialog(mContext, "您在本版块的发布数量已达到上限", null);
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<JSONObject> call, Throwable t) {
+                            //progressDialog.dismiss();
+                            Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+
+//                    intent = new Intent(SearchActivity.this, PostActivity.class);
+//                    intent.putExtra("PostItem", postItem);
+//                    SearchActivity.this.startActivityForResult(intent, CommonUtils.REQUEST_CODE_ANOTHER);
+//                    break;
             }
         }
         else if (id == R.id.rlt_back){//点击返回按钮
@@ -1507,11 +1540,11 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         View rowView1 = inflater.inflate(R.layout.dropdown_search, null);
         RelativeLayout rlt_price_search = (RelativeLayout) rowView1.findViewById(R.id.rlt_price_search);
         if(fid.equals("40") || fid.equals("92")){
-            ((EditText) rowView1.findViewById(R.id.edit_min_price)).setHint("最低价");
-            ((EditText) rowView1.findViewById(R.id.edit_max_price)).setHint("最高价");
+            ((EditText) rowView1.findViewById(R.id.edit_min_price)).setHint("最低值");
+            ((EditText) rowView1.findViewById(R.id.edit_max_price)).setHint("最高值");
         }else{
-            ((EditText) rowView1.findViewById(R.id.edit_min_price)).setHint("最低价（万）");
-            ((EditText) rowView1.findViewById(R.id.edit_max_price)).setHint("最高价（万）");
+            ((EditText) rowView1.findViewById(R.id.edit_min_price)).setHint("最低值（万）");
+            ((EditText) rowView1.findViewById(R.id.edit_max_price)).setHint("最高值（万）");
         }
         rlt_price_search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1519,7 +1552,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                 min_price = ((EditText) findViewById(R.id.edit_min_price)).getText().toString();
                 max_price = ((EditText) findViewById(R.id.edit_max_price)).getText().toString();
                 if(min_price.equals("")){
-                    Toast toast = Toast.makeText(mContext, "请输入最低价格", Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(mContext, "请输入最低值", Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
                     toast.show();
                     ((EditText)(findViewById(R.id.edit_min_price))).setFocusableInTouchMode(true);
@@ -1527,7 +1560,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                     return;
                 }
                 if(max_price.equals("")){
-                    Toast toast = Toast.makeText(mContext, "请输入最高价格", Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(mContext, "请输入最高值", Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
                     toast.show();
                     ((EditText)(findViewById(R.id.edit_max_price))).setFocusableInTouchMode(true);
@@ -1664,6 +1697,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 
 
                     getSearchItemsRetrofit();
+                    dropDownMenu.close();
                 }
 
             }
@@ -1832,6 +1866,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         paramsUpdated.put("option_" + optionId, priceRange);
         searchItemListAdapter.clearItems();
         getSearchItemsRetrofit();
+        dropDownMenu.close();
 //        dropDownMenu.hideNumberSearchView();
 //        if (position != 0) {
 //            dropDownMenu.setPositionIndicatorText(FilterUrl.instance().columnPosition, FilterUrl.instance().positionTitle);

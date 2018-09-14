@@ -8,14 +8,17 @@
         android:layout_width="match_parent"
         android:layout_height="63dp"
         android:background="@drawable/top_title_shape">
+
         <TextView
+            android:id="@+id/txt_alert_dialog_content"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="@string/confirm_finish"
-            android:textColor="@color/colorDialog"
-            android:textSize="17sp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
             android:gravity="center"
-            android:layout_marginLeft="20dp" />
+            android:text="@string/confirm_finish"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="17sp" />
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
@@ -25,35 +28,39 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:weightSum="2">
+
             <Button
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:text="@string/str_cancel"
                 android:id="@+id/btn_cancel"
-                android:textSize="15.4sp"
-                android:layout_weight="1"
-                android:textColor="@color/colorDialog"
-                android:background="@drawable/btn_left_selector"
-                android:textStyle="bold" />
-            <Button
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:text="@string/str_ok"
-                android:id="@+id/btn_ok"
-                android:background="@drawable/btn_right_selector"
-                android:textSize="15.4sp"
                 android:layout_weight="1"
-                android:textColor="@color/colorDialog"
+                android:background="@drawable/btn_left_selector"
+                android:text="@string/str_cancel"
+                android:textColor="@color/blue_4285f4"
+                android:textSize="15.4sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btn_ok"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/btn_right_selector"
+                android:text="@string/str_ok"
+                android:textColor="@color/blue_4285f4"
+                android:textSize="15.4sp"
                 android:textStyle="bold" />
         </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/colorDialog"/>
+            android:background="#959595" />
+
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="@color/colorDialog"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:background="#959595" />
     </RelativeLayout>
 </LinearLayout>

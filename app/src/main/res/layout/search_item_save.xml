@@ -219,7 +219,6 @@
                             </LinearLayout>
 
                             <TextView
-                                android:id="@+id/post_time"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentRight="true"
@@ -228,7 +227,7 @@
                                 android:layout_toRightOf="@id/lyt_property"
                                 android:gravity="right"
                                 android:paddingLeft="1dp"
-                                android:text="08:45"
+                                android:text=""
                                 android:textColor="#2cb3a3"
                                 android:textSize="9sp" />
                         </LinearLayout>
@@ -238,16 +237,33 @@
             </LinearLayout>
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/img_phone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <LinearLayout
+            android:id="@+id/lyt_tel_time"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
             android:layout_gravity="right|center"
-            android:scaleX="1.2"
-            android:scaleY="1.2"
-            android:visibility="gone"
-            android:clickable="true"
-            android:src="@drawable/phone_category" />
+            android:orientation="vertical"
+            android:paddingTop="25dp">
+
+            <ImageView
+                android:id="@+id/img_phone"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="bottom|center"
+                android:layout_marginBottom="3dp"
+                android:clickable="true"
+                android:src="@drawable/phone_category" />
+
+            <TextView
+                android:id="@+id/post_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="08:45"
+                android:textColor="#2cb3a3"
+                android:textSize="9sp" />
+        </LinearLayout>
+
 
     </FrameLayout>
 

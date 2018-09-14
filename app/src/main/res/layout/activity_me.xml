@@ -37,61 +37,107 @@
                     android:layout_alignParentLeft="true"
                     android:src="@drawable/new_my_face"
                     android:clickable="true"/>
-                <TextView
-                    android:id="@+id/txt_my_name"
-                    android:layout_width="wrap_content"
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:textColor="@color/colorBackground"
-                    android:textSize="16sp"
-                    android:text="用户名"
-                    android:layout_alignParentTop="true"
-                    android:paddingLeft="20dp"
-                    android:paddingBottom="2dp"
-                    android:paddingTop="8dp"
-                    android:layout_toRightOf="@id/img_me_icon"
-                    android:clickable="true"/>
-                <TextView
-                    android:id="@+id/txt_my_name_set"
-                    android:layout_width="wrap_content"
+                    android:paddingLeft="50dp">
+
+                    <TextView
+                        android:id="@+id/txt_my_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_toRightOf="@id/img_me_icon"
+                        android:clickable="true"
+                        android:paddingBottom="2dp"
+                        android:paddingLeft="20dp"
+                        android:paddingTop="8dp"
+                        android:text="用户名"
+                        android:textColor="@color/colorBackground"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/txt_my_name_set"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_toRightOf="@id/txt_my_name"
+                        android:clickable="true"
+                        android:paddingBottom="2dp"
+                        android:paddingLeft="20dp"
+                        android:paddingTop="8dp"
+                        android:text="请设置用户名"
+                        android:textColor="@color/colorBackground"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+
+                <!--<TextView-->
+                    <!--android:id="@+id/txt_my_name"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:textColor="@color/colorBackground"-->
+                    <!--android:textSize="16sp"-->
+                    <!--android:text="用户名"-->
+                    <!--android:layout_alignParentTop="true"-->
+                    <!--android:paddingLeft="20dp"-->
+                    <!--android:paddingBottom="2dp"-->
+                    <!--android:paddingTop="8dp"-->
+                    <!--android:layout_toRightOf="@id/img_me_icon"-->
+                    <!--android:clickable="true"/>-->
+                <!--<TextView-->
+                    <!--android:id="@+id/txt_my_name_set"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:textColor="@color/colorBackground"-->
+                    <!--android:textSize="16sp"-->
+                    <!--android:text="请设置用户名"-->
+                    <!--android:paddingLeft="20dp"-->
+                    <!--android:paddingTop="8dp"-->
+                    <!--android:paddingBottom="2dp"-->
+                    <!--android:layout_toRightOf="@id/txt_my_name"-->
+                    <!--android:clickable="true"/>-->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:textColor="@color/colorBackground"
-                    android:textSize="16sp"
-                    android:text="请设置用户名"
-                    android:paddingLeft="20dp"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="2dp"
-                    android:layout_toRightOf="@id/txt_my_name"
-                    android:clickable="true"/>
-                <TextView
-                    android:id="@+id/txt_my_level"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:textColor="@color/colorBackground"
-                    android:textSize="16sp"
-                    android:text="VIP 会员"
-                    android:layout_below="@id/txt_my_name"
-                    android:paddingLeft="20dp"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="8dp"
-                    android:layout_toRightOf="@id/img_me_icon"
-                    android:clickable="true"/>
-                <TextView
-                    android:id="@+id/txt_my_level_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:textColor="@color/colorBackground"
-                    android:textSize="12sp"
-                    android:text="2018.05.18 到期"
-                    android:layout_below="@id/txt_my_name_set"
-                    android:paddingLeft="20dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="8dp"
-                    android:layout_toRightOf="@id/txt_my_level"
-                    android:clickable="true"/>
+                    android:paddingLeft="50dp"
+                    android:paddingTop="33dp">
+
+                    <TextView
+                        android:id="@+id/txt_my_level"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/txt_my_name"
+                        android:layout_centerHorizontal="true"
+                        android:layout_toRightOf="@id/img_me_icon"
+                        android:clickable="true"
+                        android:paddingBottom="8dp"
+                        android:paddingLeft="20dp"
+                        android:paddingTop="2dp"
+                        android:text="VIP 会员"
+                        android:textColor="@color/colorBackground"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/txt_my_level_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/txt_my_name_set"
+                        android:layout_centerHorizontal="true"
+                        android:layout_toRightOf="@id/txt_my_level"
+                        android:clickable="true"
+                        android:paddingBottom="8dp"
+                        android:paddingLeft="20dp"
+                        android:paddingTop="5dp"
+                        android:text="2018.05.18 到期"
+                        android:textColor="@color/colorBackground"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
             </RelativeLayout>
         </RelativeLayout>
         <RelativeLayout

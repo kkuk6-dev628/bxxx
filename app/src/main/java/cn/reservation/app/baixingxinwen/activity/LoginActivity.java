@@ -209,7 +209,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
                         }
                         CommonUtils.userInfo = new UserInfo(Long.valueOf(userObj.optString("uid")), userObj.optString("username"),
                                 gender, userObj.optString("birthyear")+ "/"+ userObj.optString("birthmonth")+"/"+userObj.optString("userday"), userObj.optString("mobile"),
-                                userObj.optString("avatar"), userObj.optString("credits"), userObj.optString("grouptitle"), userObj.optString("realname"),userObj.optString("uid"), qq, wechat, mobile, userObj.optString("credits"), userObj.optString("grouptitle"), login_type, login_username, login_password);
+                                userObj.optString("avatar"), userObj.optString("credits"), userObj.optString("grouptitle"), userObj.optString("realname"),userObj.optString("uid"), qq, wechat, mobile, userObj.optString("credits"), userObj.optString("grouptitle"), login_type, login_username, login_password,userObj.optString("changeid") ,userObj.optString("dateline"));
 
                         SharedPreferences.Editor editor = getSharedPreferences("userData", MODE_PRIVATE).edit();
                         editor.putLong("userID", CommonUtils.userInfo.getUserID());
@@ -230,7 +230,14 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
                         editor.putString("login_type", CommonUtils.userInfo.getLoginType());
                         editor.putString("login_username", CommonUtils.userInfo.getLoginUsername());
                         editor.putString("login_password", CommonUtils.userInfo.getLoginPassword());
+                        editor.putString("changeid", CommonUtils.userInfo.getChangeid());
+                        editor.putString("dateline", CommonUtils.userInfo.getDateline());
                         editor.apply();
+
+                        if(!CommonUtils.channel_id.isEmpty()){
+                            CommonUtils.registerChannelId(mContext);
+                        }
+
                         gotoForward();
                     } else{
                         mProgressDialog.dismiss();

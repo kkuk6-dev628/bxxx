@@ -7,29 +7,33 @@
     android:background="@drawable/alert_dialog_lang_shape">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="46dp"
-        android:text="@string/str_logout"
-        android:id="@+id/btn_logout"
+        android:id="@+id/txt_message"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:textSize="13.2sp"
         android:background="@drawable/alert_dialog_top_button_selector"
-        android:textColor="@drawable/btn_color_selector2"
-        android:clickable="true"
-        android:gravity="center" />
+        android:gravity="center"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:singleLine="false"
+        android:text="@string/str_logout"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="17sp" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@drawable/icon_divider"/>
+        android:background="#95959595" />
+
     <TextView
+        android:id="@+id/btn_ok"
         android:layout_width="match_parent"
         android:layout_height="46dp"
-        android:text="@string/str_exit"
-        android:id="@+id/btn_exit"
         android:layout_gravity="center_horizontal"
-        android:textSize="13.2sp"
         android:background="@drawable/alert_dialog_bottom_button_selector"
-        android:textColor="@color/colorPossibleStatus"
         android:clickable="true"
-        android:gravity="center" />
+        android:gravity="center"
+        android:text="@string/str_ok"
+        android:textColor="@color/blue_4285f4"
+        android:textSize="14sp" />
 </LinearLayout>

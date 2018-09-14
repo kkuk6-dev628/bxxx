@@ -65,6 +65,7 @@
             android:layout_height="50dp"
             android:background="@color/colorBackground"
             android:layout_marginBottom="10dp"
+            android:visibility="gone"
             android:layout_gravity="center_horizontal">
 
             <RelativeLayout

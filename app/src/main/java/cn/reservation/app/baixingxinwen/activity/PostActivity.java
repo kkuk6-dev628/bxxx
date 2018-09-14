@@ -633,7 +633,8 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                                 String speed = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
                                 String year = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
                                 //String s_title = title.getText().toString();
-                                title.setText(s + " " + year + " " + speed);
+                                changeTxtTitle(title, s.toString(), year, speed);
+//                                title.setText(s + " " + year + " " + speed);
                             }
                         }
                     });
@@ -656,7 +657,8 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                                 String brand = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
                                 String year = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
                                 //String s_title = title.getText().toString();
-                                title.setText(brand + " " + year + " " + s);
+                                changeTxtTitle(title, brand, year, s.toString());
+//                                title.setText(brand + " " + year + "年检到期 " + s + "万公里");
                             }
                         }
                     });
@@ -679,7 +681,8 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                                 String brand = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
                                 String speed = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
                                 //String s_title = title.getText().toString();
-                                title.setText(brand + " " + s + " " + speed);
+                                changeTxtTitle(title, brand, s.toString(), speed);
+//                                title.setText(brand + " " + s + "年检到期 " + speed + "万公里");
                             }
                         }
                     });
@@ -727,7 +730,8 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                                 String speed = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
                                 String year = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
                                 //String s_title = title.getText().toString();
-                                title.setText(s + " " + year + " " + speed);
+                                changeTxtTitle(title, s.toString(), year, speed);
+//                                title.setText(s + " " + year + "年检到期 " + speed + "万公里");
                             }
                         }
                     });
@@ -750,7 +754,8 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                                 String brand = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
                                 String year = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
                                 //String s_title = title.getText().toString();
-                                title.setText(brand + " " + year + " " + s);
+                                changeTxtTitle(title, brand, year, s.toString());
+//                                title.setText(brand + " " + year + "年检到期 " + s + "万公里");
                             }
                         }
                     });
@@ -773,7 +778,8 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                                 String brand = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
                                 String speed = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
                                 //String s_title = title.getText().toString();
-                                title.setText(brand + " " + s + " " + speed);
+                                changeTxtTitle(title, brand, s.toString(), speed);
+//                                title.setText(brand + " " + s + "年检到期 " + speed + "万公里");
                             }
                         }
                     });
@@ -822,7 +828,8 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                                  String speed = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
                                  String year = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
                                  //String s_title = title.getText().toString();
-                                 title.setText(s + " " + year + " " + speed);
+                                 changeTxtTitle(title, s.toString(), year, speed);
+//                                 title.setText(s + " " + year + "年检到期 " + speed + "万公里");
                              }
                          }
                      });
@@ -845,7 +852,8 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                                  String brand = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
                                  String year = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
                                  //String s_title = title.getText().toString();
-                                 title.setText(brand + " " + year + " " + s);
+                                 changeTxtTitle(title, brand, year, s.toString());
+//                                 title.setText(brand + " " + year + "年检到期 " + s + "万公里");
                              }
                          }
                      });
@@ -868,7 +876,8 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                                  String brand = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
                                  String speed = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
                                  //String s_title = title.getText().toString();
-                                 title.setText(brand + " " + s + " " + speed);
+                                 changeTxtTitle(title, brand, s.toString(), speed);
+//                                 title.setText(brand + " " + s + "年检到期 " + speed + "万公里");
                              }
                          }
                      });
@@ -917,7 +926,8 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                                 String speed = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
                                 String year = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
                                 //String s_title = title.getText().toString();
-                                title.setText(s + " " + year + " " + speed);
+                                changeTxtTitle(title, s.toString(), year, speed);
+//                                title.setText(s + " " + year + "年检到期 " + speed + "万公里");
                             }
                         }
                     });
@@ -940,7 +950,8 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                                 String brand = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
                                 String year = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
                                 //String s_title = title.getText().toString();
-                                title.setText(brand + " " + year + " " + s);
+                                changeTxtTitle(title, brand, year, s.toString());
+//                                title.setText(brand + " " + year + "年检到期 " + s + "万公里");
                             }
                         }
                     });
@@ -963,7 +974,8 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                                 String brand = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
                                 String speed = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
                                 //String s_title = title.getText().toString();
-                                title.setText(brand + " " + s + " " + speed);
+                                changeTxtTitle(title, brand, s.toString(), speed);
+//                                title.setText(brand + " " + s + "年检到期 " + speed + "万公里");
                             }
                         }
                     });
@@ -1300,6 +1312,20 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
             }
         });
     }
+
+    private void changeTxtTitle(EditText txtTitle, String brand, String year, String speed){
+        String yearStr = "";
+        if(year != null && !year.equals("")){
+            yearStr = year + "年检到期 ";
+        }
+
+        String speedStr = "";
+        if(speed != null && !speed.equals("")){
+            speedStr = speed + "万公里";
+        }
+        txtTitle.setText(brand + " " + yearStr + speedStr);
+    }
+
     public void postData1(){
         if (validateData1()==false){
             return;

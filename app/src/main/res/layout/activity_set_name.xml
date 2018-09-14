@@ -61,6 +61,7 @@
                         android:focusable="true"
                         android:layout_centerVertical="true">
                         <TextView
+                            android:id="@+id/txt_save_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
@@ -69,8 +70,7 @@
                             android:textSize="16sp"
                             android:textColor="@color/colorBackground"
                             android:paddingRight="10dp"
-                            android:focusable="false"
-                            android:clickable="false"/>
+                            android:clickable="true"/>
                     </RelativeLayout>
                 </RelativeLayout>
             </RelativeLayout>
@@ -102,6 +102,7 @@
                     android:paddingRight="10dp"
                     android:paddingTop="15dp"
                     android:paddingBottom="15dp"
+                    android:clickable="true"
                     android:src="@drawable/navi_cancel"/>
             </RelativeLayout>
             <TextView

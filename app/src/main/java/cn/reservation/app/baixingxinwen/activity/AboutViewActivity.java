@@ -29,6 +29,7 @@ public class AboutViewActivity extends AppCompatActivity implements DialogInterf
     private String deviceID;
     private String hId;
     private String title;
+    private String isWebNotification;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,24 +42,54 @@ public class AboutViewActivity extends AppCompatActivity implements DialogInterf
         webview =(WebView)findViewById(R.id.webHelpView);
         title = (String) intent.getSerializableExtra("title");
         hId = (String) intent.getSerializableExtra("hId");
+
+        String loadUrl = APIManager.User_URL+"help/paper/"+hId;
+        isWebNotification = (String) intent.getSerializableExtra("isWebNotification");
+        if(isWebNotification != null && isWebNotification.equals("1")){
+            loadUrl = APIManager.User_URL+"announce/paper/"+hId;
+        }
+
         CommonUtils.customActionBar(mContext, this, true, title);
         webview.setWebViewClient(new WebViewClient());
-        webview.getSettings().setJavaScriptEnabled(true);
+//        webview.getSettings().setJavaScriptEnabled(true);
         webview.getSettings().setDomStorageEnabled(true);
         webview.setOverScrollMode(WebView.OVER_SCROLL_NEVER);
-        webview.loadUrl(APIManager.User_URL+"help/paper/"+hId);
+        webview.loadUrl(loadUrl);
     }
     @Override
     public void onBackPressed() {
+//        AboutViewActivity.this.finish();
+
         Intent intent;
-        intent = new Intent(AboutViewActivity.this, AboutActivity.class);
+        if(isWebNotification != null && isWebNotification.equals("1")){
+            intent = new Intent(AboutViewActivity.this, NotificationsActivity.class);
+            intent.putExtra("notificationType", "website");
+        }
+        else{
+            intent = new Intent(AboutViewActivity.this, AboutActivity.class);
+        }
+
         pActivity.startChildActivity("about_activity", intent);
     }
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if (keyCode == KeyEvent.KEYCODE_BACK) {
+//            AboutViewActivity.this.finish();
+//            return true;
+//        }
+//        return super.onKeyDown(keyCode, event);
+
+
         System.out.println("****event****" + event + "****" + keyCode);
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             Intent intent;
-            intent = new Intent(AboutViewActivity.this, HelpActivity.class);
+            if(isWebNotification != null && isWebNotification.equals("1")){
+                intent = new Intent(AboutViewActivity.this, NotificationsActivity.class);
+                intent.putExtra("notificationType", "website");
+            }
+            else{
+                intent = new Intent(AboutViewActivity.this, HelpActivity.class);
+            }
+
             pActivity.startChildActivity("help_activity", intent);
             return true;
         }

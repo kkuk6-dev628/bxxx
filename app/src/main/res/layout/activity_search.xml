@@ -94,6 +94,7 @@
                     android:layout_alignParentRight="true"
                     android:clickable="true"
                     android:focusable="true"
+                    android:paddingRight="15dp"
                     android:layout_centerVertical="true">
                     <ImageView
                         android:id="@+id/img_me_post"
@@ -255,7 +256,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#00000000"
-                android:gravity="center">
+                android:clickable="true"
+                android:gravity="center"
+                android:focusable="true">
 
                 <com.wang.avi.AVLoadingIndicatorView
                     android:id="@+id/AVLoadingIndicatorView"

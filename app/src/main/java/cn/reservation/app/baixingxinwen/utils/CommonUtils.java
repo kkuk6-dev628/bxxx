@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
@@ -25,18 +26,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import com.squareup.picasso.Transformation;
-import com.walnutlabs.android.ProgressHUD;
-
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.squareup.picasso.Transformation;
+import com.walnutlabs.android.ProgressHUD;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -45,9 +49,14 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Dictionary;
+import java.util.HashMap;
 
 import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.activity.ConfirmDialogActivity;
+import cn.reservation.app.baixingxinwen.api.NetRetrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CommonUtils {
 
@@ -84,6 +93,8 @@ public class CommonUtils {
     public static Dictionary regionData;
     public static int pay_type = -1;
     public static String tradeNo = "";
+
+    public static String channel_id = "";
 
     public static void initPostData(){
         data1.put("userID","");
@@ -162,6 +173,7 @@ public class CommonUtils {
         data1.put("carry_period","");
         data1.put("order","");
     }
+
     public static void customActionBar(Context context, final AppCompatActivity activity, boolean isShow, String title) {
         ActionBar actionBar =  activity.getSupportActionBar();
         if (!isShow) {
@@ -242,14 +254,38 @@ public class CommonUtils {
         dialog.getWindow().setLayout(CommonUtils.getPixelValue(context, 200), ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
-    public static void showAlertDialog(Context context, Activity activity, Dialog dialog, View view, int width) {
+    public static void showIndicator(Context context){
+
+    }
+
+    public static void showAlertDialog(Context context, String message, final View.OnClickListener clickListener){
+        final Dialog dialog = new Dialog(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.alert_message, null);
+
+        TextView messageText = view.findViewById(R.id.txt_message);
+        messageText.setText(message);
+        TextView btnOk = view.findViewById(R.id.btn_ok);
+        btnOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                if(clickListener != null){
+                    clickListener.onClick(view);
+                }
+            }
+        });
+        CommonUtils.showAlertDialog(context, dialog, view, 250);
+    }
+
+    public static void showAlertDialog(Context context, Dialog dialog, View view, int width) {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(view);
         dialog.show();
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         Rect displayRectangle = new Rect();
-        Window window = activity.getWindow();
+        Window window = ((Activity)context).getWindow();
         window.getDecorView().getWindowVisibleDisplayFrame(displayRectangle);
         dialog.getWindow().setLayout(CommonUtils.getPixelValue(context, width), ViewGroup.LayoutParams.WRAP_CONTENT);
     }
@@ -412,6 +448,33 @@ public class CommonUtils {
     public static String getUrlEncoded(String url) {
         String ALLOWED_URI_CHARS = "@#&=*+-_.,:!?()/~'%";
         return Uri.encode(url, ALLOWED_URI_CHARS);
+    }
+    public static void registerChannelId(final Context context){
+        final HashMap<String, Object> params = new HashMap<>();
+        final String url = "api/user/regdevice";
+        params.put("uid", userInfo.getUserID());
+        params.put("cid", channel_id);
+        params.put("platform", "android");
+        NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
+            @Override
+            public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+                try {
+                    JSONObject responseBody = response.body();
+                    if (responseBody != null && responseBody.getInt("code") == 1) {
+                        Log.d("Register Channel ID", "Channel ID : " + responseBody.getString("ret"));
+                    }
+                } catch (JSONException ex) {
+
+                }
+            }
+            @Override
+            public void onFailure(Call<JSONObject> call, Throwable t) {
+                //CommonUtils.dismissProgress(progressDialog);
+                Toast.makeText(context, "Add Channel Request failed", Toast.LENGTH_SHORT).show();
+            }
+
+        });
+
     }
 
     public static boolean isDateValid(int y, int m, int d){

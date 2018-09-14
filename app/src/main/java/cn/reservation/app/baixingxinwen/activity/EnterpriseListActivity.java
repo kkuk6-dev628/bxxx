@@ -8,18 +8,12 @@ import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -34,12 +28,10 @@ import java.util.ArrayList;
 
 import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.adapter.EnterpriseItemListAdapter;
-import cn.reservation.app.baixingxinwen.adapter.HistoryItemListAdapter;
 import cn.reservation.app.baixingxinwen.api.APIManager;
 import cn.reservation.app.baixingxinwen.utils.AnimatedActivity;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
 import cn.reservation.app.baixingxinwen.utils.EnterpriseItem;
-import cn.reservation.app.baixingxinwen.utils.HistoryItem;
 import cz.msebera.android.httpclient.Header;
 
 @SuppressWarnings("deprecation")
@@ -52,6 +44,7 @@ public class EnterpriseListActivity extends AppCompatActivity implements DialogI
     private ListView lstEnterprise;
     private String userID;
     public int mRegionID;
+    private String mCatid;
     private boolean allsel;
     public ArrayList<EnterpriseItem> enterpriseItems = new ArrayList<EnterpriseItem>();
     public EnterpriseItemListAdapter enterpriseItemListAdapter;
@@ -73,6 +66,7 @@ public class EnterpriseListActivity extends AppCompatActivity implements DialogI
 
         Intent intent = getIntent();
         mRegionID = intent.getIntExtra("RegionID", 0);
+        mCatid = intent.getStringExtra("order");
         SharedPreferences pref = getSharedPreferences("userData", MODE_PRIVATE);
         userID = Long.toString(pref.getLong("userID", 0));
         String enterprise = (String) intent.getSerializableExtra("enterprise");
@@ -127,6 +121,7 @@ public class EnterpriseListActivity extends AppCompatActivity implements DialogI
                 final ProgressHUD progressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, EnterpriseListActivity.this);
                 RequestParams params = new RequestParams();
                 params.put("page", mIntPage);
+                params.put("catid", mCatid);
                 String url = "business/list";
                 APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
                     @Override

@@ -8,14 +8,15 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TabWidget;
+import android.widget.TextView;
 import android.widget.Toast;
-
-//import com.theartofdev.edmodo.cropper.CropImage;
 
 import com.theartofdev.edmodo.cropper.CropImage;
 
@@ -27,6 +28,8 @@ import cn.reservation.app.baixingxinwen.api.WXAPI;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
 import cn.reservation.app.baixingxinwen.utils.UserInfo;
 
+//import com.theartofdev.edmodo.cropper.CropImage;
+
 @SuppressWarnings("deprecation")
 public class TabHostActivity extends TabActivity implements TabHost.OnTabChangeListener {
 
@@ -34,6 +37,9 @@ public class TabHostActivity extends TabActivity implements TabHost.OnTabChangeL
 
     private static final String[] TABS = {"HomeGroupActivity", "PostGroupActivity", "NewsGroupActivity", "MeGroupActivity"};
     private static final int[] TAB_INDICATOR = {R.drawable.home_selector, R.drawable.post_selector, R.drawable.news_selector, R.drawable.me_selector};
+    private final int SPLASH_DISPLAY_DURATION = 5000;
+    private int state = 0;
+    private final Handler handler = new Handler();
 
     public static TabHost tabs;
     public static TabWidget tabWidget;
@@ -48,6 +54,60 @@ public class TabHostActivity extends TabActivity implements TabHost.OnTabChangeL
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_host);
+
+        final RelativeLayout splash = (RelativeLayout) findViewById(R.id.adver_back);
+        new Handler().postDelayed(new Runnable(){
+            @Override
+            public void run() {
+                if(state==0) {
+                    splash.animate()
+                            .alpha(0f)
+                            .withEndAction(new Runnable() {
+                                @Override
+                                public void run() {
+                                    splash.setVisibility(View.GONE);
+                                }
+                            })
+                            .start();
+                }
+            }
+        }, SPLASH_DISPLAY_DURATION);
+        RelativeLayout rlt_adver_skip = (RelativeLayout) findViewById(R.id.rlt_adver_skip);
+        rlt_adver_skip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                splash.animate()
+                        .alpha(0f)
+                        .withEndAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                splash.setVisibility(View.GONE);
+                            }
+                        })
+                        .start();
+                state = 0;
+            }
+        });
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 4; i >-1; i--) {
+                    final int value = i;
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((TextView) findViewById(R.id.txt_adver_time)).setText(value+"S跳过");
+                        }
+                    });
+                }
+            }
+        };
+        new Thread(runnable).start();
 
         TabHostStack = TabHostActivity.this;
 
@@ -214,10 +274,15 @@ public class TabHostActivity extends TabActivity implements TabHost.OnTabChangeL
         String login_type = pref.getString("login_type", "normal");
         String login_username = pref.getString("login_username", "");
         String login_password = pref.getString("login_password", "");
+        String changeid = pref.getString("changeid", "");
+        String dateline = pref.getString("dateline", "");
 
         if (userID != 0) {
-            CommonUtils.userInfo = new UserInfo(userID, userName, userGender, userBirthday, userPhone, userPhoto, token, identify, password, uid, qq, wechat, mobile, baixingbi, level, login_type, login_username, login_password);
+            CommonUtils.userInfo = new UserInfo(userID, userName, userGender, userBirthday, userPhone, userPhoto, token, identify, password, uid, qq, wechat, mobile, baixingbi, level, login_type, login_username, login_password, changeid, dateline);
             CommonUtils.isLogin = true;
+            if(!CommonUtils.channel_id.isEmpty()){
+                CommonUtils.registerChannelId(this);
+            }
         } else {
             CommonUtils.isLogin = false;
         }
@@ -265,7 +330,7 @@ public class TabHostActivity extends TabActivity implements TabHost.OnTabChangeL
             }
         });
 
-        CommonUtils.showAlertDialog(this, this, dialog, view, 250);
+        CommonUtils.showAlertDialog(this, dialog, view, 250);
     }
 
     @Override

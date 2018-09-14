@@ -2,12 +2,13 @@ package com.walnutlabs.android;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.drawable.AnimationDrawable;
+import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.wang.avi.AVLoadingIndicatorView;
 
 public class ProgressHUD extends Dialog {
 	public ProgressHUD(Context context) {
@@ -38,6 +39,11 @@ public class ProgressHUD extends Dialog {
 			TextView txt = (TextView)dialog.findViewById(R.id.message);
 			txt.setText(message);
 		}
+
+		AVLoadingIndicatorView avi = (AVLoadingIndicatorView) dialog.findViewById(R.id.AVLoadingIndicatorView);
+		avi.setIndicator("LineScaleIndicator");
+		avi.setIndicatorColor(Color.RED);
+
 		dialog.setCancelable(cancelable);
 		dialog.setOnCancelListener(cancelListener);
 		dialog.getWindow().getAttributes().gravity=Gravity.CENTER;

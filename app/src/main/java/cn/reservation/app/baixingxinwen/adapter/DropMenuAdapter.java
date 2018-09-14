@@ -97,7 +97,7 @@ public class DropMenuAdapter implements MenuAdapter {
 //            return 0;
 //        }
 
-        return UIUtil.dp(mContext, 100);
+        return UIUtil.dp(mContext, 80);
     }
 
     @Override
@@ -124,8 +124,8 @@ public class DropMenuAdapter implements MenuAdapter {
                     view = inflater.inflate(R.layout.dropdown_search, null);
 
                     RelativeLayout rlt_price_search = (RelativeLayout) view.findViewById(R.id.rlt_price_search);
-                    ((EditText) view.findViewById(R.id.edit_min_price)).setHint("最低价（" + unit + "）");
-                    ((EditText) view.findViewById(R.id.edit_max_price)).setHint("最高价（" + unit + "）");
+                    ((EditText) view.findViewById(R.id.edit_min_price)).setHint("最低值（" + unit + "）");
+                    ((EditText) view.findViewById(R.id.edit_max_price)).setHint("最高值（" + unit + "）");
 
                     final View finalView = view;
                     rlt_price_search.setOnClickListener(new View.OnClickListener() {

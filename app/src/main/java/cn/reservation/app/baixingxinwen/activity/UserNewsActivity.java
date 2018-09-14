@@ -269,12 +269,12 @@ public class UserNewsActivity extends AppCompatActivity implements DialogInterfa
                                         starttime = starttime + " 发布";
                                     }
                                     if(!(endtime.equals("") || endtime.equals("null"))){
-                                        endtime = endtime + " 到期";
+                                        endtime = endtime + " 置顶";
                                     }else{
                                         endtime = "";
                                     }
                                     if(!(toptime.equals("") || toptime.equals("null"))){
-                                        toptime = toptime + " 置顶";
+                                        toptime = toptime + " 到期";
                                     }else{
                                         toptime = "";
                                     }

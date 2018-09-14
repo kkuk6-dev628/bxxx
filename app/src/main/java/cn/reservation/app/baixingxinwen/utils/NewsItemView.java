@@ -1,7 +1,6 @@
 package cn.reservation.app.baixingxinwen.utils;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -13,8 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import cn.reservation.app.baixingxinwen.R;
 
@@ -62,7 +59,7 @@ public class NewsItemView extends LinearLayout {
                     .with(mContext)
                     .load(newsItem.getmImage())
                     .placeholder(mImgPlaceholder)
-                    .resize(CommonUtils.getPixelValue(mContext, 80), CommonUtils.getPixelValue(mContext, 80))
+                    .resize(256, 0)
                     .into(mThumbnail);
         }
         mTitle = (TextView)findViewById(R.id.txt_my_news_title);
@@ -178,7 +175,7 @@ public class NewsItemView extends LinearLayout {
                     .with(mContext)
                     .load(thumbnail)
                     .placeholder(mImgPlaceholder)
-                    .resize(CommonUtils.getPixelValue(mContext, 80), CommonUtils.getPixelValue(mContext, 80))
+                    .resize(256, 0)
                     .into(mThumbnail);
         }
     }

@@ -6,8 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.os.Handler;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,7 +17,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -36,18 +35,16 @@ import com.walnutlabs.android.ProgressHUD;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import cn.reservation.app.baixingxinwen.api.APIManager;
-import cn.reservation.app.baixingxinwen.api.WXAPI;
-import cn.reservation.app.baixingxinwen.utils.FamilyMemberItem;
-import cz.msebera.android.httpclient.Header;
-
 import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Pattern;
 
 import cn.reservation.app.baixingxinwen.R;
+import cn.reservation.app.baixingxinwen.api.APIManager;
+import cn.reservation.app.baixingxinwen.api.WXAPI;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
+import cz.msebera.android.httpclient.Header;
 
 public class RegisterPatientInfoActivity extends ConfirmDialogActivity implements DialogInterface.OnCancelListener, View.OnClickListener {
 
@@ -304,7 +301,7 @@ public class RegisterPatientInfoActivity extends ConfirmDialogActivity implement
                 dialog.dismiss();
             }
         });
-        CommonUtils.showAlertDialog(mContext, this, dialog, view, 308);
+        CommonUtils.showAlertDialog(mContext, dialog, view, 308);
     }
 
     private int getFieldValue(ViewGroup dp, String field) {

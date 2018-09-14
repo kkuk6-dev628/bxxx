@@ -85,11 +85,11 @@ public class SearchItem {
             }
         }
 //        mTitle01 = title01;
-        mProperty01 = dictionaryUtils.getProperty("txt_property1");
+        mProperty01 = dictionaryUtils.getProperty("txt_property1").trim();
 //        mTitle02 = title02;
-        mProperty02 = dictionaryUtils.getProperty("txt_property2");
+        mProperty02 = dictionaryUtils.getProperty("txt_property2").trim();
 //        mTitle03 = title03;
-        mProperty03 = dictionaryUtils.getProperty("txt_property3");
+        mProperty03 = dictionaryUtils.getProperty("txt_property3").trim();
         mDesc = desc;
         mPrice = dictionaryUtils.getProperty("txt_home_favor_price");
         mFid = dictionaryUtils.getProperty("fid");
@@ -166,6 +166,20 @@ public class SearchItem {
 
     public String getmTitle01() {
         return mTitle01;
+    }
+
+    public String getGeneralDescription() {
+        String result = "";
+        if(mProperty01 == null) {
+            mProperty01 = "";
+        }
+        if(mProperty02 == null)
+            mProperty02 = "";
+        if(mProperty03 == null)
+            mProperty03 = "";
+
+
+        return mProperty01 + "\n" + mProperty02 + "\n" + mProperty03;
     }
 
     public void setmTitle01(String mTitle01) {

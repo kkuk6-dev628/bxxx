@@ -27,7 +27,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CalendarView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -36,9 +35,10 @@ import android.widget.Toast;
 import com.baoyz.actionsheet.ActionSheet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageActivity;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.walnutlabs.android.ProgressHUD;
 
@@ -57,13 +57,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.Callable;
 
 import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.api.APIManager;
 import cn.reservation.app.baixingxinwen.utils.AnimatedActivity;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
-import cn.reservation.app.baixingxinwen.utils.UserInfo;
 import cz.msebera.android.httpclient.Header;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -183,11 +181,22 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
         txt_my_level_title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MeActivity.this, MemberActivity.class);
-                pActivity.startChildActivity("member", intent);
+                Intent intent = new Intent(MeActivity.this, MoreActivity.class);
+                pActivity.startChildActivity("more", intent);
+//                Intent intent = new Intent(MeActivity.this, MemberActivity.class);
+//                pActivity.startChildActivity("member", intent);
             }
         });
+
+        TextView txt_my_level_date = (TextView) findViewById(R.id.txt_my_level_date);
+        String dateline = CommonUtils.userInfo.getDateline();
+        txt_my_level_date.setText(dateline);
+
         TextView txt_my_name_set = (TextView) findViewById(R.id.txt_my_name_set);
+        String changeid = CommonUtils.userInfo.getChangeid();
+        if(changeid != null && changeid.equals("1")){
+            txt_my_name_set.setVisibility(TextView.GONE);
+        }
         txt_my_name_set.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -232,7 +241,8 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
         }else{*/
             Picasso
                     .with(mContext)
-                    .load(myIconPath)
+                    .load(myIconPath).networkPolicy(NetworkPolicy.NO_CACHE)
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
                     .placeholder(mImgPlaceholder)
                     .transform(CommonUtils.getTransformation(mContext))
                     .into(imgMyPhoto);
@@ -325,9 +335,9 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
     private void showAlertLogout() {
         final Dialog dialog = new Dialog(mContext);
         LayoutInflater inflater = getLayoutInflater();
-        View view = inflater.inflate(R.layout.alert_logout, null);
-        TextView btnLogout = (TextView) view.findViewById(R.id.btn_logout);
-        TextView btnExit = (TextView) view.findViewById(R.id.btn_exit);
+        View view = inflater.inflate(R.layout.alert_exit, null);
+        TextView btnLogout = (TextView) view.findViewById(R.id.btn_ok);
+        TextView btnExit = (TextView) view.findViewById(R.id.btn_cancel);
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -376,7 +386,7 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
             }
         });
 
-        CommonUtils.showAlertDialog(mContext, this, dialog, view, 216);
+        CommonUtils.showAlertDialog(mContext, dialog, view, 216);
     }
     private void signEvery() {
         //final ProgressHUD progressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, VerifyPhoneActivity.this);
@@ -807,7 +817,8 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
         });
     }
     public void onSelectFaceImageClick() {
-        CropImage.activity().setGuidelines(CropImageView.Guidelines.ON).start(this);
+//        CropImage.activity().setGuidelines(CropImageView.Guidelines.ON).start(this);
+        CropImage.activity().setAspectRatio(1, 1).start(this);
     }
     public void onSelectFaceImageClick(View view) {
         CropImage.activity().setGuidelines(CropImageView.Guidelines.ON).start(this);

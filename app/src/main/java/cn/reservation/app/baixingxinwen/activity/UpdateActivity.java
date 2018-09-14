@@ -1,6 +1,5 @@
 package cn.reservation.app.baixingxinwen.activity;
 
-import android.app.TabActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -43,7 +42,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,14 +51,19 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Locale;
 
 import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.api.APIManager;
+import cn.reservation.app.baixingxinwen.api.NetRetrofit;
 import cn.reservation.app.baixingxinwen.utils.AnimatedActivity;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
 import cz.msebera.android.httpclient.Header;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 @SuppressWarnings("deprecation")
 public class UpdateActivity extends AppCompatActivity implements DialogInterface.OnCancelListener, ActionSheet.ActionSheetListener{
@@ -147,6 +150,26 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
             }
         });
     }
+    
+    private String getRealRegion(JSONObject regionObj, String regionID){
+        String[] separated = regionID.split("\\.");
+        String mainRegion = null;
+        try {
+            mainRegion = regionObj.getJSONObject("main").optString(separated[0]);
+            if(separated.length > 1){
+                return mainRegion + " " + regionObj.getJSONObject("yanji").optString(separated[1]);
+            }
+            else{
+                return mainRegion;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return "";
+        
+    }
+    
+    
     public void setData(){
         String title ="信息发布更新";
         RelativeLayout rlt_post_data;
@@ -1065,7 +1088,7 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                                 CommonUtils.data1.put("house_type",house_type);
                                 CommonUtils.data1.put("square_range",square_range);
                                 if(arrayObj!=null && arrayObj.length>0 && arrayObj[0]!=null) {
-                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + arrayObj[0].optString(region));
+                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + getRealRegion(arrayObj[0], region));
                                 }
                                 if(arrayObj!=null && arrayObj.length>1 && arrayObj[1]!=null) {
                                     ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data2))).setText("" + arrayObj[1].optString(house_number));
@@ -1165,7 +1188,7 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                                 CommonUtils.data1.put("house_type",house_type);
                                 CommonUtils.data1.put("square_range",square_range);
                                 if(arrayObj!=null && arrayObj.length>0 && arrayObj[0]!=null) {
-                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + arrayObj[0].optString(region));
+                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + getRealRegion(arrayObj[0], region));
                                 }
                                 if(arrayObj!=null && arrayObj.length>1 && arrayObj[1]!=null) {
                                     ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data2))).setText("" + arrayObj[1].optString(house_number));
@@ -1259,7 +1282,7 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                                 CommonUtils.data1.put("region",region);
                                 CommonUtils.data1.put("type",type);
                                 if(arrayObj!=null && arrayObj.length>0 && arrayObj[0]!=null) {
-                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + arrayObj[0].optString(region));
+                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + getRealRegion(arrayObj[0], region));
                                 }
                                 if(arrayObj!=null && arrayObj.length>1 && arrayObj[1]!=null) {
                                     ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data2))).setText("" + arrayObj[1].optString(type));
@@ -1339,8 +1362,8 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                                 CommonUtils.data1.put("experience", experience);
                                 CommonUtils.data1.put("level", level);
                                 if(arrayObj!=null && arrayObj.length>0 && arrayObj[0]!=null) {
-                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + arrayObj[0].optString(region));
-                                    CommonUtils.data1.put("region_desc",arrayObj[0].optString(region));
+                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + getRealRegion(arrayObj[0], region));
+                                    CommonUtils.data1.put("region_desc",getRealRegion(arrayObj[0], region));
                                 }
                                 if(arrayObj!=null && arrayObj.length>1 && arrayObj[1]!=null) {
                                     ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data2))).setText("" + arrayObj[1].optString(education));
@@ -1423,7 +1446,7 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                                 CommonUtils.data1.put("region",region);
                                 CommonUtils.data1.put("type",type);
                                 if(arrayObj!=null && arrayObj.length>0 && arrayObj[0]!=null) {
-                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + arrayObj[0].optString(region));
+                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + getRealRegion(arrayObj[0], region));
                                 }
                                 if(arrayObj!=null && arrayObj.length>1 && arrayObj[1]!=null) {
                                     ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data2))).setText("" + arrayObj[1].optString(type));
@@ -1493,7 +1516,7 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                                 CommonUtils.data1.put("region",region);
                                 CommonUtils.data1.put("car_type",car_type);
                                 if(arrayObj!=null && arrayObj.length>0 && arrayObj[0]!=null) {
-                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + arrayObj[0].optString(region));
+                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + getRealRegion(arrayObj[0], region));
                                 }
                                 if(arrayObj!=null && arrayObj.length>1 && arrayObj[1]!=null) {
                                     ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data2))).setText("" + arrayObj[1].optString(car_type));
@@ -1571,7 +1594,7 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                                 CommonUtils.data1.put("type",type);
                                 CommonUtils.data1.put("level", level);
                                 if(arrayObj!=null && arrayObj.length>0 && arrayObj[0]!=null) {
-                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + arrayObj[0].optString(region));
+                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + getRealRegion(arrayObj[0], region));
                                 }
                                 if(arrayObj!=null && arrayObj.length>1 && arrayObj[1]!=null) {
                                     ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data2))).setText("" + arrayObj[1].optString(level));
@@ -1647,7 +1670,7 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                                 CommonUtils.data1.put("group",group);
                                 CommonUtils.data1.put("type",type);
                                 if(arrayObj!=null && arrayObj.length>0 && arrayObj[0]!=null) {
-                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + arrayObj[0].optString(region));
+                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + getRealRegion(arrayObj[0], region));
                                 }
                                 if(arrayObj!=null && arrayObj.length>1 && arrayObj[1]!=null) {
                                     ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data2))).setText("" + arrayObj[1].optString(group));
@@ -1723,7 +1746,7 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                                 CommonUtils.data1.put("group",group);
                                 CommonUtils.data1.put("type",type);
                                 if(arrayObj!=null && arrayObj.length>0 && arrayObj[0]!=null) {
-                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + arrayObj[0].optString(region));
+                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + getRealRegion(arrayObj[0], region));
                                 }
                                 if(arrayObj!=null && arrayObj.length>1 && arrayObj[1]!=null) {
                                     ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data2))).setText("" + arrayObj[1].optString(group));
@@ -1800,7 +1823,7 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                                 CommonUtils.data1.put("sex",sex);
                                 CommonUtils.data1.put("type",type);
                                 if(arrayObj!=null && arrayObj.length>0 && arrayObj[0]!=null) {
-                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + arrayObj[0].optString(region));
+                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + getRealRegion(arrayObj[0], region));
                                 }
                                 if(arrayObj!=null && arrayObj.length>1 && arrayObj[1]!=null) {
                                     ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data2))).setText("" + arrayObj[1].optString(sex));
@@ -1881,7 +1904,7 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                                 CommonUtils.data1.put("type",type);
                                 CommonUtils.data1.put("price",price);
                                 if(arrayObj!=null && arrayObj.length>0 && arrayObj[0]!=null) {
-                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + arrayObj[0].optString(region));
+                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + getRealRegion(arrayObj[0], region));
                                 }
                                 if(arrayObj!=null && arrayObj.length>1 && arrayObj[1]!=null) {
                                     ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data2))).setText("" + arrayObj[1].optString(group));
@@ -1963,7 +1986,7 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                                 CommonUtils.data1.put("company",company);
                                 CommonUtils.data1.put("type",type);
                                 if(arrayObj!=null && arrayObj.length>0 && arrayObj[0]!=null) {
-                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + arrayObj[0].optString(region));
+                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + getRealRegion(arrayObj[0], region));
                                 }
                                 if(arrayObj!=null && arrayObj.length>1 && arrayObj[1]!=null) {
                                     ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data2))).setText("" + arrayObj[1].optString(company));
@@ -2042,7 +2065,7 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                                 CommonUtils.data1.put("period",period);
                                 CommonUtils.data1.put("type",type);
                                 if(arrayObj!=null && arrayObj.length>0 && arrayObj[0]!=null) {
-                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + arrayObj[0].optString(region));
+                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + getRealRegion(arrayObj[0], region));
                                 }
                                 if(arrayObj!=null && arrayObj.length>1 && arrayObj[1]!=null) {
                                     ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data2))).setText("" + arrayObj[1].optString(group));
@@ -2123,7 +2146,7 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                                 CommonUtils.data1.put("award_method",award_method);
                                 CommonUtils.data1.put("type",type);
                                 if(arrayObj!=null && arrayObj.length>0 && arrayObj[0]!=null) {
-                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + arrayObj[0].optString(region));
+                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + getRealRegion(arrayObj[0], region));
                                 }
                                 if(arrayObj!=null && arrayObj.length>1 && arrayObj[1]!=null) {
                                     ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data2))).setText("" + arrayObj[1].optString(source));
@@ -2203,7 +2226,7 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                                 CommonUtils.data1.put("order",order);
                                 CommonUtils.data1.put("type",type);
                                 if(arrayObj!=null && arrayObj.length>0 && arrayObj[0]!=null) {
-                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + arrayObj[0].optString(region));
+                                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + getRealRegion(arrayObj[0], region));
                                 }
                                 if(arrayObj!=null && arrayObj.length>1 && arrayObj[1]!=null) {
                                     ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data2))).setText("" + arrayObj[1].optString(type));
@@ -3180,45 +3203,75 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
             @Override
             public void run() {
                 final ProgressHUD progressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, UpdateActivity.this);
-                RequestParams params = new RequestParams();
-                params.put("fid", fid);
+//                RequestParams params = new RequestParams();
+//                params.put("fid", fid);
                 if(sortid==null || fid.equals("")) {
                     CommonUtils.dismissProgress(progressDialog);
                     Intent intent = new Intent(UpdateActivity.this, PostCategoryActivity.class);
                     pActivity.startChildActivity("post_category", intent);
                 }
-                params.put("sortid", sortid);
-                String url = "news/postoption";
-                System.out.println("sortid++++"+sortid);
-                System.out.println("fid++++"+fid);
-                APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
+//                params.put("sortid", sortid);
+//                String url = "news/postoption";
+//                System.out.println("sortid++++"+sortid);
+//                System.out.println("fid++++"+fid);
+
+
+                HashMap<String, Object> params1 = new HashMap<String, Object>();
+                params1.put("sortid", sortid);
+                params1.put("fid", fid);
+                String url1 = "api/news/postoption";
+
+
+                NetRetrofit.getInstance().post(url1, params1, new Callback<JSONObject>() {
                     @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    public void onResponse(Call<JSONObject> call, Response<JSONObject> resp) {
+                        CommonUtils.dismissProgress(progressDialog);
+                        JSONObject response = resp.body();
                         try {
-                            CommonUtils.dismissProgress(progressDialog);
                             if (response.getInt("code") == 1) {
                                 JSONObject list = response.getJSONObject("option");
-                                System.out.print(list);
+//                                System.out.print(list);
                                 initPostOptionView(list);
                             }
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
 
                     @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    public void onFailure(Call<JSONObject> call, Throwable t) {
                         progressDialog.dismiss();
                         Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
                     }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        progressDialog.dismiss();
-                        Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
-                    }
                 });
+//                APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
+//                    @Override
+//                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//                        try {
+//                            CommonUtils.dismissProgress(progressDialog);
+//                            if (response.getInt("code") == 1) {
+//                                JSONObject list = response.getJSONObject("option");
+//                                System.out.print(list);
+//                                initPostOptionView(list);
+//                            }
+//
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+//                        progressDialog.dismiss();
+//                        Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    @Override
+//                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                        progressDialog.dismiss();
+//                        Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
+//                    }
+//                });
             }
         }, 5);
     }

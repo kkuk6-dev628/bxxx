@@ -120,6 +120,7 @@ public class HelpActivity extends AppCompatActivity{
 
     @Override
     public void onBackPressed() {
+
         Intent intent;
         intent = new Intent(HelpActivity.this, MeActivity.class);
         pActivity.startChildActivity("me_activity", intent);

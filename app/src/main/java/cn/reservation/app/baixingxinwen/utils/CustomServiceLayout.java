@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,8 +20,6 @@ import java.util.HashMap;
 
 import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.activity.EnterpriseListActivity;
-import cn.reservation.app.baixingxinwen.activity.FullSearchActivity;
-import cn.reservation.app.baixingxinwen.activity.SearchActivity;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -286,16 +283,19 @@ public class CustomServiceLayout extends LinearLayout implements View.OnClickLis
             case "service_phone3"://便民电话-房屋维修
                 intent = new Intent(this.context, EnterpriseListActivity.class);
                 intent.putExtra("enterprise", "房屋维修");
+                intent.putExtra("order", "3");
                 pActivity.startChildActivity("activity_enterprise", intent);
                 break;
             case "service_phone2"://便民电话-代驾
                 intent = new Intent(this.context, EnterpriseListActivity.class);
                 intent.putExtra("enterprise", "代驾");
+                intent.putExtra("order", "2");
                 pActivity.startChildActivity("activity_enterprise", intent);
                 break;
             case "service_phone1"://便民电话-跑腿
                 intent = new Intent(this.context, EnterpriseListActivity.class);
                 intent.putExtra("enterprise", "跑腿");
+                intent.putExtra("order", "1");
                 pActivity.startChildActivity("activity_enterprise", intent);
                 break;
             default:

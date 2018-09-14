@@ -22,9 +22,11 @@ public class UserInfo {
     private String loginType;
     private String loginUsername;
     private String loginPassword;
+    private String changeid;
+    private String dateline;
 
     public UserInfo(long userID, String userName, int userGender, String userBirthday, String userPhone, String userPhoto,
-                    String token, String userIdentify, String userPassword, String uid, String userQQ, String userWeixin, String userJoinMobile, String baixingbi, String level, String loginType, String loginUsername, String loginPassword) {
+                    String token, String userIdentify, String userPassword, String uid, String userQQ, String userWeixin, String userJoinMobile, String baixingbi, String level, String loginType, String loginUsername, String loginPassword, String changeid, String dateline) {
         this.userID = userID;
         this.userName = userName;
         this.userGender = userGender;
@@ -43,6 +45,8 @@ public class UserInfo {
         this.loginType = loginType;
         this.loginUsername = loginUsername;
         this.loginPassword = loginPassword;
+        this.changeid = changeid;
+        this.dateline = dateline;
     }
 
     public String getToken() {
@@ -177,5 +181,21 @@ public class UserInfo {
 
     public void setLoginPassword(String loginPassword) {
         this.loginPassword = loginPassword;
+    }
+
+    public String getChangeid() {
+        return changeid;
+    }
+
+    public void setChangeid(String changeid) {
+        this.changeid = changeid;
+    }
+
+    public String getDateline() {
+        return dateline;
+    }
+
+    public void setDateline(String dateline) {
+        this.dateline = dateline;
     }
 }

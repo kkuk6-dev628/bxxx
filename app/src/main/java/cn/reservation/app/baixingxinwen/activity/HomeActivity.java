@@ -25,7 +25,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -42,11 +41,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.adapter.HomeSliderAdapter;
 import cn.reservation.app.baixingxinwen.adapter.SearchItemListAdapter;
 import cn.reservation.app.baixingxinwen.api.APIManager;
+import cn.reservation.app.baixingxinwen.api.NetRetrofit;
 import cn.reservation.app.baixingxinwen.utils.AnimatedActivity;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
 import cn.reservation.app.baixingxinwen.utils.CustomCategoryLayout;
@@ -55,12 +56,15 @@ import cn.reservation.app.baixingxinwen.utils.DictionaryUtils;
 import cn.reservation.app.baixingxinwen.utils.SearchItem;
 import cn.reservation.app.baixingxinwen.widget.ImbeddedListView;
 import cn.reservation.app.baixingxinwen.widget.PageListScrollView;
-import cz.msebera.android.httpclient.Header;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 @SuppressWarnings("deprecation")
 public class HomeActivity extends AppCompatActivity implements DialogInterface.OnCancelListener,PageListScrollView.OnScrollToBottomListener, View.OnClickListener {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
+    public static SharedPreferences sharedPref;
 
     public ProgressHUD mProgressDialog;
     public Resources res;
@@ -91,6 +95,7 @@ public class HomeActivity extends AppCompatActivity implements DialogInterface.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        sharedPref = this.getPreferences(Context.MODE_PRIVATE);
 
         config = new Configuration();
         mContext = TabHostActivity.TabHostStack;
@@ -420,7 +425,7 @@ public class HomeActivity extends AppCompatActivity implements DialogInterface.O
                 dialog.dismiss();
             }
         });
-        CommonUtils.showAlertDialog(mContext, this, dialog, view, 216);
+        CommonUtils.showAlertDialog(mContext, dialog, view, 216);
     }
 
     private void getBanner() {
@@ -431,11 +436,12 @@ public class HomeActivity extends AppCompatActivity implements DialogInterface.O
                 RequestParams params = new RequestParams();
 //                params.put("ishome", "true");
 //                params.put("page", mIntPage);
-                String url = "ui/updateHomeAdverts";
-                APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
+                String url = "api/ui/updateHomeAdverts";
+                NetRetrofit.getInstance().post(url, new HashMap<String, Object>(), new Callback<JSONObject>() {
                     @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    public void onResponse(Call<JSONObject> call, Response<JSONObject> resp) {
                         try {
+                            JSONObject response = resp.body();
                             if (response.getInt("code") == 1) {
                                 //isLoadMore = response.getBoolean("hasmore");
                                 System.out.println("img"+response);
@@ -498,34 +504,35 @@ public class HomeActivity extends AppCompatActivity implements DialogInterface.O
                             }
 
                         } catch (JSONException e) {
+                            Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                         }
                     }
 
                     @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    public void onFailure(Call<JSONObject> call, Throwable t) {
                         //progressDialog.dismiss();
                         Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
                     }
 
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        //progressDialog.dismiss();
-                        Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
-                    }
+//                    @Override
+//                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                        //progressDialog.dismiss();
+//                        Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
+//                    }
                 });
             }
         }, 5);
     }
 
     private void getCategory() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
 
 
                 //final ProgressHUD progressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, HomeActivity.this);
-                RequestParams params = new RequestParams();
+                HashMap<String, Object> params = new HashMap<String, Object>();
                 SharedPreferences prefs = getSharedPreferences("bxxx", MODE_PRIVATE);
 //                SharedPreferences sharedPref = homeActivity.getPreferences(Context.MODE_PRIVATE);
                 final SharedPreferences.Editor editor = prefs.edit();
@@ -537,11 +544,13 @@ public class HomeActivity extends AppCompatActivity implements DialogInterface.O
 
                 params.put("updateTime", updateTime);
 
-                final String url = "ui/update";
-                APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
+                final String url = "api/ui/update";
+                NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
                     @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    public void onResponse(Call<JSONObject> call, Response<JSONObject> resp) {
                         try {
+                            JSONObject response = resp.body();
+                            assert response != null;
                             if (response.getInt("code") == 1) {
                                 //isLoadMore = response.getBoolean("hasmore");
                                 System.out.println("img"+response);
@@ -668,39 +677,41 @@ public class HomeActivity extends AppCompatActivity implements DialogInterface.O
 
 
                         } catch (JSONException e) {
+                            Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                         }
                     }
 
                     @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    public void onFailure(Call<JSONObject> call, Throwable t) {
                         //progressDialog.dismiss();
                         Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
                     }
 
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        //progressDialog.dismiss();
-                        Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
-                    }
+//                    @Override
+//                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                        //progressDialog.dismiss();
+//                        Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
+//                    }
                 });
-            }
-        }, 5);
+//            }
+//        }, 5);
     }
 
     private void getArticle() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
                 //final ProgressHUD progressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, HomeActivity.this);
-                RequestParams params = new RequestParams();
+                HashMap<String, Object> params = new HashMap<String, Object>();
                 params.put("ishome", "true");
                 params.put("page", mIntPage);
-                String url = "news/list";
-                APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
+                String url = "api/news/list";
+                NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
                     @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    public void onResponse(Call<JSONObject> call, Response<JSONObject> resp) {
                         try {
+                            JSONObject response = resp.body();
                             if (response.getInt("code") == 1) {
                                 //isLoadMore = response.getBoolean("hasmore");
                                 System.out.println("img"+response);
@@ -753,23 +764,24 @@ public class HomeActivity extends AppCompatActivity implements DialogInterface.O
 
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    public void onFailure(Call<JSONObject> call, Throwable t) {
                         //progressDialog.dismiss();
                         Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
                     }
 
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        //progressDialog.dismiss();
-                        Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
-                    }
+//                    @Override
+//                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                        //progressDialog.dismiss();
+//                        Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
+//                    }
                 });
-            }
-        }, 5);
+//            }
+//        }, 5);
     }
 /*
     private void initFavorView(JSONArray list)

@@ -27,15 +27,22 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.walnutlabs.android.ProgressHUD;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.api.APIManager;
+import cn.reservation.app.baixingxinwen.api.NetRetrofit;
 import cn.reservation.app.baixingxinwen.utils.AnimatedActivity;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
 import cn.reservation.app.baixingxinwen.wxapi.OnResponseListener;
 import cn.reservation.app.baixingxinwen.wxapi.WXShare;
 import cz.msebera.android.httpclient.Header;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 //import static com.squareup.picasso.Utils.getResources;
 
@@ -62,6 +69,8 @@ public class RoomDetailActivity extends AppCompatActivity implements DialogInter
     private String author;
     private int showAction;
     private GestureDetector gestureDetector;
+    private ProgressHUD mProgressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +89,14 @@ public class RoomDetailActivity extends AppCompatActivity implements DialogInter
             userID = "";
         deviceID = Secure.getString(getContentResolver(), Secure.ANDROID_ID);
         webview =(WebView)findViewById(R.id.webView);
+//        mProgressDialog = ProgressHUD.show(mContext, "", true, false, this);
 
+//        webview.setWebViewClient(new WebViewClient() {
+//
+//            public void onPageFinished(WebView view, String url) {
+//                mProgressDialog.dismiss();
+//            }
+//        });
         fId = (String) intent.getSerializableExtra("fid");
         sortId = (String) intent.getSerializableExtra("sortid");
         newsId = (String) intent.getSerializableExtra("newsId");
@@ -145,10 +161,54 @@ public class RoomDetailActivity extends AppCompatActivity implements DialogInter
             public void onClick(View view) {
                 if(CommonUtils.isLogin) {
                     //reportPaper();
-                    Intent intent = new Intent(RoomDetailActivity.this, ReportActivity.class);
-                    intent.putExtra("from_activity", "room_detail");
-                    RoomDetailActivity.this.startActivityForResult(intent, CommonUtils.REQUEST_CODE_LOGIN);
-                    RoomDetailActivity.this.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
+                    mProgressDialog = ProgressHUD.show(mContext, "", true, false, RoomDetailActivity.this);
+                    HashMap<String, Object> params = new HashMap<String, Object>();
+
+                    params.put("uid", userID);
+                    params.put("tid", newsId);
+
+                    final String url = "api/news/checkreport";
+                    NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>(){
+
+                        @Override
+                        public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+                            JSONObject responseBody = response.body();
+                            assert responseBody != null;
+                            try {
+                                if (responseBody.getInt("code") == 1) {
+                                    if(responseBody.getInt("ret") == 1){
+                                        mProgressDialog.dismiss();
+                                        CommonUtils.showAlertDialog(mContext,
+                                                res.getString(R.string.report_received_message), null);
+                                    }
+                                    else{
+                                        mProgressDialog.dismiss();
+                                        Intent intent = new Intent(RoomDetailActivity.this, ReportActivity.class);
+                                        intent.putExtra("from_activity", "room_detail");
+                                        intent.putExtra("tid", newsId);
+                                        intent.putExtra("fid", fId);
+                                        RoomDetailActivity.this.startActivityForResult(intent, CommonUtils.REQUEST_CODE_LOGIN);
+                                        RoomDetailActivity.this.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
+                                    }
+                                }
+                                else{
+                                    Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
+                                    mProgressDialog.dismiss();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
+                                mProgressDialog.dismiss();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<JSONObject> call, Throwable t) {
+                            Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                            mProgressDialog.dismiss();
+                        }
+                    });
+
                 }else{
                     Intent intent = new Intent(RoomDetailActivity.this, LoginActivity.class);
                     intent.putExtra("from_activity", "room_detail");

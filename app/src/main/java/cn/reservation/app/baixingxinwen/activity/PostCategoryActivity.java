@@ -1,23 +1,27 @@
 package cn.reservation.app.baixingxinwen.activity;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import cn.reservation.app.baixingxinwen.R;
+import cn.reservation.app.baixingxinwen.api.NetRetrofit;
 import cn.reservation.app.baixingxinwen.utils.AnimatedActivity;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 @SuppressWarnings("deprecation")
 public class PostCategoryActivity extends AppCompatActivity implements View.OnClickListener{
@@ -314,63 +318,228 @@ public class PostCategoryActivity extends AppCompatActivity implements View.OnCl
             iv_img_cate12.setImageResource(R.drawable.navi_down_);
         }
         else {
+            String fid = "";
+            int sortid = -1;
             Intent intent = new Intent(PostCategoryActivity.this, PostActivity.class);
-            if (id == R.id.rlt_cate00)//房屋出售
+            if (id == R.id.rlt_cate00) {//房屋出售
+                fid = "2";
+                sortid = 1;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "1");
-            else if (id == R.id.rlt_cate00a)//房屋求购
+            }
+
+            else if (id == R.id.rlt_cate00a) {//房屋求购
+                fid = "2";
+                sortid = 56;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "1a");
-            else if (id == R.id.rlt_cate01) //房屋出租
+            }
+            else if (id == R.id.rlt_cate01) { //房屋出租
+                fid = "2";
+                sortid = 4;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "2");
-            else if (id == R.id.rlt_cate02) //店铺出兑
+            }
+            else if (id == R.id.rlt_cate02) { //店铺出兑
+                fid = "93";
+                sortid = 33;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "3");
-            else if (id == R.id.rlt_cate03) //招兼职
+            }
+            else if (id == R.id.rlt_cate03) {//招兼职
+                fid = "38";
+                sortid = 7;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "4");
-            else if (id == R.id.rlt_cate03a)//求兼职
+            }
+            else if (id == R.id.rlt_cate03a) {//求兼职
+                fid = "38";
+                sortid = 28;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "4a");
-            else if (id == R.id.rlt_cate03b) //招聘全职
+            }
+            else if (id == R.id.rlt_cate03b) {//招聘全职
+                fid = "38";
+                sortid = 53;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "4b");
-            else if (id == R.id.rlt_cate04) //求职简历
+            }
+            else if (id == R.id.rlt_cate04) {//求职简历
+                fid = "38";
+                sortid = 8;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "5");
-            else if (id == R.id.rlt_cate05) //便民服务
+            }
+            else if (id == R.id.rlt_cate05) { //便民服务
+                fid = "42";
+                sortid = 13;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "6");
-            else if (id == R.id.rlt_cate05a) //便民求助
+            }
+            else if (id == R.id.rlt_cate05a) { //便民求助
+                fid = "42";
+                sortid = 34;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "6a");
-            else if (id == R.id.rlt_cate06) //车辆交易 - 车辆出租
+            }
+            else if (id == R.id.rlt_cate06) {//车辆交易 - 车辆出租
+                fid = "39";
+                sortid = 58;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "7");
-             else if (id == R.id.rlt_cate06a) //车辆交易 - 车辆求租
+            }
+             else if (id == R.id.rlt_cate06a) { //车辆交易 - 车辆求租
+                fid = "39";
+                sortid = 57;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "7a");
-            else if (id == R.id.rlt_cate06b)//车辆交易 - 车辆出售
+            }
+            else if (id == R.id.rlt_cate06b) {//车辆交易 - 车辆出售
+                fid = "39";
+                sortid = 2;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "7b");
-            else if (id == R.id.rlt_cate06c) //车辆交易 - 车辆求购
+            }
+            else if (id == R.id.rlt_cate06c) { //车辆交易 - 车辆求购
+                fid = "39";
+                sortid = 30;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "7c");
-            else if (id == R.id.rlt_cate07) //二手买卖 -物品出售
+            }
+            else if (id == R.id.rlt_cate07) { //二手买卖 -物品出售
+                fid = "40";
+                sortid = 3;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "8");
-            else if (id == R.id.rlt_cate07a) //二手买卖 -物品求购
+            }
+            else if (id == R.id.rlt_cate07a) { //二手买卖 -物品求购
+                fid = "40";
+                sortid = 29;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "8a");
-            else if (id == R.id.rlt_cate08) //打折促销
+            }
+            else if (id == R.id.rlt_cate08) { //打折促销
+                fid = "107";
+                sortid = 54;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "9");
-            else if (id == R.id.rlt_cate09) //招商加盟
+            }
+            else if (id == R.id.rlt_cate09) {//招商加盟
+                fid = "44";
+                sortid = 60;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "10");
-            else if (id == R.id.rlt_cate10) //婚姻交友
+            }
+            else if (id == R.id.rlt_cate10) { //婚姻交友
+                fid = "48";
+                sortid = 15;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "11");
-            else if (id == R.id.rlt_cate10a) //婚姻交友
+            }
+            else if (id == R.id.rlt_cate10a) {//婚姻交友
+                fid = "48";
+                sortid = 16;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "11a");
-            else if (id == R.id.rlt_cate11) //教育培训
+            }
+            else if (id == R.id.rlt_cate11) {//教育培训
+                fid = "74";
+                sortid = 21;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "12");
-            else if (id == R.id.rlt_cate12) //求购号码 - 电话号码
+            }
+            else if (id == R.id.rlt_cate12) {//求购号码 - 电话号码
+                fid = "94";
+                sortid = 40;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "13");
-            else if (id == R.id.rlt_cate12a) //出售号码 - 电话号码
+            }
+            else if (id == R.id.rlt_cate12a) { //出售号码 - 电话号码
+                fid = "94";
+                sortid = 41;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "13a");
-            else if (id == R.id.rlt_cate13) //出国资讯
+            }
+            else if (id == R.id.rlt_cate13) {//出国资讯
+                fid = "83";
+                sortid = 24;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "14");
-            else if (id == R.id.rlt_cate14) //宠物天地
+            }
+            else if (id == R.id.rlt_cate14) {//宠物天地
+                fid = "92";
+                sortid = 32;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "15");
-            else if (id == R.id.rlt_cate15) //旅游专栏
+            }
+            else if (id == R.id.rlt_cate15) {//旅游专栏
+                fid = "50";
+                sortid = 61;
+                intent.putExtra("fid", fid);
+                intent.putExtra("sortid", Integer.toString(sortid));
                 intent.putExtra("PostItem", "16");
+            }
             else
                 intent = null;
-            if (intent != null)
-                PostCategoryActivity.this.startActivityForResult(intent, CommonUtils.REQUEST_CODE_ANOTHER);
+            if (intent != null) {
+                final Intent finalIntent = intent;
+                HashMap<String, Object> params = new HashMap<String, Object>();
+                params.put("uid", CommonUtils.userInfo.getUserID());
+                params.put("fid", fid);
+                params.put("sortid", Integer.toString(sortid));
+                String url = "api/post/limit";
+
+                NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
+                    @Override
+                    public void onResponse(Call<JSONObject> call, Response<JSONObject> resp) {
+                        try {
+                            JSONObject response = resp.body();
+                            if (response.getInt("ret") == 1) {
+                                PostCategoryActivity.this.startActivityForResult(finalIntent, CommonUtils.REQUEST_CODE_ANOTHER);
+                            } else {
+                                CommonUtils.showAlertDialog(mContext, "您在本版块的发布数量已达到上限", null);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<JSONObject> call, Throwable t) {
+                        //progressDialog.dismiss();
+                        Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+            }
         }
     }
     @Override

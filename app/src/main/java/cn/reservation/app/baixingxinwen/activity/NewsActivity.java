@@ -5,22 +5,21 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.walnutlabs.android.ProgressHUD;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,6 +66,9 @@ public class NewsActivity extends AppCompatActivity implements DialogInterface.O
         chatItemListAdapter = new ChatItemListAdapter(this);
         chatItemListAdapter.setListItems(chatItems);
         lstChat.setAdapter(chatItemListAdapter);
+
+        getMasterNotifications();
+        getWebNotifications();
         getChatFriends();
         lstChat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -101,6 +103,31 @@ public class NewsActivity extends AppCompatActivity implements DialogInterface.O
                 }
             }
         });
+
+
+        LinearLayout webLinearlayout = (LinearLayout)findViewById(R.id.lyt_web_notification_thumbnail);
+        webLinearlayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(NewsActivity.this, NotificationsActivity.class);
+                intent.putExtra("notificationType", "website");
+                pActivity.startChildActivity("notification_activity", intent);
+//                NewsActivity.this.startActivity(intent);
+            }
+        });
+
+        LinearLayout masterLinearlayout = (LinearLayout)findViewById(R.id.lyt_master_notification_thumbnail);
+        masterLinearlayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(NewsActivity.this, NotificationsActivity.class);
+                intent.putExtra("notificationType", "master");
+                pActivity.startChildActivity("notification_activity", intent);
+//                NewsActivity.this.startActivity(intent);
+            }
+        });
+
+
     }
 
     private void getChatFriends() {
@@ -147,6 +174,145 @@ public class NewsActivity extends AppCompatActivity implements DialogInterface.O
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        //progressDialog.dismiss();
+                        Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        //progressDialog.dismiss();
+                        Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }, 5);
+
+    }
+
+    private void getWebNotifications() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //final ProgressHUD progressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, NewsActivity.this);
+                RequestParams params = new RequestParams();
+//                System.out.println("UserID+++:"+userID);
+//                if(userID=="" || userID=="0"){
+//                    //progressDialog.dismiss();
+//                    Toast.makeText(mContext, "请登录吧", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//                params.put("uid", userID);
+
+                String url = "message/announce";
+                APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        System.out.println("chat Friends"+response);
+                        if (response.optInt("code") == 1) {
+                            JSONObject retObj = response.optJSONObject("ret");
+                            String webNotificationCount = retObj.optString("count");
+                            String subject = retObj.optJSONObject("last").optString("subject");
+                            String last_dateline = retObj.optJSONObject("last").optString("dateline");
+
+                            TextView txtCount = (TextView) findViewById(R.id.txt_web_notification_count);
+                            txtCount.setText(webNotificationCount);
+
+                            TextView txtLastDateline = (TextView) findViewById(R.id.txt_web_notification_time);
+                            txtLastDateline.setText(last_dateline);
+
+                            TextView txtSubject = (TextView) findViewById(R.id.txt_web_notification_last_title);
+                            txtSubject.setText(subject);
+
+                        } else {
+
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        //progressDialog.dismiss();
+                        Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        //progressDialog.dismiss();
+                        Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }, 5);
+
+    }
+
+    private void getMasterNotifications() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //final ProgressHUD progressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, NewsActivity.this);
+                RequestParams params = new RequestParams();
+//                System.out.println("UserID+++:"+userID);
+//                if(userID=="" || userID=="0"){
+//                    //progressDialog.dismiss();
+//                    Toast.makeText(mContext, "请登录吧", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+                params.put("uid", userID);
+
+                String url = "message/adminhistory";
+                APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        System.out.println("chat Friends"+response);
+                        if (response.optInt("code") == 1) {
+                            if(response.optJSONObject("ret") == null ||
+                                    response.optJSONObject("ret").length() == 0 ||
+                                    response.optJSONObject("ret").optJSONArray("history") == null ||
+                                    response.optJSONObject("ret").optJSONArray("history").length() == 0){
+                                TextView txtCount = (TextView) findViewById(R.id.txt_master_notification_count);
+                                txtCount.setText("");
+
+                                TextView txtLastDateline = (TextView) findViewById(R.id.txt_master_notification_time);
+                                txtLastDateline.setText("");
+
+                                TextView txtSubject = (TextView) findViewById(R.id.txt_master_notification_last_title);
+                                txtSubject.setText("");
+                            }
+                            else{
+                                JSONArray retArray = response.optJSONObject("ret").optJSONArray("history");
+                                String webNotificationCount = Integer.toString(retArray.length());
+                                String desc = null;
+                                try {
+                                    JSONObject retObj = retArray.getJSONObject(0);
+                                    desc = retObj.optString("message");
+                                    String last_dateline = retObj.optString("sendtime");
+
+                                    TextView txtCount = (TextView) findViewById(R.id.txt_master_notification_count);
+                                    txtCount.setText(webNotificationCount);
+
+                                    TextView txtLastDateline = (TextView) findViewById(R.id.txt_master_notification_time);
+                                    txtLastDateline.setText(last_dateline);
+
+                                    TextView txtSubject = (TextView) findViewById(R.id.txt_master_notification_last_title);
+                                    txtSubject.setText(desc);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+
+
+                        } else {
+
+                        }
+
+
                     }
 
                     @Override

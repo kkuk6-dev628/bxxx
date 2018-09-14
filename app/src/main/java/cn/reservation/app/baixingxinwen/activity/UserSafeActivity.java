@@ -1,6 +1,6 @@
 package cn.reservation.app.baixingxinwen.activity;
 
-import android.app.AlertDialog;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -110,8 +110,18 @@ public class UserSafeActivity extends AppCompatActivity implements DialogInterfa
             }
         }
     };
+    @SuppressLint("HandlerLeak")
     @Override
     public void onClick(View view) {
+        Dialog dialogBasic = new Dialog(mContext);
+        final Dialog dialog = dialogBasic;
+        LayoutInflater inflater = getLayoutInflater();
+        View logout_view = inflater.inflate(R.layout.alert_exit, null);
+
+        TextView txt_alert_dlg_content = (TextView) logout_view.findViewById(R.id.txt_alert_dialog_content);
+
+
+
         int id = view.getId();
         if (id == R.id.btn_safe_phone){
             Intent intent = new Intent(UserSafeActivity.this, VerifyPhoneActivity.class);
@@ -128,21 +138,39 @@ public class UserSafeActivity extends AppCompatActivity implements DialogInterfa
                 }
             }
             else {
-                new AlertDialog.Builder(this)
-                        .setTitle("提示")
-                        .setMessage("您确定要解绑QQ吗？")
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        })
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                bindUserProperty("qq", "untie", "null", "null");
-                            }
-                        })
-                        .create().show();
+                txt_alert_dlg_content.setText("您确定要解绑QQ吗？");
+                TextView btnLogout_qq = (TextView) logout_view.findViewById(R.id.btn_ok);
+                TextView btnExit = (TextView) logout_view.findViewById(R.id.btn_cancel);
+                btnLogout_qq.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View p_view) {
+                        dialog.dismiss();
+                        bindUserProperty("qq", "untie", "null", "null");
+                    }
+                });
+                btnExit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View p_view) {
+                        dialog.dismiss();
+                        //TabHostActivity.TabHostStack.finish();
+                    }
+                });
+                CommonUtils.showAlertDialog(mContext, dialog, logout_view, 216);
+//                new AlertDialog.Builder(mContext)
+//                        .setTitle("提示")
+//                        .setMessage("您确定要解绑QQ吗？")
+//                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                            }
+//                        })
+//                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                bindUserProperty("qq", "untie", "null", "null");
+//                            }
+//                        })
+//                        .create().show();
             }
         }
         else if (id == R.id.btn_safe_weixin) {
@@ -161,22 +189,42 @@ public class UserSafeActivity extends AppCompatActivity implements DialogInterfa
                 };
                 WXAPI.Init(UserSafeActivity.this);
                 WXAPI.Login();
-            } else
-                new AlertDialog.Builder(this)
-                        .setTitle("提示")
-                        .setMessage("您确定要解绑微信吗？")
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        })
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                bindUserProperty("wechat", "untie", "null", "null");
-                            }
-                        })
-                        .create().show();
+            } else {
+                txt_alert_dlg_content.setText("您确定要解绑微信吗？");
+                TextView btnLogout_weixin = (TextView) logout_view.findViewById(R.id.btn_ok);
+                TextView btnExit = (TextView) logout_view.findViewById(R.id.btn_cancel);
+                btnLogout_weixin.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View p_view) {
+                        dialog.dismiss();
+                        bindUserProperty("wechat", "untie", "null", "null");
+                    }
+                });
+                btnExit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View p_view) {
+                        dialog.dismiss();
+                        //TabHostActivity.TabHostStack.finish();
+                    }
+                });
+                CommonUtils.showAlertDialog(mContext, dialog, logout_view, 216);
+//                CommonUtils.showAlertDialog(mContext, "您确定要解绑微信吗？", );
+//                new AlertDialog.Builder(mContext)
+//                        .setTitle("提示")
+//                        .setMessage("您确定要解绑微信吗？")
+//                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                            }
+//                        })
+//                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                bindUserProperty("wechat", "untie", "null", "null");
+//                            }
+//                        })
+//                        .create().show();
+            }
         }
         else if (id == R.id.btn_safe_pass){
             Intent intent = new Intent(UserSafeActivity.this, VerifyPasswordActivity.class);
@@ -184,11 +232,11 @@ public class UserSafeActivity extends AppCompatActivity implements DialogInterfa
         }
         else if (id == R.id.rlt_my_logout){
             //注销
-            final Dialog dialog = new Dialog(mContext);
-            LayoutInflater inflater = getLayoutInflater();
-            View logout_view = inflater.inflate(R.layout.alert_logout, null);
-            TextView btnLogout = (TextView) logout_view.findViewById(R.id.btn_logout);
-            TextView btnExit = (TextView) logout_view.findViewById(R.id.btn_exit);
+//            final Dialog dialog = new Dialog(mContext);
+//            LayoutInflater inflater = getLayoutInflater();
+//            View logout_view = inflater.inflate(R.layout.alert_exit, null);
+            TextView btnLogout = (TextView) logout_view.findViewById(R.id.btn_ok);
+            TextView btnExit = (TextView) logout_view.findViewById(R.id.btn_cancel);
             btnLogout.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View p_view) {
@@ -236,7 +284,7 @@ public class UserSafeActivity extends AppCompatActivity implements DialogInterfa
                     //TabHostActivity.TabHostStack.finish();
                 }
             });
-            CommonUtils.showAlertDialog(mContext, this, dialog, logout_view, 216);
+            CommonUtils.showAlertDialog(mContext, dialog, logout_view, 216);
         }
     }
     @Override

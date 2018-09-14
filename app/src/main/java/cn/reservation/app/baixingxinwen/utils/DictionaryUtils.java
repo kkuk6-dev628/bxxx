@@ -1,10 +1,14 @@
 package cn.reservation.app.baixingxinwen.utils;
 
+import android.content.SharedPreferences;
+
 import org.json.JSONObject;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.Random;
+
+import cn.reservation.app.baixingxinwen.activity.HomeActivity;
 
 /**
  * Created by LiYin on 3/14/2017.
@@ -318,9 +322,19 @@ public class DictionaryUtils {
     }
 
     private String getDefaultImageName(int mxVal, String basicName){
+        int val = HomeActivity.sharedPref.getInt(basicName, -1);
+        if(val == -1 || val > mxVal)
+            val = 1;
+
+
         Random r = new Random();
         int i1 = r.nextInt(mxVal) + 1;
-        return basicName + Integer.toString(i1);
+
+        SharedPreferences.Editor editor = HomeActivity.sharedPref.edit();
+        editor.putInt(basicName, val + 1);
+        editor.apply();
+
+        return basicName + Integer.toString(val);
     }
 
 }

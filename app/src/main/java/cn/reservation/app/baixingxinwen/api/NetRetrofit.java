@@ -35,12 +35,15 @@ public class NetRetrofit {
     }
 
     public void post(String url, HashMap<String, Object> params, final Callback<JSONObject> callback){
-        Call<JSONObject> res = NetRetrofit.getInstance().getService().post(url, params);
+        final Call<JSONObject> res = NetRetrofit.getInstance().getService().post(url, params);
         res.enqueue(new RetryableCallback<JSONObject>(res, 3) {
             @Override
             public void onFinalResponse(Call<JSONObject> call, Response<JSONObject> response) {
                 if (response.body() != null) {
                     callback.onResponse(call, response);
+                }
+                else{
+                    callback.onFailure(call, new Throwable(response.raw().toString()));
                 }
             }
 

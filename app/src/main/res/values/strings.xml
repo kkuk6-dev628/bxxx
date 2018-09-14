@@ -185,4 +185,6 @@
 	<string name="home_animal">宠物天地</string>
 	<string name="home_travel">旅游专栏</string>
 	<string name="home_wait">敬请期待</string>
+    <string name="report_received_message">已举报，处理结果将以站内信的形式发送给您</string>
+    <string name="report_fill_message">메시지내용을 입력하세요</string>
 </resources>

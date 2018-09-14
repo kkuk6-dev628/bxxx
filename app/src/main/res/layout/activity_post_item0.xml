@@ -1122,7 +1122,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_horizontal"
                                 android:gravity="center_horizontal"
-                                android:text="信息详情"
+                                android:text="详情描述"
                                 android:layout_alignParentTop="true"
                                 android:textColor="@color/colorPrimaryDark"
                                 android:textSize="14sp"
@@ -1135,8 +1135,7 @@
                                 android:layout_below="@id/txt_input_data18"
                                 android:background="#00000000"
                                 android:inputType="textMultiLine"
-                                android:maxLength="30"
-                                android:hint=""
+
                                 android:singleLine="true"
                                 android:textSize="14sp" />
                         </RelativeLayout>
