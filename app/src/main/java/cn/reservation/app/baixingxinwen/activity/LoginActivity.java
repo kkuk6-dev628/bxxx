@@ -61,7 +61,15 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
         if (APIManager.mTencent == null)
             APIManager.mTencent = Tencent.createInstance(APIManager.QQ_APP_ID, TabHostActivity.TabHostStack);
         res = mContext.getResources();
-        CommonUtils.customActionBar(mContext, this, true, res.getString(R.string.login_member));
+        CommonUtils.customActionBarWithRightButton(mContext, this, true, res.getString(R.string.login_member),
+                getString(R.string.new_register), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(LoginActivity.this, RegisterPatientInfoActivity.class);
+                        LoginActivity.this.startActivity(intent);
+                        LoginActivity.this.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
+                    }
+                });
         Intent intent = getIntent();
 //        fromActivity = intent.getStringExtra("from_activity");
         mEditPhone = (EditText) findViewById(R.id.edit_phone_number);
@@ -80,8 +88,11 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             LoginActivity.this.startActivity(intent);
             LoginActivity.this.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
         } else if (id == R.id.btn_register) {
-            Intent intent = new Intent(LoginActivity.this, RegisterPatientInfoActivity.class);
+            Intent intent = new Intent(LoginActivity.this, VerifyPhoneActivity.class);
+            intent.putExtra("type", "login");
+            intent.putExtra("act", "login");
             LoginActivity.this.startActivity(intent);
+            LoginActivity.this.finish();
             LoginActivity.this.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
         } else if (id == R.id.btn_ok) {
             if (!validateInput()){

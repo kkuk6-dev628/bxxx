@@ -31,6 +31,7 @@ public class CustomCategoryItem extends LinearLayout implements View.OnClickList
     private Context mContext;
     public AnimatedActivity pActivity;
     private JSONObject jsonData;
+    RelativeLayout rltMainClickable;
 
     public CustomCategoryItem(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -63,11 +64,11 @@ public class CustomCategoryItem extends LinearLayout implements View.OnClickList
 //        mImageView = (ImageView) findViewById(R.id.img_category_view);
 
 //        LinearLayout rl = (LinearLayout) getChildAt(0);
-        RelativeLayout r2 = (RelativeLayout) getChildAt(0);
-        r2.setOnClickListener(this);
+        rltMainClickable = (RelativeLayout) getChildAt(0);
+        rltMainClickable.setOnClickListener(this);
         
-        mTxtTitle = (TextView) r2.getChildAt(1);
-        mImageView = (ImageView) r2.getChildAt(0);
+        mTxtTitle = (TextView) rltMainClickable.getChildAt(1);
+        mImageView = (ImageView) rltMainClickable.getChildAt(0);
 
         if(item != null){
             String title = item.optString("item_label");
@@ -126,6 +127,7 @@ public class CustomCategoryItem extends LinearLayout implements View.OnClickList
             return;
 
         Intent intent;
+        rltMainClickable.setClickable(false);
 
 //        Intent intent = new Intent(this.mContext, SearchActivity.class);
 //        intent.putExtra("name", item_name);

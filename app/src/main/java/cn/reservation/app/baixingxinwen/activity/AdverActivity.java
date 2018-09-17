@@ -1,27 +1,18 @@
 package cn.reservation.app.baixingxinwen.activity;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.squareup.picasso.Picasso;
 
 import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.utils.AnimatedActivity;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 @SuppressWarnings("deprecation")
 public class AdverActivity extends AppCompatActivity{
@@ -50,23 +41,23 @@ public class AdverActivity extends AppCompatActivity{
                 pActivity.startChildActivity("member", intent);
             }
         });
-        RelativeLayout rlt_adver_cate = (RelativeLayout) findViewById(R.id.rlt_adver_cate);
-        rlt_adver_cate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(mContext, "开发中", Toast.LENGTH_LONG).show();
-                //Intent intent = new Intent(AdverActivity.this, UserHistoryListActivity.class);
-                //pActivity.startChildActivity("member", intent);
-            }
-        });
-        RelativeLayout rlt_adver_money = (RelativeLayout) findViewById(R.id.rlt_adver_money);
-        rlt_adver_money.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(AdverActivity.this, MoreActivity.class);
-                pActivity.startChildActivity("more", intent);
-            }
-        });
+//        RelativeLayout rlt_adver_cate = (RelativeLayout) findViewById(R.id.rlt_adver_cate);
+//        rlt_adver_cate.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Toast.makeText(mContext, "开发中", Toast.LENGTH_LONG).show();
+//                //Intent intent = new Intent(AdverActivity.this, UserHistoryListActivity.class);
+//                //pActivity.startChildActivity("member", intent);
+//            }
+//        });
+//        RelativeLayout rlt_adver_money = (RelativeLayout) findViewById(R.id.rlt_adver_money);
+//        rlt_adver_money.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(AdverActivity.this, MoreActivity.class);
+//                pActivity.startChildActivity("more", intent);
+//            }
+//        });
         RelativeLayout rlt_adver_info = (RelativeLayout) findViewById(R.id.rlt_adver_info);
         rlt_adver_info.setOnClickListener(new View.OnClickListener() {
             @Override

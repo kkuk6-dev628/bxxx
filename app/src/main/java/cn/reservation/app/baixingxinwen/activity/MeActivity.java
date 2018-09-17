@@ -56,14 +56,19 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.api.APIManager;
+import cn.reservation.app.baixingxinwen.api.NetRetrofit;
 import cn.reservation.app.baixingxinwen.utils.AnimatedActivity;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
 import cz.msebera.android.httpclient.Header;
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 @SuppressWarnings("deprecation")
 public class MeActivity extends AppCompatActivity implements DialogInterface.OnCancelListener, ActionSheet.ActionSheetListener, CropImageView.OnCropImageCompleteListener{
@@ -273,6 +278,8 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
                 signEvery();
             }
         });
+
+        this.continuousAbsence();
     }
     private void getUserInfo(String _uid) {
         //mProgressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, this);
@@ -394,46 +401,96 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
             Toast.makeText(mContext, "请登录吧", Toast.LENGTH_LONG).show();
             return;
         }
-        RequestParams params = new RequestParams();
+//        RequestParams params = new RequestParams();
+        HashMap<String, Object> params = new HashMap<>();
         params.put("uid", CommonUtils.userInfo.getUid());
         System.out.println("uuu:"+CommonUtils.userInfo.getUid());
-        String url = "user/sign";
-        APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
+        String url = "api/user/sign";
+        final MeActivity self = this;
+
+        NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                //progressDialog.dismiss();
+            public void onResponse(Call<JSONObject> call, Response<JSONObject> resp) {
                 try {
-                    String code = response.getString("code");
-                    System.out.println(response);
-                    if (code.equals("1")) {
-                        Toast.makeText(mContext, response.optString("message"), Toast.LENGTH_SHORT).show();
-                        CommonUtils.userInfo.setBaixingbi(String.valueOf(Integer.valueOf(CommonUtils.userInfo.getBaixingbi())+2));
+                    JSONObject response = resp.body();
+                    if (response.getInt("code") == 1) {
+                        CommonUtils.userInfo.setBaixingbi(String.valueOf(Integer.valueOf(CommonUtils.userInfo.getBaixingbi()) + 2));
                         TextView mTxtMoney = (TextView) findViewById(R.id.txt_my_money);
                         mTxtMoney.setText(CommonUtils.userInfo.getBaixingbi());
                         SharedPreferences.Editor editor = getSharedPreferences("userData", MODE_PRIVATE).edit();
                         editor.putString("baixingbi", CommonUtils.userInfo.getBaixingbi());
                         editor.apply();
-                    } else {
-                        Toast.makeText(mContext, "您已签到，明天再来哦", Toast.LENGTH_SHORT).show();
-                    }
+
+                        self.continuousAbsence();
+
+                        CommonUtils.showAlertDialog(mContext, response.optString("message"), null);
+                    }else {
+                            CommonUtils.showAlertDialog(mContext, "您已签到，明天再来哦", null);
+                        }
+
                 } catch (JSONException e) {
+                    //CommonUtils.dismissProgress(progressDialog);
                     e.printStackTrace();
+                    Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
+
                 }
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                //progressDialog.dismiss();
+            public void onFailure(Call<JSONObject> call, Throwable t){
+                //CommonUtils.dismissProgress(progressDialog);
                 Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+
+    }
+
+    private void continuousAbsence() {
+        //final ProgressHUD progressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, VerifyPhoneActivity.this);
+        if(!CommonUtils.isLogin){
+            Toast.makeText(mContext, "请登录吧", Toast.LENGTH_LONG).show();
+            return;
+        }
+//        RequestParams params = new RequestParams();
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("uid", CommonUtils.userInfo.getUid());
+        System.out.println("uuu:"+CommonUtils.userInfo.getUid());
+        String url = "api/user/absence";
+
+        NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
+            @Override
+            public void onResponse(Call<JSONObject> call, Response<JSONObject> resp) {
+                try {
+                    JSONObject response = resp.body();
+                    if (response.getInt("code") == 1) {
+                        TextView mTxtTian = (TextView) findViewById(R.id.txt_my_desc);
+                        mTxtTian.setText(response.getString("ret") + "天");
+                    }else {
+                    }
+
+                } catch (JSONException e) {
+                    //CommonUtils.dismissProgress(progressDialog);
+                    e.printStackTrace();
+                    Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
+
+                }
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                //progressDialog.dismiss();
-                Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
+            public void onFailure(Call<JSONObject> call, Throwable t){
+                //CommonUtils.dismissProgress(progressDialog);
+                Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+
             }
         });
+
+
+
+
     }
+
     public void selectDate() {
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.calendar_dialog, null);

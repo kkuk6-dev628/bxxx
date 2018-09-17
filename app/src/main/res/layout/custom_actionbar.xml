@@ -35,13 +35,14 @@
 
     </RelativeLayout>
 
-    <ImageButton
-        android:id="@+id/imageButton_right"
+    <TextView
+        android:id="@+id/textButton_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:background="@null"
+        android:textColor="@color/colorBackground"
         android:src="@null"/>
 
 </RelativeLayout>

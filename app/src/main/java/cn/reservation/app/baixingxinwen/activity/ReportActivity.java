@@ -1,12 +1,15 @@
 package cn.reservation.app.baixingxinwen.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
@@ -46,6 +49,7 @@ public class ReportActivity extends AppCompatActivity implements DialogInterface
     private int cid;
     private int price;
     private static final int SDK_PAY_FLAG = 1;
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,13 +63,43 @@ public class ReportActivity extends AppCompatActivity implements DialogInterface
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
-                if (heightDiff > CommonUtils.getPixelValue(mContext, 200)) { // if more than 200 dp, it's probably a keyboard...
-                    // ... do something here
-                    ScrollView scrollView = (ScrollView)findViewById(R.id.scroll_report);
-                    scrollView.scrollTo(0, scrollView.getBottom() + 150);
+                Rect r = new Rect();
+                TabHostActivity.tabWidget.getWindowVisibleDisplayFrame(r);
+                int screenHeight = activityRootView.getRootView().getHeight();
+
+                // r.bottom is the position above soft keypad or device button.
+                // if keypad is shown, the r.bottom is smaller than that before.
+                int keypadHeight = screenHeight - r.bottom;
+                ScrollView scrollView = (ScrollView)findViewById(R.id.scroll_report);
+                scrollView.scrollTo(0, scrollView.getBottom());
+
+                // 0.15 ratio is perhaps enough to determine keypad height.
+                if(keypadHeight > screenHeight * 0.15){
+                    scrollView.scrollTo(0, scrollView.getBottom());
                 }
+
+//                int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
+//                if (heightDiff > 200) { // if more than 200 dp, it's probably a keyboard...
+//                    // ... do something here
+//                    ScrollView scrollView = (ScrollView)findViewById(R.id.scroll_report);
+//                    scrollView.scrollTo(0, scrollView.getBottom());
+//                }
             }
+        });
+
+
+        EditText editTextContent = (EditText)findViewById(R.id.edit_report_content);
+        editTextContent.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                ScrollView scrollView = (ScrollView)findViewById(R.id.scroll_report);
+                int height = scrollView.getHeight();
+//                scrollView.scrollTo(0, scrollView.getBottom() + 150);
+                scrollView.scrollTo(0, 200);
+                return false;
+            }
+
         });
 
         CommonUtils.customActionBar(mContext, this, true, "举报");

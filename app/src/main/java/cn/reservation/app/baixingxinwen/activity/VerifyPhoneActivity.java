@@ -15,28 +15,29 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.walnutlabs.android.ProgressHUD;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.api.APIManager;
+import cn.reservation.app.baixingxinwen.api.NetRetrofit;
 import cn.reservation.app.baixingxinwen.utils.AnimatedActivity;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
-import cz.msebera.android.httpclient.Header;
+import cn.reservation.app.baixingxinwen.utils.UserInfo;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class VerifyPhoneActivity extends AppCompatActivity  implements DialogInterface.OnCancelListener, View.OnClickListener{
+public class VerifyPhoneActivity extends AppCompatActivity implements DialogInterface.OnCancelListener, View.OnClickListener {
 
     private Context mContext;
     private Resources res;
@@ -84,7 +85,9 @@ public class VerifyPhoneActivity extends AppCompatActivity  implements DialogInt
                 if (!mStrVerifyCode.equals("") && mEditVerifyCode.getText().toString().equals(mStrVerifyCode)) {
                     isVerified = true;
                     stopTimerTask();
-                    CommonUtils.userInfo.setUserPhone(strPhone);
+                    if(CommonUtils.userInfo != null){
+                        CommonUtils.userInfo.setUserPhone(strPhone);
+                    }
                 }
             }
 
@@ -98,6 +101,7 @@ public class VerifyPhoneActivity extends AppCompatActivity  implements DialogInt
         mBtnConfirmCode.setOnClickListener(this);
         mTxtLeftTime.setOnClickListener(this);
     }
+
     @Override
     public void onClick(View view) {
         int id = view.getId();
@@ -113,14 +117,15 @@ public class VerifyPhoneActivity extends AppCompatActivity  implements DialogInt
             if (mStrVerifyCode.equals(strVerifyCode)) {
                 isVerified = true;
                 mBtnConfirmCode.setText(mContext.getString(R.string.success));
-                CommonUtils.userInfo.setUserJoinMobile(strPhone);
+                if(CommonUtils.userInfo != null){
+                    CommonUtils.userInfo.setUserJoinMobile(strPhone);
+                }
                 stopTimerTask();
                 signPhone(strPhone);
             }
-        }
-        else if (id == R.id.txt_left_time){
+        } else if (id == R.id.txt_left_time) {
             strPhone = mEditPhone.getText().toString();
-            if(strPhone.equals("")){
+            if (strPhone.equals("")) {
                 Toast.makeText(mContext, "请输入手机号码", Toast.LENGTH_LONG).show();
                 return;
             }
@@ -130,86 +135,154 @@ public class VerifyPhoneActivity extends AppCompatActivity  implements DialogInt
 
     private void getVerifyCode(String strPhone) {
         //final ProgressHUD progressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, VerifyPhoneActivity.this);
-        RequestParams params = new RequestParams();
-        params.put("type","link");
+        HashMap<String, Object> params = new HashMap<>();
+        String type = (String) getIntent().getSerializableExtra("type");
+        if (type == null) {
+            params.put("type", "link");
+        } else {
+            params.put("type", type);
+        }
         params.put("phone", strPhone);
-        System.out.println("phone:"+strPhone);
-        String url = "sms/send";
-        APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
+        System.out.println("phone:" + strPhone);
+        String url = "api/sms/send";
+        mTxtLeftTime.setClickable(false);
+        NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                //progressDialog.dismiss();
+            public void onResponse(Call<JSONObject> call, Response<JSONObject> res) {
                 try {
-                    String code = response.getString("code");
-                    System.out.println(response);
-                    if (code.equals("1")) {
-                        mStrVerifyCode = response.optJSONObject("ret").optString("retkey");
-                        isVerified = false;
-                        startTimer();
-                    } else {
-                        Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                //progressDialog.dismiss();
-                Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                //progressDialog.dismiss();
-                Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-    private void signPhone(final String strPhone) {
-        //mProgressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, this);
-        RequestParams params = new RequestParams();
-        params.put("act", "bind");
-        params.put("uid", CommonUtils.userInfo.getUid());
-        params.put("property_type", "mobile");
-        params.put("bind_type", "bind");
-        params.put("username", strPhone);
-        params.put("password", "null");
-        String url = APIManager.Ucenter_URL;
-        APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                //mProgressDialog.dismiss();
-                try {
-                    String code = response.getString("code");
-                    if (code.equals("1")) {
-                        SharedPreferences.Editor editor = getSharedPreferences("userData", MODE_PRIVATE).edit();
-                        CommonUtils.userInfo.setUserJoinMobile(strPhone);
-                        editor.putString("userJoinMobile", strPhone);
-                        Intent intent = new Intent(VerifyPhoneActivity.this, UserSafeActivity.class);
-                        pActivity.startChildActivity("user_safe", intent);
+                    mTxtLeftTime.setClickable(true);
+                    JSONObject response = res.body();
+                    if (response != null && response.getInt("code") == 1) {
+                        int ret = response.optJSONObject("ret").optInt("result");
+                        if(ret > 0) {
+                            mStrVerifyCode = response.optJSONObject("ret").optString("retkey");
+                            isVerified = false;
+                            startTimer();
+                        }
+                        else{
+                            Toast.makeText(mContext, response.optJSONObject("ret").getString("message"), Toast.LENGTH_SHORT).show();
+                        }
                     } else {
                         Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Toast.makeText(mContext, getString(R.string.error_db), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                //progressDialog.dismiss();
+            public void onFailure(Call<JSONObject> call, Throwable t) {
+                mTxtLeftTime.setClickable(true);
                 Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
             }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                //progressDialog.dismiss();
-                Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
-            }
-        });
+        }, 0);
     }
+
+    private void signPhone(final String strPhone) {
+        mProgressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, this);
+
+        String act = (String) getIntent().getSerializableExtra("act");
+        if (act == null) {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("act", "bind");
+            params.put("uid", CommonUtils.userInfo.getUid());
+            params.put("property_type", "mobile");
+            params.put("bind_type", "bind");
+            params.put("username", strPhone);
+            params.put("password", "null");
+            String url = APIManager.Ucenter_URL;
+            NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
+                @Override
+                public void onResponse(Call<JSONObject> call, Response<JSONObject> res) {
+                    try {
+                        CommonUtils.dismissProgress(mProgressDialog);
+                        JSONObject response = res.body();
+                        if (response != null && response.getInt("code") == 1) {
+                            SharedPreferences.Editor editor = getSharedPreferences("userData", MODE_PRIVATE).edit();
+                            CommonUtils.userInfo.setUserJoinMobile(strPhone);
+                            editor.putString("userJoinMobile", strPhone);
+                            Intent intent = new Intent(VerifyPhoneActivity.this, UserSafeActivity.class);
+                            pActivity.startChildActivity("user_safe", intent);
+                        } else {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<JSONObject> call, Throwable t) {
+                    CommonUtils.dismissProgress(mProgressDialog);
+                    Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else if(act.equals("login")) {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("phone", strPhone);
+            String url = "api/user/profilephone";
+            NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
+                @Override
+                public void onResponse(Call<JSONObject> call, Response<JSONObject> res) {
+                    try {
+                        CommonUtils.dismissProgress(mProgressDialog);
+                        JSONObject response = res.body();
+                        if (response != null && response.getInt("code") == 1) {
+                            JSONObject userObj = response.optJSONObject("ret");
+                            CommonUtils.isLogin = true;
+                            System.out.println(userObj);
+                            Integer gender = 0;
+                            if(!userObj.optString("gender").isEmpty()){
+                                gender = Integer.parseInt(userObj.optString("gender"));
+                            }
+                            CommonUtils.userInfo = new UserInfo(Long.valueOf(userObj.optString("uid")), userObj.optString("username"),
+                                    gender, userObj.optString("birthyear")+ "/"+ userObj.optString("birthmonth")+"/"+userObj.optString("userday"), strPhone,
+                                    userObj.optString("avatar"), userObj.optString("credits"), userObj.optString("grouptitle"), userObj.optString("realname"),userObj.optString("uid"), "", "", strPhone, userObj.optString("credits"), userObj.optString("grouptitle"), "phone", userObj.optString("username"), "",userObj.optString("changeid") ,userObj.optString("dateline"));
+
+                            SharedPreferences.Editor editor = getSharedPreferences("userData", MODE_PRIVATE).edit();
+                            editor.putLong("userID", CommonUtils.userInfo.getUserID());
+                            editor.putString("userName", CommonUtils.userInfo.getUserName());
+                            editor.putInt("userGender", CommonUtils.userInfo.getUserGender());
+                            editor.putString("userBirthday", CommonUtils.userInfo.getUserBirthday());
+                            editor.putString("userPhone", CommonUtils.userInfo.getUserPhone());
+                            editor.putString("userPhoto", CommonUtils.userInfo.getUserPhoto());
+                            editor.putString("credits", CommonUtils.userInfo.getToken());
+                            editor.putString("identify", CommonUtils.userInfo.getUserIdentify());
+                            editor.putString("realname", CommonUtils.userInfo.getUserPassword());
+                            editor.putString("uid", CommonUtils.userInfo.getUid());
+                            editor.putString("qq", CommonUtils.userInfo.getUserQQ());
+                            editor.putString("wechat", CommonUtils.userInfo.getUserWeixin());
+                            editor.putString("userJoinMobile", CommonUtils.userInfo.getUserJoinMobile());
+                            editor.putString("baixingbi", CommonUtils.userInfo.getBaixingbi());
+                            editor.putString("level", CommonUtils.userInfo.getLevel());
+                            editor.putString("login_type", CommonUtils.userInfo.getLoginType());
+                            editor.putString("login_username", CommonUtils.userInfo.getLoginUsername());
+                            editor.putString("login_password", CommonUtils.userInfo.getLoginPassword());
+                            editor.putString("changeid", CommonUtils.userInfo.getChangeid());
+                            editor.putString("dateline", CommonUtils.userInfo.getDateline());
+                            editor.apply();
+
+                            if(!CommonUtils.channel_id.isEmpty()){
+                                CommonUtils.registerChannelId(mContext);
+                            }                        } else {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<JSONObject> call, Throwable t) {
+                    CommonUtils.dismissProgress(mProgressDialog);
+                    Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
+    }
+
     public void startTimer() {
         timer = new Timer();
         initializeTimerTask();
@@ -245,22 +318,29 @@ public class VerifyPhoneActivity extends AppCompatActivity  implements DialogInt
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(VerifyPhoneActivity.this, UserSafeActivity.class);
-        pActivity.startChildActivity("user_safe", intent);
+        finish();
     }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             Intent intent = new Intent(VerifyPhoneActivity.this, UserSafeActivity.class);
-            pActivity.startChildActivity("user_safe", intent);
+            if(pActivity != null) {
+                pActivity.startChildActivity("user_safe", intent);
+            }
+            else{
+                finish();
+            }
             return true;
         }
         return super.onKeyDown(keyCode, event);
     }
+
     @Override
     protected void onResume() {
         super.onResume();
     }
+
     @Override
     public void onCancel(DialogInterface dialog) {
 

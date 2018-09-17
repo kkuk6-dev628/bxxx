@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -207,6 +208,9 @@ public class HomeActivity extends AppCompatActivity implements DialogInterface.O
 
 //        homeSliderAdapter = new HomeSliderAdapter(HomeActivity.this, images);
 //        viewPager.setAdapter(homeSliderAdapter);
+        RelativeLayout rlSearch = (RelativeLayout)findViewById(R.id.rlt_search);
+        rlSearch.setOnClickListener(this);
+
         lstSearch = (ImbeddedListView) findViewById(R.id.lst_home_bottom_favor);
         searchItemListAdapter = new SearchItemListAdapter(this);
         searchItemListAdapter.setListItems(searchItems);
@@ -389,10 +393,12 @@ public class HomeActivity extends AppCompatActivity implements DialogInterface.O
 //            intent.putExtra("enterprise", "跑腿");
 //            pActivity.startChildActivity("activity_enterprise", intent);
 //        }
-//        else if (id == R.id.rlt_search){//点击搜索按钮
-//            intent = new Intent(HomeActivity.this, FullSearchActivity.class);
-//            pActivity.startChildActivity("full_search", intent);
-//        }
+        if (id == R.id.rlt_search){//点击搜索按钮
+            intent = new Intent(HomeActivity.this, SearchActivity.class);
+            intent.putExtra("fid", "0");
+            intent.putExtra("sortid", "0");
+            pActivity.startChildActivity("full_search", intent);
+        }
     }
     private void initViews() {
         scrollView = (PageListScrollView) findViewById(R.id.scrollview_home);

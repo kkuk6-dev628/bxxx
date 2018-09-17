@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -16,8 +15,6 @@ import com.tencent.mm.opensdk.modelmsg.WXTextObject;
 import com.tencent.mm.opensdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
-
-import java.util.logging.Logger;
 
 import cn.reservation.app.baixingxinwen.utils.AppConstant;
 
@@ -43,7 +40,11 @@ public class WXShare {
         api.registerApp(APP_ID);
         receiver = new ResponseReceiver();
         IntentFilter filter = new IntentFilter(ACTION_SHARE_RESPONSE);
-        context.registerReceiver(receiver, filter);
+        try {
+            context.registerReceiver(receiver, filter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return this;
     }
 

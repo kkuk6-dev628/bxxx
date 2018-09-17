@@ -2,8 +2,13 @@ package cn.reservation.app.baixingxinwen.api;
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.HashMap;
+import java.util.Iterator;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -53,6 +58,67 @@ public class NetRetrofit {
             }
         });
 
+    }
+
+    public void post(String url, HashMap<String, Object> params, final Callback<JSONObject> callback, int retryCount){
+        final Call<JSONObject> res = NetRetrofit.getInstance().getService().post(url, params);
+        res.enqueue(new RetryableCallback<JSONObject>(res, retryCount) {
+            @Override
+            public void onFinalResponse(Call<JSONObject> call, Response<JSONObject> response) {
+                if (response.body() != null) {
+                    callback.onResponse(call, response);
+                }
+                else{
+                    callback.onFailure(call, new Throwable(response.raw().toString()));
+                }
+            }
+
+            @Override
+            public void onFinalFailure(Call<JSONObject> call, Throwable t) {
+                callback.onFailure(call, t);
+            }
+        });
+
+    }
+
+    public void upload(String url, HashMap<String, Object> params, File[] files, final Callback<JSONObject> callback){
+        MultipartBody.Builder builder = new MultipartBody.Builder();
+        builder.setType(MultipartBody.FORM);
+
+        Iterator it = params.entrySet().iterator();
+        while (it.hasNext()) {
+            HashMap.Entry pair = (HashMap.Entry)it.next();
+            System.out.println(pair.getKey() + " = " + pair.getValue());
+            builder.addFormDataPart(String.valueOf(pair.getKey()), String.valueOf(pair.getValue()));
+            it.remove(); // avoids a ConcurrentModificationException
+        }
+
+        // Map is used to multipart the file using okhttp3.RequestBody
+        // Multiple Images
+        for (int i = 0; i < files.length; i++) {
+            File file = files[i];
+            builder.addFormDataPart("file[]", file.getName(), RequestBody.create(MediaType.parse("multipart/form-data"), file));
+        }
+
+        MultipartBody requestBody = builder.build();
+        RetrofitService service = NetRetrofit.getInstance().getService();
+        Call<JSONObject> call = service.uploadMultiFile(url, requestBody);
+        call.enqueue(new RetryableCallback<JSONObject>(call, 3) {
+            @Override
+            public void onFinalResponse(Call<JSONObject> call, Response<JSONObject> response) {
+                if (response.body() != null) {
+                    callback.onResponse(call, response);
+                }
+                else{
+                    callback.onFailure(call, new Throwable(response.raw().toString()));
+                }
+            }
+
+            @Override
+            public void onFinalFailure(Call<JSONObject> call, Throwable t) {
+                callback.onFailure(call, t);
+            }
+        });
     }
 }
 

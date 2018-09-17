@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorHomeBackground"
-        android:paddingTop="8dp">
+        android:paddingTop="1dp">
         <RelativeLayout
             android:id="@+id/rlt_version"
             android:clickable="true"
@@ -48,7 +48,7 @@
             android:layout_height="50dp"
             android:clickable="true"
             android:background="@color/colorBackground"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="0.5dp"
             android:layout_gravity="center_horizontal">
             <TextView
                 android:id="@+id/my_history_title"
@@ -75,7 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@color/colorBackground"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="0.5dp"
             android:layout_gravity="center_horizontal">
             <TextView
                 android:id="@+id/my_save_title"
@@ -103,7 +103,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@color/colorBackground"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="0.5dp"
             android:layout_gravity="center_horizontal">
             <TextView
                 android:id="@+id/my_safe_title"

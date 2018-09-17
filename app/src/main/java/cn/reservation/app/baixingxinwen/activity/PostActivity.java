@@ -45,17 +45,22 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Locale;
 
 import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.api.APIManager;
+import cn.reservation.app.baixingxinwen.api.NetRetrofit;
 import cn.reservation.app.baixingxinwen.utils.AnimatedActivity;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
 import cz.msebera.android.httpclient.Header;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 @SuppressWarnings("deprecation")
-public class PostActivity extends AppCompatActivity implements DialogInterface.OnCancelListener, ActionSheet.ActionSheetListener{
+public class PostActivity extends AppCompatActivity implements DialogInterface.OnCancelListener, ActionSheet.ActionSheetListener {
     private static String TAG = PostActivity.class.getSimpleName();
 
     private Context mContext;
@@ -92,6 +97,8 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
     private ArrayList<String> mResults = new ArrayList<>();
     private String fId;
     private String sortId;
+    private ProgressHUD mProgressDialog;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,7 +114,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
         initData();
         initView();
         pActivity = (AnimatedActivity) PostActivity.this.getParent();
-        mFiles =new File[10];
+        mFiles = new File[10];
         postItem = (String) intent.getSerializableExtra("PostItem");
         fId = (String) intent.getSerializableExtra("fid");
         sortId = (String) intent.getSerializableExtra("sortid");
@@ -120,10 +127,10 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
         RelativeLayout rlt_post_data = (RelativeLayout) findViewById(R.id.rlt_post_data);
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout lyt_post_picture = (LinearLayout) findViewById(R.id.lyt_post_picture);
-        String title ="信息发布";
+        String title = "信息发布";
         LinearLayout.LayoutParams params;
-        if(postItem!=null){
-            switch(postItem){
+        if (postItem != null) {
+            switch (postItem) {
                 case "1":
                     fid = "2";
                     sortid = 1;
@@ -148,11 +155,12 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                             postData1();
                         }
                     });
-                    EditText villiage_edit = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7));
+                    EditText villiage_edit = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7));
                     villiage_edit.addTextChangedListener(new TextWatcher() {
 
                         @Override
-                        public void afterTextChanged(Editable s) {}
+                        public void afterTextChanged(Editable s) {
+                        }
 
                         @Override
                         public void beforeTextChanged(CharSequence s, int start,
@@ -162,11 +170,11 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                         @Override
                         public void onTextChanged(CharSequence s, int start,
                                                   int before, int count) {
-                            if(s.length() != 0){
-                                EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
-                                String square = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9))).getText().toString();
+                            if (s.length() != 0) {
+                                EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
+                                String square = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9))).getText().toString();
                                 String house_number = CommonUtils.data1.get("house_number_desc").toString();
-                                if(!square.trim().equals("")){
+                                if (!square.trim().equals("")) {
                                     square = square + "m²";
                                 }
                                 //String s_title = title.getText().toString();
@@ -174,11 +182,12 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                             }
                         }
                     });
-                    EditText square_edit = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9));
+                    EditText square_edit = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9));
                     square_edit.addTextChangedListener(new TextWatcher() {
 
                         @Override
-                        public void afterTextChanged(Editable s) {}
+                        public void afterTextChanged(Editable s) {
+                        }
 
                         @Override
                         public void beforeTextChanged(CharSequence s, int start,
@@ -188,9 +197,9 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                         @Override
                         public void onTextChanged(CharSequence s, int start,
                                                   int before, int count) {
-                            if(s.length() != 0){
-                                EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
-                                String v = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7))).getText().toString();
+                            if (s.length() != 0) {
+                                EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
+                                String v = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7))).getText().toString();
                                 String house_number = CommonUtils.data1.get("house_number_desc").toString();
                                 //String s_title = title.getText().toString();
                                 title.setText(v + " " + house_number + " " + s + "m²");
@@ -222,11 +231,12 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                             postData1();
                         }
                     });
-                    villiage_edit = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7));
+                    villiage_edit = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7));
                     villiage_edit.addTextChangedListener(new TextWatcher() {
 
                         @Override
-                        public void afterTextChanged(Editable s) {}
+                        public void afterTextChanged(Editable s) {
+                        }
 
                         @Override
                         public void beforeTextChanged(CharSequence s, int start,
@@ -236,11 +246,11 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                         @Override
                         public void onTextChanged(CharSequence s, int start,
                                                   int before, int count) {
-                            if(s.length() != 0){
-                                EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
-                                String square = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9))).getText().toString();
+                            if (s.length() != 0) {
+                                EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
+                                String square = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9))).getText().toString();
                                 String house_number = CommonUtils.data1.get("house_number_desc").toString();
-                                if(!square.trim().equals("")){
+                                if (!square.trim().equals("")) {
                                     square = square + "m²";
                                 }
                                 //String s_title = title.getText().toString();
@@ -248,11 +258,12 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                             }
                         }
                     });
-                    square_edit = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9));
+                    square_edit = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9));
                     square_edit.addTextChangedListener(new TextWatcher() {
 
                         @Override
-                        public void afterTextChanged(Editable s) {}
+                        public void afterTextChanged(Editable s) {
+                        }
 
                         @Override
                         public void beforeTextChanged(CharSequence s, int start,
@@ -262,9 +273,9 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                         @Override
                         public void onTextChanged(CharSequence s, int start,
                                                   int before, int count) {
-                            if(s.length() != 0){
-                                EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
-                                String v = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7))).getText().toString();
+                            if (s.length() != 0) {
+                                EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
+                                String v = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7))).getText().toString();
                                 String house_number = CommonUtils.data1.get("house_number_desc").toString();
                                 //String s_title = title.getText().toString();
                                 title.setText(v + " " + house_number + " " + s + "m²");
@@ -296,11 +307,12 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                             postData1();
                         }
                     });
-                    villiage_edit = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7));
+                    villiage_edit = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7));
                     villiage_edit.addTextChangedListener(new TextWatcher() {
 
                         @Override
-                        public void afterTextChanged(Editable s) {}
+                        public void afterTextChanged(Editable s) {
+                        }
 
                         @Override
                         public void beforeTextChanged(CharSequence s, int start,
@@ -310,10 +322,10 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                         @Override
                         public void onTextChanged(CharSequence s, int start,
                                                   int before, int count) {
-                            if(s.length() != 0){
-                                EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
-                                String square = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9))).getText().toString();
-                                if(!square.trim().equals("")){
+                            if (s.length() != 0) {
+                                EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
+                                String square = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9))).getText().toString();
+                                if (!square.trim().equals("")) {
                                     square = square + "m²";
                                 }
                                 String house_number = CommonUtils.data1.get("house_number_desc").toString();
@@ -322,11 +334,12 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                             }
                         }
                     });
-                    square_edit = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9));
+                    square_edit = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9));
                     square_edit.addTextChangedListener(new TextWatcher() {
 
                         @Override
-                        public void afterTextChanged(Editable s) {}
+                        public void afterTextChanged(Editable s) {
+                        }
 
                         @Override
                         public void beforeTextChanged(CharSequence s, int start,
@@ -336,9 +349,9 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                         @Override
                         public void onTextChanged(CharSequence s, int start,
                                                   int before, int count) {
-                            if(s.length() != 0){
-                                EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
-                                String v = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7))).getText().toString();
+                            if (s.length() != 0) {
+                                EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
+                                String v = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7))).getText().toString();
                                 String house_number = CommonUtils.data1.get("house_number_desc").toString();
                                 //String s_title = title.getText().toString();
                                 title.setText(v + " " + house_number + " " + s + "m²");
@@ -370,11 +383,12 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                             postData1();
                         }
                     });
-                    villiage_edit = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7));
+                    villiage_edit = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7));
                     villiage_edit.addTextChangedListener(new TextWatcher() {
 
                         @Override
-                        public void afterTextChanged(Editable s) {}
+                        public void afterTextChanged(Editable s) {
+                        }
 
                         @Override
                         public void beforeTextChanged(CharSequence s, int start,
@@ -384,11 +398,11 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                         @Override
                         public void onTextChanged(CharSequence s, int start,
                                                   int before, int count) {
-                            if(s.length() != 0){
-                                EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
-                                String square = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9))).getText().toString();
+                            if (s.length() != 0) {
+                                EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
+                                String square = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9))).getText().toString();
                                 String house_number = CommonUtils.data1.get("house_number_desc").toString();
-                                if(!square.trim().equals("")){
+                                if (!square.trim().equals("")) {
                                     square = square + "m²";
                                 }
                                 //String s_title = title.getText().toString();
@@ -396,11 +410,12 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                             }
                         }
                     });
-                    square_edit = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9));
+                    square_edit = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9));
                     square_edit.addTextChangedListener(new TextWatcher() {
 
                         @Override
-                        public void afterTextChanged(Editable s) {}
+                        public void afterTextChanged(Editable s) {
+                        }
 
                         @Override
                         public void beforeTextChanged(CharSequence s, int start,
@@ -410,9 +425,9 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                         @Override
                         public void onTextChanged(CharSequence s, int start,
                                                   int before, int count) {
-                            if(s.length() != 0){
-                                EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
-                                String v = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7))).getText().toString();
+                            if (s.length() != 0) {
+                                EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
+                                String v = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7))).getText().toString();
                                 String house_number = CommonUtils.data1.get("house_number_desc").toString();
                                 //String s_title = title.getText().toString();
                                 title.setText(v + " " + house_number + " " + s + "m²");
@@ -614,11 +629,12 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                             postData6();
                         }
                     });
-                    EditText brand_edit = (EditText)(findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5);
+                    EditText brand_edit = (EditText) (findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5);
                     brand_edit.addTextChangedListener(new TextWatcher() {
 
                         @Override
-                        public void afterTextChanged(Editable s) {}
+                        public void afterTextChanged(Editable s) {
+                        }
 
                         @Override
                         public void beforeTextChanged(CharSequence s, int start,
@@ -628,21 +644,22 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                         @Override
                         public void onTextChanged(CharSequence s, int start,
                                                   int before, int count) {
-                            if(s.length() != 0){
-                                EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
-                                String speed = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
-                                String year = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
+                            if (s.length() != 0) {
+                                EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
+                                String speed = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
+                                String year = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
                                 //String s_title = title.getText().toString();
                                 changeTxtTitle(title, s.toString(), year, speed);
 //                                title.setText(s + " " + year + " " + speed);
                             }
                         }
                     });
-                    EditText speed_edit = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4));
+                    EditText speed_edit = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4));
                     speed_edit.addTextChangedListener(new TextWatcher() {
 
                         @Override
-                        public void afterTextChanged(Editable s) {}
+                        public void afterTextChanged(Editable s) {
+                        }
 
                         @Override
                         public void beforeTextChanged(CharSequence s, int start,
@@ -652,21 +669,22 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                         @Override
                         public void onTextChanged(CharSequence s, int start,
                                                   int before, int count) {
-                            if(s.length() != 0){
-                                EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
-                                String brand = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
-                                String year = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
+                            if (s.length() != 0) {
+                                EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
+                                String brand = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
+                                String year = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
                                 //String s_title = title.getText().toString();
                                 changeTxtTitle(title, brand, year, s.toString());
 //                                title.setText(brand + " " + year + "年检到期 " + s + "万公里");
                             }
                         }
                     });
-                    EditText year_edit = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year));
+                    EditText year_edit = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year));
                     year_edit.addTextChangedListener(new TextWatcher() {
 
                         @Override
-                        public void afterTextChanged(Editable s) {}
+                        public void afterTextChanged(Editable s) {
+                        }
 
                         @Override
                         public void beforeTextChanged(CharSequence s, int start,
@@ -676,10 +694,10 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                         @Override
                         public void onTextChanged(CharSequence s, int start,
                                                   int before, int count) {
-                            if(s.length() != 0){
-                                EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
-                                String brand = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
-                                String speed = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
+                            if (s.length() != 0) {
+                                EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
+                                String brand = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
+                                String speed = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
                                 //String s_title = title.getText().toString();
                                 changeTxtTitle(title, brand, s.toString(), speed);
 //                                title.setText(brand + " " + s + "年检到期 " + speed + "万公里");
@@ -711,11 +729,12 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                             postData6();
                         }
                     });
-                    brand_edit = (EditText)(findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5);
+                    brand_edit = (EditText) (findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5);
                     brand_edit.addTextChangedListener(new TextWatcher() {
 
                         @Override
-                        public void afterTextChanged(Editable s) {}
+                        public void afterTextChanged(Editable s) {
+                        }
 
                         @Override
                         public void beforeTextChanged(CharSequence s, int start,
@@ -725,21 +744,22 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                         @Override
                         public void onTextChanged(CharSequence s, int start,
                                                   int before, int count) {
-                            if(s.length() != 0){
-                                EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
-                                String speed = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
-                                String year = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
+                            if (s.length() != 0) {
+                                EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
+                                String speed = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
+                                String year = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
                                 //String s_title = title.getText().toString();
                                 changeTxtTitle(title, s.toString(), year, speed);
 //                                title.setText(s + " " + year + "年检到期 " + speed + "万公里");
                             }
                         }
                     });
-                    speed_edit = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4));
+                    speed_edit = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4));
                     speed_edit.addTextChangedListener(new TextWatcher() {
 
                         @Override
-                        public void afterTextChanged(Editable s) {}
+                        public void afterTextChanged(Editable s) {
+                        }
 
                         @Override
                         public void beforeTextChanged(CharSequence s, int start,
@@ -749,21 +769,22 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                         @Override
                         public void onTextChanged(CharSequence s, int start,
                                                   int before, int count) {
-                            if(s.length() != 0){
-                                EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
-                                String brand = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
-                                String year = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
+                            if (s.length() != 0) {
+                                EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
+                                String brand = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
+                                String year = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
                                 //String s_title = title.getText().toString();
                                 changeTxtTitle(title, brand, year, s.toString());
 //                                title.setText(brand + " " + year + "年检到期 " + s + "万公里");
                             }
                         }
                     });
-                    year_edit = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year));
+                    year_edit = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year));
                     year_edit.addTextChangedListener(new TextWatcher() {
 
                         @Override
-                        public void afterTextChanged(Editable s) {}
+                        public void afterTextChanged(Editable s) {
+                        }
 
                         @Override
                         public void beforeTextChanged(CharSequence s, int start,
@@ -773,10 +794,10 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                         @Override
                         public void onTextChanged(CharSequence s, int start,
                                                   int before, int count) {
-                            if(s.length() != 0){
-                                EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
-                                String brand = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
-                                String speed = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
+                            if (s.length() != 0) {
+                                EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
+                                String brand = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
+                                String speed = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
                                 //String s_title = title.getText().toString();
                                 changeTxtTitle(title, brand, s.toString(), speed);
 //                                title.setText(brand + " " + s + "年检到期 " + speed + "万公里");
@@ -784,11 +805,11 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                         }
                     });
                     break;
-                 case "7b":
-                     title = "车辆出售信息发布";
+                case "7b":
+                    title = "车辆出售信息发布";
                     rowView1 = inflater.inflate(R.layout.activity_post_item6, null);
                     // Add the new row before the add field button.
-                     ((TextView)rowView1.findViewById(R.id.txt_unit_data_price)).setText("万");
+                    ((TextView) rowView1.findViewById(R.id.txt_unit_data_price)).setText("万");
                     parentLinearLayout.addView(rowView1, 0);
                     fid = "39";
                     sortid = 2;
@@ -800,7 +821,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                      lyt_post_picture.setLayoutParams(params);
                     lyt_post_picture.setVisibility(View.VISIBLE);
                     */
-                     lyt_post_picture.findViewById(R.id.img_detail).setBackgroundResource(R.drawable.upload_img);
+                    lyt_post_picture.findViewById(R.id.img_detail).setBackgroundResource(R.drawable.upload_img);
                     initPostData();
                     rlt_post_data = (RelativeLayout) findViewById(R.id.rlt_post_data);
                     rlt_post_data.setOnClickListener(new View.OnClickListener() {
@@ -809,78 +830,81 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                             postData6();
                         }
                     });
-                     brand_edit = (EditText)(findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5);
-                     brand_edit.addTextChangedListener(new TextWatcher() {
+                    brand_edit = (EditText) (findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5);
+                    brand_edit.addTextChangedListener(new TextWatcher() {
 
-                         @Override
-                         public void afterTextChanged(Editable s) {}
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                        }
 
-                         @Override
-                         public void beforeTextChanged(CharSequence s, int start,
-                                                       int count, int after) {
-                         }
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start,
+                                                      int count, int after) {
+                        }
 
-                         @Override
-                         public void onTextChanged(CharSequence s, int start,
-                                                   int before, int count) {
-                             if(s.length() != 0){
-                                 EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
-                                 String speed = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
-                                 String year = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
-                                 //String s_title = title.getText().toString();
-                                 changeTxtTitle(title, s.toString(), year, speed);
+                        @Override
+                        public void onTextChanged(CharSequence s, int start,
+                                                  int before, int count) {
+                            if (s.length() != 0) {
+                                EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
+                                String speed = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
+                                String year = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
+                                //String s_title = title.getText().toString();
+                                changeTxtTitle(title, s.toString(), year, speed);
 //                                 title.setText(s + " " + year + "年检到期 " + speed + "万公里");
-                             }
-                         }
-                     });
-                     speed_edit = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4));
-                     speed_edit.addTextChangedListener(new TextWatcher() {
+                            }
+                        }
+                    });
+                    speed_edit = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4));
+                    speed_edit.addTextChangedListener(new TextWatcher() {
 
-                         @Override
-                         public void afterTextChanged(Editable s) {}
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                        }
 
-                         @Override
-                         public void beforeTextChanged(CharSequence s, int start,
-                                                       int count, int after) {
-                         }
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start,
+                                                      int count, int after) {
+                        }
 
-                         @Override
-                         public void onTextChanged(CharSequence s, int start,
-                                                   int before, int count) {
-                             if(s.length() != 0){
-                                 EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
-                                 String brand = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
-                                 String year = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
-                                 //String s_title = title.getText().toString();
-                                 changeTxtTitle(title, brand, year, s.toString());
+                        @Override
+                        public void onTextChanged(CharSequence s, int start,
+                                                  int before, int count) {
+                            if (s.length() != 0) {
+                                EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
+                                String brand = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
+                                String year = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
+                                //String s_title = title.getText().toString();
+                                changeTxtTitle(title, brand, year, s.toString());
 //                                 title.setText(brand + " " + year + "年检到期 " + s + "万公里");
-                             }
-                         }
-                     });
-                     year_edit = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year));
-                     year_edit.addTextChangedListener(new TextWatcher() {
+                            }
+                        }
+                    });
+                    year_edit = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year));
+                    year_edit.addTextChangedListener(new TextWatcher() {
 
-                         @Override
-                         public void afterTextChanged(Editable s) {}
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                        }
 
-                         @Override
-                         public void beforeTextChanged(CharSequence s, int start,
-                                                       int count, int after) {
-                         }
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start,
+                                                      int count, int after) {
+                        }
 
-                         @Override
-                         public void onTextChanged(CharSequence s, int start,
-                                                   int before, int count) {
-                             if(s.length() != 0){
-                                 EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
-                                 String brand = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
-                                 String speed = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
-                                 //String s_title = title.getText().toString();
-                                 changeTxtTitle(title, brand, s.toString(), speed);
+                        @Override
+                        public void onTextChanged(CharSequence s, int start,
+                                                  int before, int count) {
+                            if (s.length() != 0) {
+                                EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
+                                String brand = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
+                                String speed = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
+                                //String s_title = title.getText().toString();
+                                changeTxtTitle(title, brand, s.toString(), speed);
 //                                 title.setText(brand + " " + s + "年检到期 " + speed + "万公里");
-                             }
-                         }
-                     });
+                            }
+                        }
+                    });
                     break;
                 case "7c":
                     title = "车辆求购信息发布";
@@ -906,12 +930,13 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                             postData6();
                         }
                     });
-                    brand_edit = (EditText)(findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5);
-                    brand_edit = (EditText)(findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5);
+                    brand_edit = (EditText) (findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5);
+                    brand_edit = (EditText) (findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5);
                     brand_edit.addTextChangedListener(new TextWatcher() {
 
                         @Override
-                        public void afterTextChanged(Editable s) {}
+                        public void afterTextChanged(Editable s) {
+                        }
 
                         @Override
                         public void beforeTextChanged(CharSequence s, int start,
@@ -921,21 +946,22 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                         @Override
                         public void onTextChanged(CharSequence s, int start,
                                                   int before, int count) {
-                            if(s.length() != 0){
-                                EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
-                                String speed = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
-                                String year = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
+                            if (s.length() != 0) {
+                                EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
+                                String speed = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
+                                String year = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
                                 //String s_title = title.getText().toString();
                                 changeTxtTitle(title, s.toString(), year, speed);
 //                                title.setText(s + " " + year + "年检到期 " + speed + "万公里");
                             }
                         }
                     });
-                    speed_edit = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4));
+                    speed_edit = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4));
                     speed_edit.addTextChangedListener(new TextWatcher() {
 
                         @Override
-                        public void afterTextChanged(Editable s) {}
+                        public void afterTextChanged(Editable s) {
+                        }
 
                         @Override
                         public void beforeTextChanged(CharSequence s, int start,
@@ -945,21 +971,22 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                         @Override
                         public void onTextChanged(CharSequence s, int start,
                                                   int before, int count) {
-                            if(s.length() != 0){
-                                EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
-                                String brand = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
-                                String year = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
+                            if (s.length() != 0) {
+                                EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
+                                String brand = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
+                                String year = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
                                 //String s_title = title.getText().toString();
                                 changeTxtTitle(title, brand, year, s.toString());
 //                                title.setText(brand + " " + year + "年检到期 " + s + "万公里");
                             }
                         }
                     });
-                    year_edit = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year));
+                    year_edit = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year));
                     year_edit.addTextChangedListener(new TextWatcher() {
 
                         @Override
-                        public void afterTextChanged(Editable s) {}
+                        public void afterTextChanged(Editable s) {
+                        }
 
                         @Override
                         public void beforeTextChanged(CharSequence s, int start,
@@ -969,10 +996,10 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                         @Override
                         public void onTextChanged(CharSequence s, int start,
                                                   int before, int count) {
-                            if(s.length() != 0){
-                                EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
-                                String brand = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
-                                String speed = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
+                            if (s.length() != 0) {
+                                EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
+                                String brand = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
+                                String speed = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
                                 //String s_title = title.getText().toString();
                                 changeTxtTitle(title, brand, s.toString(), speed);
 //                                title.setText(brand + " " + s + "年检到期 " + speed + "万公里");
@@ -1281,7 +1308,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                     });
                     break;
             }
-        }else{
+        } else {
             final View rowView0 = inflater.inflate(R.layout.activity_post_item1, null);
             parentLinearLayout.removeAllViews();
             parentLinearLayout.removeAllViewsInLayout();
@@ -1290,8 +1317,8 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
         }
 
         getPostOption();
-        if(CommonUtils.isLogin)
-            ((EditText)findViewById(R.id.edit_input_data14)).setText(CommonUtils.userInfo.getUserJoinMobile());
+        if (CommonUtils.isLogin)
+            ((EditText) findViewById(R.id.edit_input_data14)).setText(CommonUtils.userInfo.getUserJoinMobile());
         mContext = TabHostActivity.TabHostStack;
         res = getResources();
         CommonUtils.customActionBar(mContext, this, true, title);
@@ -1313,129 +1340,142 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
         });
     }
 
-    private void changeTxtTitle(EditText txtTitle, String brand, String year, String speed){
+    private void changeTxtTitle(EditText txtTitle, String brand, String year, String speed) {
         String yearStr = "";
-        if(year != null && !year.equals("")){
+        if (year != null && !year.equals("")) {
             yearStr = year + "年检到期 ";
         }
 
         String speedStr = "";
-        if(speed != null && !speed.equals("")){
+        if (speed != null && !speed.equals("")) {
             speedStr = speed + "万公里";
         }
         txtTitle.setText(brand + " " + yearStr + speedStr);
     }
 
-    public void postData1(){
-        if (validateData1()==false){
+    public void postData1() {
+        if (validateData1() == false) {
             return;
         }
-        if(!CommonUtils.isLogin){
+        if (!CommonUtils.isLogin) {
             Toast.makeText(mContext, "请登录吧", Toast.LENGTH_SHORT).show();
             return;
         }
-        CommonUtils.data1.put("userID",userID);
-        CommonUtils.data1.put("fId",fid);
-        CommonUtils.data1.put("sortId",sortid);
+        CommonUtils.data1.put("userID", userID);
+        CommonUtils.data1.put("fId", fid);
+        CommonUtils.data1.put("sortId", sortid);
         postData();
     }
-    public boolean validateData1(){
 
-        String villiage = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7))).getText().toString();
-        String square = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9))).getText().toString();
-        System.out.println("villiage++++++++++"+villiage);
+    public boolean validateData1() {
+
+        String villiage = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7))).getText().toString();
+        String square = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9))).getText().toString();
+        System.out.println("villiage++++++++++" + villiage);
         CommonUtils.mFiles = mFiles;
-        CommonUtils.data1.put("villiage",villiage);
-        CommonUtils.data1.put("square",square);
-        CommonUtils.data1.put("price",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data10))).getText());
-        CommonUtils.data1.put("floors",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data11))).getText());
-        CommonUtils.data1.put("contact",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).getText());
-        CommonUtils.data1.put("qq",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data13))).getText());
-        CommonUtils.data1.put("phone",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).getText());
-        CommonUtils.data1.put("telephone",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data15))).getText());
-        CommonUtils.data1.put("message",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).getText());
+        CommonUtils.data1.put("villiage", villiage);
+        CommonUtils.data1.put("square", square);
+//        CommonUtils.data1.put("price", ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data10))).getText());
+        CommonUtils.data1.put("floors", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data11))).getText());
+        CommonUtils.data1.put("contact", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).getText());
+        CommonUtils.data1.put("qq", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data13))).getText());
+        CommonUtils.data1.put("phone", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).getText());
+        CommonUtils.data1.put("telephone", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data15))).getText());
+        CommonUtils.data1.put("message", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).getText());
         //CommonUtils.data1.put("house_number","");
-        if ((sortid ==1 || sortid==4) && (CommonUtils.mFiles == null || CommonUtils.mFiles.length<1 || CommonUtils.mFiles[0]==null)) {
+        if ((sortid == 1 || sortid == 4) && (CommonUtils.mFiles == null || CommonUtils.mFiles.length < 1 || CommonUtils.mFiles[0] == null)) {
             Toast toast = Toast.makeText(mContext, "请上传图片", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        if(villiage.trim().equals("")){
+        if (villiage.trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请输入小区名称", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("square").toString().trim().equals("")){
+        if (CommonUtils.data1.get("square").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请输入面积", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("price").toString().trim().equals("")){
+        if (CommonUtils.data1.get("price").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请输入售价", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data10))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data10))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data10))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data10))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("floors").toString().trim().equals("")){
+        if (CommonUtils.data1.get("floors").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请输入楼层", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data11))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data11))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data11))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data11))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("contact").toString().trim().equals("")){
+        if (CommonUtils.data1.get("contact").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请输入联系人", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("phone").toString().trim().equals("")){
+        if (CommonUtils.data1.get("phone").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请输入手机号码", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("house_number").toString().trim().equals("")){
+        if (CommonUtils.data1.get("house_number").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请选择户型", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        if(CommonUtils.data1.get("region").toString().trim().equals("")){
+        if (CommonUtils.data1.get("region").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请选择地区", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        if(CommonUtils.data1.get("house_type").toString().trim().equals("")){
+        if (CommonUtils.data1.get("house_type").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请选择房屋类型", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        if(CommonUtils.data1.get("house_level").toString().trim().equals("")){
+        if (CommonUtils.data1.get("house_level").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请选择房屋装修", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        if(CommonUtils.data1.get("havesun").toString().trim().equals("")){
+        if (CommonUtils.data1.get("havesun").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请选择朝向", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
@@ -1447,502 +1487,559 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
             return false;
         }
         */
-        if((fid.equals("2") && sortid == 9) || (fid.equals("2") && sortid == 4)){
+        if ((fid.equals("2") && sortid == 9) || (fid.equals("2") && sortid == 4)) {
 
-        }
-        else if(CommonUtils.data1.get("award_method").toString().trim().equals("")){
+        } else if (CommonUtils.data1.get("award_method").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请选择货款方式", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        String title = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).getText().toString();
-        CommonUtils.data1.put("title",title);
-        if(CommonUtils.data1.get("title").toString().trim().equals("") || CommonUtils.data1.get("title").toString().trim().length()<5){
+        String title = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).getText().toString();
+        CommonUtils.data1.put("title", title);
+        if (CommonUtils.data1.get("title").toString().trim().equals("") || CommonUtils.data1.get("title").toString().trim().length() < 5) {
             Toast toast = Toast.makeText(mContext, "标题5个字以上", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("message").toString().trim().equals("") || CommonUtils.data1.get("message").toString().trim().length()<10){
+        if (CommonUtils.data1.get("message").toString().trim().equals("") || CommonUtils.data1.get("message").toString().trim().length() < 10) {
             Toast toast = Toast.makeText(mContext, "内容10个字以上", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).requestFocus();
             return false;
         }
         return true;
     }
-    public void postData3(){
-        if (!validateData3()){
+
+    public void postData3() {
+        if (!validateData3()) {
             return;
         }
-        if(!CommonUtils.isLogin){
+        if (!CommonUtils.isLogin) {
             Toast.makeText(mContext, "请登录吧", Toast.LENGTH_SHORT).show();
             return;
         }
-        CommonUtils.data1.put("userID",userID);
-        CommonUtils.data1.put("fId",fid);
-        CommonUtils.data1.put("sortId",sortid);
+        CommonUtils.data1.put("userID", userID);
+        CommonUtils.data1.put("fId", fid);
+        CommonUtils.data1.put("sortId", sortid);
         postData();
     }
-    public boolean validateData3(){
+
+    public boolean validateData3() {
 
         //String square = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9))).getText().toString();
-        CommonUtils.data1.put("square","");
+        CommonUtils.data1.put("square", "");
         CommonUtils.mFiles = mFiles;
-        CommonUtils.data1.put("price",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data3))).getText());
-        CommonUtils.data1.put("qq",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data13))).getText());
-        CommonUtils.data1.put("contact",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).getText());
-        CommonUtils.data1.put("phone",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).getText());
-        CommonUtils.data1.put("telephone",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data15))).getText());
-        CommonUtils.data1.put("message",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).getText());
-        if ((fid.equals("93") || sortid==33) && (CommonUtils.mFiles == null || CommonUtils.mFiles.length<1 || CommonUtils.mFiles[0]==null)) {
+        CommonUtils.data1.put("price", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data3))).getText());
+        CommonUtils.data1.put("qq", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data13))).getText());
+        CommonUtils.data1.put("contact", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).getText());
+        CommonUtils.data1.put("phone", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).getText());
+        CommonUtils.data1.put("telephone", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data15))).getText());
+        CommonUtils.data1.put("message", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).getText());
+        if ((fid.equals("93") || sortid == 33) && (CommonUtils.mFiles == null || CommonUtils.mFiles.length < 1 || CommonUtils.mFiles[0] == null)) {
             Toast toast = Toast.makeText(mContext, "请上传图片", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        if(CommonUtils.data1.get("price").toString().trim().equals("")){
+        if (CommonUtils.data1.get("price").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请输入兑价", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data3))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data3))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data3))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data3))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("contact").toString().trim().equals("")){
+        if (CommonUtils.data1.get("contact").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请输入联系人", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("phone").toString().trim().equals("")){
+        if (CommonUtils.data1.get("phone").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请输入手机号码", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("region").toString().trim().equals("")){
+        if (CommonUtils.data1.get("region").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请选择地区", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        if(CommonUtils.data1.get("type").toString().trim().equals("")){
+        if (CommonUtils.data1.get("type").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请选择类型", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        String title = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).getText().toString();
-        CommonUtils.data1.put("title",title);
-        if(CommonUtils.data1.get("title").toString().trim().equals("") || CommonUtils.data1.get("title").toString().trim().length()<5){
+        String title = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).getText().toString();
+        CommonUtils.data1.put("title", title);
+        if (CommonUtils.data1.get("title").toString().trim().equals("") || CommonUtils.data1.get("title").toString().trim().length() < 5) {
             Toast toast = Toast.makeText(mContext, "标题5个字以上", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("message").toString().trim().equals("") || CommonUtils.data1.get("message").toString().trim().length()<10){
+        if (CommonUtils.data1.get("message").toString().trim().equals("") || CommonUtils.data1.get("message").toString().trim().length() < 10) {
             Toast toast = Toast.makeText(mContext, "内容10个字以上", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).requestFocus();
             return false;
         }
         return true;
     }
-    public void postData4(){
-        if (!validateData4()){
+
+    public void postData4() {
+        if (!validateData4()) {
             return;
         }
-        if(!CommonUtils.isLogin){
+        if (!CommonUtils.isLogin) {
             Toast.makeText(mContext, "请登录吧", Toast.LENGTH_SHORT).show();
             return;
         }
-        CommonUtils.data1.put("userID",userID);
-        CommonUtils.data1.put("fId",fid);
-        CommonUtils.data1.put("sortId",sortid);
+        CommonUtils.data1.put("userID", userID);
+        CommonUtils.data1.put("fId", fid);
+        CommonUtils.data1.put("sortId", sortid);
         postData();
     }
-    public boolean validateData4(){
+
+    public boolean validateData4() {
         CommonUtils.mFiles = mFiles;
-        CommonUtils.data1.put("qq",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data13))).getText());
-        CommonUtils.data1.put("telephone",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data15))).getText());
-        CommonUtils.data1.put("contact",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).getText());
-        CommonUtils.data1.put("phone",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).getText());
-        CommonUtils.data1.put("message",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).getText());
+        CommonUtils.data1.put("qq", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data13))).getText());
+        CommonUtils.data1.put("telephone", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data15))).getText());
+        CommonUtils.data1.put("contact", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).getText());
+        CommonUtils.data1.put("phone", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).getText());
+        CommonUtils.data1.put("message", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).getText());
         //CommonUtils.data1.put("house_number","");
-        if(CommonUtils.data1.get("region").toString().trim().equals("")){
+        if (CommonUtils.data1.get("region").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请选择地区", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        if(CommonUtils.data1.get("education").toString().trim().equals("")){
+        if (CommonUtils.data1.get("education").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请选择学历", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        if(CommonUtils.data1.get("nation").toString().trim().equals("")){
+        if (CommonUtils.data1.get("nation").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请选择民族", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        if(CommonUtils.data1.get("salary_range").toString().trim().equals("")){
+        if (CommonUtils.data1.get("salary_range").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请选择月薪", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        if(CommonUtils.data1.get("level").toString().trim().equals("")){
+        if (CommonUtils.data1.get("level").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请选择职位", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        if(CommonUtils.data1.get("experience").toString().trim().equals("")){
+        if (CommonUtils.data1.get("experience").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请选择经验", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        if(CommonUtils.data1.get("phone").toString().trim().equals("")){
+        if (CommonUtils.data1.get("phone").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请输入手机号码", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).requestFocus();
             return false;
         }
-        String title = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).getText().toString();
-        CommonUtils.data1.put("title",title);
-        if(CommonUtils.data1.get("title").toString().trim().equals("") || CommonUtils.data1.get("title").toString().trim().length()<5){
+        String title = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).getText().toString();
+        CommonUtils.data1.put("title", title);
+        if (CommonUtils.data1.get("title").toString().trim().equals("") || CommonUtils.data1.get("title").toString().trim().length() < 5) {
             Toast toast = Toast.makeText(mContext, "标题5个字以上", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("message").toString().trim().equals("") || CommonUtils.data1.get("message").toString().trim().length()<10){
+        if (CommonUtils.data1.get("message").toString().trim().equals("") || CommonUtils.data1.get("message").toString().trim().length() < 10) {
             Toast toast = Toast.makeText(mContext, "内容10个字以上", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).requestFocus();
             return false;
         }
         return true;
     }
-    public void postData5(){
-        if (!validateData5()){
+
+    public void postData5() {
+        if (!validateData5()) {
             return;
         }
-        if(!CommonUtils.isLogin){
+        if (!CommonUtils.isLogin) {
             Toast.makeText(mContext, "请登录吧", Toast.LENGTH_SHORT).show();
             return;
         }
-        CommonUtils.data1.put("userID",userID);
-        CommonUtils.data1.put("fId",fid);
-        CommonUtils.data1.put("sortId",sortid);
+        CommonUtils.data1.put("userID", userID);
+        CommonUtils.data1.put("fId", fid);
+        CommonUtils.data1.put("sortId", sortid);
         postData();
     }
-    public boolean validateData5(){
+
+    public boolean validateData5() {
         CommonUtils.mFiles = mFiles;
-        CommonUtils.data1.put("qq",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data13))).getText());
-        CommonUtils.data1.put("contact",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).getText());
-        CommonUtils.data1.put("phone",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).getText());
-        CommonUtils.data1.put("telephone",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data15))).getText());
-        CommonUtils.data1.put("message",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).getText());
-        if(CommonUtils.data1.get("contact").toString().trim().equals("")){
+        CommonUtils.data1.put("qq", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data13))).getText());
+        CommonUtils.data1.put("contact", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).getText());
+        CommonUtils.data1.put("phone", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).getText());
+        CommonUtils.data1.put("telephone", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data15))).getText());
+        CommonUtils.data1.put("message", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).getText());
+        if (CommonUtils.data1.get("contact").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请输入联系人", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("phone").toString().trim().equals("")){
+        if (CommonUtils.data1.get("phone").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请输入手机号码", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("region").toString().trim().equals("")){
+        if (CommonUtils.data1.get("region").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请选择地区", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        if(CommonUtils.data1.get("type").toString().trim().equals("")){
+        if (CommonUtils.data1.get("type").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请选择类型", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        String title = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).getText().toString();
-        CommonUtils.data1.put("title",title);
-        if(CommonUtils.data1.get("title").toString().trim().equals("") || CommonUtils.data1.get("title").toString().trim().length()<5){
+        String title = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).getText().toString();
+        CommonUtils.data1.put("title", title);
+        if (CommonUtils.data1.get("title").toString().trim().equals("") || CommonUtils.data1.get("title").toString().trim().length() < 5) {
             Toast toast = Toast.makeText(mContext, "标题5个字以上", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("message").toString().trim().equals("") || CommonUtils.data1.get("message").toString().trim().length()<10){
+        if (CommonUtils.data1.get("message").toString().trim().equals("") || CommonUtils.data1.get("message").toString().trim().length() < 10) {
             Toast toast = Toast.makeText(mContext, "内容10个字以上", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).requestFocus();
             return false;
         }
         return true;
     }
-    public void postData6(){
-        if (!validateData6()){
+
+    public void postData6() {
+        if (!validateData6()) {
             return;
         }
-        if(!CommonUtils.isLogin){
+        if (!CommonUtils.isLogin) {
             Toast.makeText(mContext, "请登录吧", Toast.LENGTH_SHORT).show();
             return;
         }
-        CommonUtils.data1.put("userID",userID);
-        CommonUtils.data1.put("fId",fid);
-        CommonUtils.data1.put("sortId",sortid);
+        CommonUtils.data1.put("userID", userID);
+        CommonUtils.data1.put("fId", fid);
+        CommonUtils.data1.put("sortId", sortid);
         postData();
     }
-    public boolean validateData6(){
+
+    public boolean validateData6() {
         CommonUtils.mFiles = mFiles;
-        String car_speed = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
-        String car_brand = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
-        String abaility_estimate = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_strong))).getText().toString();
-        String years_estimate = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
-        CommonUtils.data1.put("car_brand",car_brand);
-        CommonUtils.data1.put("car_speed",car_speed);
-        CommonUtils.data1.put("abaility_estimate",abaility_estimate);
-        CommonUtils.data1.put("years_estimate",years_estimate);
-        CommonUtils.data1.put("price",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_price))).getText());
-        CommonUtils.data1.put("contact",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).getText());
-        CommonUtils.data1.put("qq",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data13))).getText());
-        CommonUtils.data1.put("phone",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).getText());
-        CommonUtils.data1.put("telephone",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data15))).getText());
-        CommonUtils.data1.put("message",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).getText());
+        String car_speed = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
+        String car_brand = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
+        String abaility_estimate = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_strong))).getText().toString();
+        String years_estimate = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
+        CommonUtils.data1.put("car_brand", car_brand);
+        CommonUtils.data1.put("car_speed", car_speed);
+        CommonUtils.data1.put("abaility_estimate", abaility_estimate);
+        CommonUtils.data1.put("years_estimate", years_estimate);
+        CommonUtils.data1.put("price", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_price))).getText());
+        CommonUtils.data1.put("contact", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).getText());
+        CommonUtils.data1.put("qq", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data13))).getText());
+        CommonUtils.data1.put("phone", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).getText());
+        CommonUtils.data1.put("telephone", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data15))).getText());
+        CommonUtils.data1.put("message", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).getText());
         //CommonUtils.data1.put("house_number","");
-        if(CommonUtils.data1.get("car_brand").toString().trim().equals("")){
+        if (CommonUtils.data1.get("car_brand").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请输入品牌车系", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("car_speed").toString().trim().equals("")){
+        if (CommonUtils.data1.get("car_speed").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请输入行驶里程", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("price").toString().trim().equals("")){
+        if (CommonUtils.data1.get("price").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请输入价格", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_price))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_price))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_price))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_price))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("abaility_estimate").toString().trim().equals("")){
+        if (CommonUtils.data1.get("abaility_estimate").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请输入强险到期", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_strong))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_strong))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_strong))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_strong))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("years_estimate").toString().trim().equals("")){
+        if (CommonUtils.data1.get("years_estimate").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请输入年检到期", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("contact").toString().trim().equals("")){
+        if (CommonUtils.data1.get("contact").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请输入联系人", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("phone").toString().trim().equals("")){
+        if (CommonUtils.data1.get("phone").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请输入手机号码", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("region").toString().trim().equals("")){
+        if (CommonUtils.data1.get("region").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请选择地区", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        if(CommonUtils.data1.get("car_type").toString().trim().equals("")){
+        if (CommonUtils.data1.get("car_type").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请选择车辆类型", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        String title = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).getText().toString();
-        CommonUtils.data1.put("title",title);
-        if(CommonUtils.data1.get("title").toString().trim().equals("") || CommonUtils.data1.get("title").toString().trim().length()<5){
+        String title = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).getText().toString();
+        CommonUtils.data1.put("title", title);
+        if (CommonUtils.data1.get("title").toString().trim().equals("") || CommonUtils.data1.get("title").toString().trim().length() < 5) {
             Toast toast = Toast.makeText(mContext, "标题5个字以上", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("message").toString().trim().equals("") || CommonUtils.data1.get("message").toString().trim().length()<10){
+        if (CommonUtils.data1.get("message").toString().trim().equals("") || CommonUtils.data1.get("message").toString().trim().length() < 10) {
             Toast toast = Toast.makeText(mContext, "内容10个字以上", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).requestFocus();
             return false;
         }
         return true;
     }
-    public void postData7(){
-        if (!validateData7()){
+
+    public void postData7() {
+        if (!validateData7()) {
             return;
         }
-        if(!CommonUtils.isLogin){
+        if (!CommonUtils.isLogin) {
             Toast.makeText(mContext, "请登录吧", Toast.LENGTH_SHORT).show();
             return;
         }
-        CommonUtils.data1.put("userID",userID);
-        CommonUtils.data1.put("fId",fid);
-        CommonUtils.data1.put("sortId",sortid);
+        CommonUtils.data1.put("userID", userID);
+        CommonUtils.data1.put("fId", fid);
+        CommonUtils.data1.put("sortId", sortid);
         postData();
     }
-    public boolean validateData7(){
+
+    public boolean validateData7() {
         CommonUtils.mFiles = mFiles;
-        CommonUtils.data1.put("qq",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data13))).getText());
-        CommonUtils.data1.put("contact",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).getText());
-        CommonUtils.data1.put("phone",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).getText());
-        CommonUtils.data1.put("telephone",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data15))).getText());
-        CommonUtils.data1.put("message",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).getText());
-        if ((sortid ==3) && (CommonUtils.mFiles == null || CommonUtils.mFiles.length<1 || CommonUtils.mFiles[0]==null)) {
+        CommonUtils.data1.put("qq", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data13))).getText());
+        CommonUtils.data1.put("contact", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).getText());
+        CommonUtils.data1.put("phone", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).getText());
+        CommonUtils.data1.put("telephone", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data15))).getText());
+        CommonUtils.data1.put("message", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).getText());
+        if ((sortid == 3) && (CommonUtils.mFiles == null || CommonUtils.mFiles.length < 1 || CommonUtils.mFiles[0] == null)) {
             Toast toast = Toast.makeText(mContext, "请上传图片", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        if(CommonUtils.data1.get("contact").toString().trim().equals("")){
+        if (CommonUtils.data1.get("contact").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请输入联系人", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("phone").toString().trim().equals("")){
+        if (CommonUtils.data1.get("phone").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请输入手机号码", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("region").toString().trim().equals("")){
+        if (CommonUtils.data1.get("region").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请选择地区", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        if(CommonUtils.data1.get("type").toString().trim().equals("")){
+        if (CommonUtils.data1.get("type").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请选择类型", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        CommonUtils.data1.put("price",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_price))).getText());
-        if(CommonUtils.data1.get("price").toString().trim().equals("")){
+        CommonUtils.data1.put("price", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_price))).getText());
+        if (CommonUtils.data1.get("price").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请输入价格", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_price))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_price))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_price))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_price))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("level").toString().trim().equals("")){
+        if (CommonUtils.data1.get("level").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请选择新旧程度", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        String title = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).getText().toString();
-        CommonUtils.data1.put("title",title);
-        if(CommonUtils.data1.get("title").toString().trim().equals("") || CommonUtils.data1.get("title").toString().trim().length()<5){
+        String title = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).getText().toString();
+        CommonUtils.data1.put("title", title);
+        if (CommonUtils.data1.get("title").toString().trim().equals("") || CommonUtils.data1.get("title").toString().trim().length() < 5) {
             Toast toast = Toast.makeText(mContext, "标题5个字以上", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("message").toString().trim().equals("") || CommonUtils.data1.get("message").toString().trim().length()<10){
+        if (CommonUtils.data1.get("message").toString().trim().equals("") || CommonUtils.data1.get("message").toString().trim().length() < 10) {
             Toast toast = Toast.makeText(mContext, "内容10个字以上", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).requestFocus();
             return false;
         }
         return true;
     }
-    public void postData8(){
-        if (!validateData8()){
+
+    public void postData8() {
+        if (!validateData8()) {
             return;
         }
-        if(!CommonUtils.isLogin){
+        if (!CommonUtils.isLogin) {
             Toast.makeText(mContext, "请登录吧", Toast.LENGTH_SHORT).show();
             return;
         }
-        CommonUtils.data1.put("userID",userID);
-        CommonUtils.data1.put("fId",fid);
-        CommonUtils.data1.put("sortId",sortid);
+        CommonUtils.data1.put("userID", userID);
+        CommonUtils.data1.put("fId", fid);
+        CommonUtils.data1.put("sortId", sortid);
         postData();
     }
-    public boolean validateData8(){
+
+    public boolean validateData8() {
         CommonUtils.mFiles = mFiles;
-        CommonUtils.data1.put("qq",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data13))).getText());
-        CommonUtils.data1.put("contact",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).getText());
-        CommonUtils.data1.put("phone",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).getText());
-        CommonUtils.data1.put("telephone",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data15))).getText());
-        CommonUtils.data1.put("message",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).getText());
-        switch(fid){
+        CommonUtils.data1.put("qq", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data13))).getText());
+        CommonUtils.data1.put("contact", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).getText());
+        CommonUtils.data1.put("phone", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).getText());
+        CommonUtils.data1.put("telephone", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data15))).getText());
+        CommonUtils.data1.put("message", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).getText());
+        switch (fid) {
             case "107":
                 /*
                 if (CommonUtils.mFiles == null || CommonUtils.mFiles.length<1 || CommonUtils.mFiles[0]==null) {
@@ -1952,313 +2049,344 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                     return false;
                 }
                 */
-                if(CommonUtils.data1.get("type").toString().trim().equals("")){
+                if (CommonUtils.data1.get("type").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请选择类型", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
                     return false;
                 }
-                if(CommonUtils.data1.get("group").toString().trim().equals("")){
+                if (CommonUtils.data1.get("group").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请选择分类", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
                     return false;
                 }
-                if(CommonUtils.data1.get("contact").toString().trim().equals("")){
+                if (CommonUtils.data1.get("contact").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请输入联系人", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
-                    ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).setFocusableInTouchMode(true);
-                    ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).requestFocus();
+                    ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).setFocusableInTouchMode(true);
+                    ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).requestFocus();
                     return false;
                 }
                 break;
             case "44":
-                if(CommonUtils.data1.get("type").toString().trim().equals("")){
+                if (CommonUtils.data1.get("type").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请选择类型", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
                     return false;
                 }
-                if(CommonUtils.data1.get("group").toString().trim().equals("")){
+                if (CommonUtils.data1.get("group").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请选择分类", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
                     return false;
                 }
-                CommonUtils.data1.put("price",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_price))).getText());
-                if(CommonUtils.data1.get("price").toString().trim().equals("")){
+                CommonUtils.data1.put("price", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_price))).getText());
+                if (CommonUtils.data1.get("price").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请输入费用", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
-                    ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_price))).setFocusableInTouchMode(true);
-                    ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_price))).requestFocus();
+                    ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_price))).setFocusableInTouchMode(true);
+                    ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_price))).requestFocus();
                     return false;
                 }
-                if(CommonUtils.data1.get("contact").toString().trim().equals("")){
+                if (CommonUtils.data1.get("contact").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请输入联系人", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
-                    ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).setFocusableInTouchMode(true);
-                    ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).requestFocus();
+                    ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).setFocusableInTouchMode(true);
+                    ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).requestFocus();
                     return false;
                 }
                 break;
             case "48":
-                if(CommonUtils.data1.get("type").toString().trim().equals("")){
+                if (CommonUtils.data1.get("type").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请选择类型", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
                     return false;
                 }
-                CommonUtils.data1.put("age",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_age))).getText());
-                if(CommonUtils.data1.get("age").toString().trim().equals("")){
+                CommonUtils.data1.put("age", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_age))).getText());
+                if (CommonUtils.data1.get("age").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请输入年龄", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
-                    ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_age))).setFocusableInTouchMode(true);
-                    ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_age))).requestFocus();
+                    ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_age))).setFocusableInTouchMode(true);
+                    ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_age))).requestFocus();
                     return false;
                 }
-                CommonUtils.data1.put("name",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).getText());
-                if(CommonUtils.data1.get("name").toString().trim().equals("")){
+                CommonUtils.data1.put("name", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).getText());
+                if (CommonUtils.data1.get("name").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请输入姓名", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
-                    ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).setFocusableInTouchMode(true);
-                    ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).requestFocus();
+                    ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).setFocusableInTouchMode(true);
+                    ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).requestFocus();
                     return false;
                 }
-                if(CommonUtils.data1.get("sex").toString().trim().equals("")){
+                if (CommonUtils.data1.get("sex").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请选择性别", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
                     return false;
                 }
                 break;
             case "74":
-                if(CommonUtils.data1.get("type").toString().trim().equals("")){
+                if (CommonUtils.data1.get("type").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请选择类型", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
                     return false;
                 }
-                if(CommonUtils.data1.get("group").toString().trim().equals("")){
+                if (CommonUtils.data1.get("group").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请选择分类", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
                     return false;
                 }
-                if(CommonUtils.data1.get("period").toString().trim().equals("")){
+                if (CommonUtils.data1.get("period").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请选择周期", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
                     return false;
                 }
-                if(CommonUtils.data1.get("price").toString().trim().equals("")){
+                if (CommonUtils.data1.get("price").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请输入学费", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
                     return false;
                 }
-                if(CommonUtils.data1.get("contact").toString().trim().equals("")){
+                if (CommonUtils.data1.get("contact").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请输入联系人", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
-                    ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).setFocusableInTouchMode(true);
-                    ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).requestFocus();
+                    ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).setFocusableInTouchMode(true);
+                    ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).requestFocus();
                     return false;
                 }
                 break;
             case "94":
-                if(CommonUtils.data1.get("type").toString().trim().equals("")){
+                if (CommonUtils.data1.get("type").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请选择号码类型", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
                     return false;
                 }
-                if(CommonUtils.data1.get("company").toString().trim().equals("")){
+                if (CommonUtils.data1.get("company").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请选择通讯公司", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
                     return false;
                 }
-                CommonUtils.data1.put("price",((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_price))).getText());
-                if(CommonUtils.data1.get("price").toString().trim().equals("")){
+                CommonUtils.data1.put("price", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_price))).getText());
+                if (CommonUtils.data1.get("price").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请输入价格", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
-                    ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_price))).setFocusableInTouchMode(true);
-                    ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_price))).requestFocus();
+                    ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_price))).setFocusableInTouchMode(true);
+                    ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_price))).requestFocus();
                     return false;
                 }
-                if(CommonUtils.data1.get("contact").toString().trim().equals("")){
+                if (CommonUtils.data1.get("contact").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请输入联系人", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
-                    ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).setFocusableInTouchMode(true);
-                    ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).requestFocus();
+                    ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).setFocusableInTouchMode(true);
+                    ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).requestFocus();
                     return false;
                 }
                 break;
             case "83":
-                if(CommonUtils.data1.get("type").toString().trim().equals("")){
+                if (CommonUtils.data1.get("type").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请选择类型", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
                     return false;
                 }
-                if(CommonUtils.data1.get("group").toString().trim().equals("")){
+                if (CommonUtils.data1.get("group").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请选择分类", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
                     return false;
                 }
-                if(CommonUtils.data1.get("period").toString().trim().equals("")){
+                if (CommonUtils.data1.get("period").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请选择周期", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
                     return false;
                 }
-                if(CommonUtils.data1.get("contact").toString().trim().equals("")){
+                if (CommonUtils.data1.get("contact").toString().trim().equals("")) {
                     Toast toast = Toast.makeText(mContext, "请输入联系人", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
-                    ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).setFocusableInTouchMode(true);
-                    ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).requestFocus();
+                    ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).setFocusableInTouchMode(true);
+                    ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).requestFocus();
                     return false;
                 }
                 break;
             case "92":
-                if (CommonUtils.mFiles == null || CommonUtils.mFiles.length<1 || CommonUtils.mFiles[0]==null) {
+                if (CommonUtils.mFiles == null || CommonUtils.mFiles.length < 1 || CommonUtils.mFiles[0] == null) {
                     Toast toast = Toast.makeText(mContext, "请上传图片", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
                     return false;
                 }
                 break;
             case "50":
-                if (CommonUtils.mFiles == null || CommonUtils.mFiles.length<1 || CommonUtils.mFiles[0]==null) {
+                if (CommonUtils.mFiles == null || CommonUtils.mFiles.length < 1 || CommonUtils.mFiles[0] == null) {
                     Toast toast = Toast.makeText(mContext, "请上传图片", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
                     toast.show();
                     return false;
                 }
                 break;
         }
-        if(!fid.equals("48") && CommonUtils.data1.get("phone").toString().trim().equals("")){
+        if (!fid.equals("48") && CommonUtils.data1.get("phone").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请输入手机号码", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data14))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("region").toString().trim().equals("")){
+        if (CommonUtils.data1.get("region").toString().trim().equals("")) {
             Toast toast = Toast.makeText(mContext, "请选择地区", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
             return false;
         }
-        String title = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).getText().toString();
-        CommonUtils.data1.put("title",title);
-        if(CommonUtils.data1.get("title").toString().trim().equals("") || CommonUtils.data1.get("title").toString().trim().length()<5){
+        String title = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).getText().toString();
+        CommonUtils.data1.put("title", title);
+        if (CommonUtils.data1.get("title").toString().trim().equals("") || CommonUtils.data1.get("title").toString().trim().length() < 5) {
             Toast toast = Toast.makeText(mContext, "标题5个字以上", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title))).requestFocus();
             return false;
         }
-        if(CommonUtils.data1.get("message").toString().trim().equals("") || CommonUtils.data1.get("message").toString().trim().length()<10){
+        if (CommonUtils.data1.get("message").toString().trim().equals("") || CommonUtils.data1.get("message").toString().trim().length() < 10) {
             Toast toast = Toast.makeText(mContext, "内容10个字以上", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
+            toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+            ;
             toast.show();
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).setFocusableInTouchMode(true);
-            ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).requestFocus();
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).setFocusableInTouchMode(true);
+            ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_message))).requestFocus();
             return false;
         }
         return true;
     }
 
-    public void initPostData(){
-        CommonUtils.mFiles =  new File[0];
-        CommonUtils.data1.put("tid","");
-        CommonUtils.data1.put("source","");
-        CommonUtils.data1.put("house_number","");
-        CommonUtils.data1.put("floors","");
-        CommonUtils.data1.put("contact","");
-        CommonUtils.data1.put("phone","");
-        CommonUtils.data1.put("region","");
-        CommonUtils.data1.put("region_desc","");
-        CommonUtils.data1.put("house_type","");
-        CommonUtils.data1.put("house_level","");
-        CommonUtils.data1.put("house_type","");
-        CommonUtils.data1.put("house_level","");
-        CommonUtils.data1.put("havesun","");
-        CommonUtils.data1.put("villiage","");
-        CommonUtils.data1.put("award_method","");
-        CommonUtils.data1.put("square","");
-        CommonUtils.data1.put("square_range","");
-        CommonUtils.data1.put("price","");
-        CommonUtils.data1.put("picture","");
-        CommonUtils.data1.put("message","");
-        CommonUtils.data1.put("title","");
-        CommonUtils.data1.put("house_number_desc","");
-        CommonUtils.data1.put("numbers","");
-        CommonUtils.data1.put("level","");
-        CommonUtils.data1.put("level_desc","");
-        CommonUtils.data1.put("salary_range","");
-        CommonUtils.data1.put("award_period","");
-        CommonUtils.data1.put("sex_demand","");
-        CommonUtils.data1.put("salary","");
-        CommonUtils.data1.put("experience","");
-        CommonUtils.data1.put("education","");
-        CommonUtils.data1.put("nation","");
-        CommonUtils.data1.put("qq","");
-        CommonUtils.data1.put("telephone","");
-        CommonUtils.data1.put("current_level","");
-        CommonUtils.data1.put("ask_region","");
-        CommonUtils.data1.put("home_region","");
-        CommonUtils.data1.put("name","");
-        CommonUtils.data1.put("age","");
-        CommonUtils.data1.put("sex","");
-        CommonUtils.data1.put("option","");
-        CommonUtils.data1.put("company_address","");
-        CommonUtils.data1.put("company_name","");
-        CommonUtils.data1.put("car_type","");
-        CommonUtils.data1.put("car_brand","");
-        CommonUtils.data1.put("brand_years","");
-        CommonUtils.data1.put("car_speed","");
-        CommonUtils.data1.put("car_price","");
-        CommonUtils.data1.put("test_estimate","");
-        CommonUtils.data1.put("abaility_estimate","");
-        CommonUtils.data1.put("brand_years","");
-        CommonUtils.data1.put("car_speed","");
-        CommonUtils.data1.put("years_estimate","");
-        CommonUtils.data1.put("abaility_estimate","");
-        CommonUtils.data1.put("group","");
-        CommonUtils.data1.put("type","");
-        CommonUtils.data1.put("company_address","");
-        CommonUtils.data1.put("company_name","");
-        CommonUtils.data1.put("age","");
-        CommonUtils.data1.put("star_pos","");
-        CommonUtils.data1.put("height","");
-        CommonUtils.data1.put("weight","");
-        CommonUtils.data1.put("education","");
-        CommonUtils.data1.put("salary","");
-        CommonUtils.data1.put("hobby","");
-        CommonUtils.data1.put("future","");
-        CommonUtils.data1.put("address","");
-        CommonUtils.data1.put("company","");
-        CommonUtils.data1.put("region","");
-        CommonUtils.data1.put("education","");
-        CommonUtils.data1.put("type","");
-        CommonUtils.data1.put("period","");
-        CommonUtils.data1.put("education_price","");
-        CommonUtils.data1.put("carry_period","");
-        CommonUtils.data1.put("order","");
+    public void initPostData() {
+        CommonUtils.mFiles = new File[0];
+        CommonUtils.data1.put("tid", "");
+        CommonUtils.data1.put("source", "");
+        CommonUtils.data1.put("house_number", "");
+        CommonUtils.data1.put("floors", "");
+        CommonUtils.data1.put("contact", "");
+        CommonUtils.data1.put("phone", "");
+        CommonUtils.data1.put("region", "");
+        CommonUtils.data1.put("region_desc", "");
+        CommonUtils.data1.put("house_type", "");
+        CommonUtils.data1.put("house_level", "");
+        CommonUtils.data1.put("house_type", "");
+        CommonUtils.data1.put("house_level", "");
+        CommonUtils.data1.put("havesun", "");
+        CommonUtils.data1.put("villiage", "");
+        CommonUtils.data1.put("award_method", "");
+        CommonUtils.data1.put("square", "");
+        CommonUtils.data1.put("square_range", "");
+        CommonUtils.data1.put("price", "");
+        CommonUtils.data1.put("picture", "");
+        CommonUtils.data1.put("message", "");
+        CommonUtils.data1.put("title", "");
+        CommonUtils.data1.put("house_number_desc", "");
+        CommonUtils.data1.put("numbers", "");
+        CommonUtils.data1.put("level", "");
+        CommonUtils.data1.put("level_desc", "");
+        CommonUtils.data1.put("salary_range", "");
+        CommonUtils.data1.put("award_period", "");
+        CommonUtils.data1.put("sex_demand", "");
+        CommonUtils.data1.put("salary", "");
+        CommonUtils.data1.put("experience", "");
+        CommonUtils.data1.put("education", "");
+        CommonUtils.data1.put("nation", "");
+        CommonUtils.data1.put("qq", "");
+        CommonUtils.data1.put("telephone", "");
+        CommonUtils.data1.put("current_level", "");
+        CommonUtils.data1.put("ask_region", "");
+        CommonUtils.data1.put("home_region", "");
+        CommonUtils.data1.put("name", "");
+        CommonUtils.data1.put("age", "");
+        CommonUtils.data1.put("sex", "");
+        CommonUtils.data1.put("option", "");
+        CommonUtils.data1.put("company_address", "");
+        CommonUtils.data1.put("company_name", "");
+        CommonUtils.data1.put("car_type", "");
+        CommonUtils.data1.put("car_brand", "");
+        CommonUtils.data1.put("brand_years", "");
+        CommonUtils.data1.put("car_speed", "");
+        CommonUtils.data1.put("car_price", "");
+        CommonUtils.data1.put("test_estimate", "");
+        CommonUtils.data1.put("abaility_estimate", "");
+        CommonUtils.data1.put("brand_years", "");
+        CommonUtils.data1.put("car_speed", "");
+        CommonUtils.data1.put("years_estimate", "");
+        CommonUtils.data1.put("abaility_estimate", "");
+        CommonUtils.data1.put("group", "");
+        CommonUtils.data1.put("type", "");
+        CommonUtils.data1.put("company_address", "");
+        CommonUtils.data1.put("company_name", "");
+        CommonUtils.data1.put("age", "");
+        CommonUtils.data1.put("star_pos", "");
+        CommonUtils.data1.put("height", "");
+        CommonUtils.data1.put("weight", "");
+        CommonUtils.data1.put("education", "");
+        CommonUtils.data1.put("salary", "");
+        CommonUtils.data1.put("hobby", "");
+        CommonUtils.data1.put("future", "");
+        CommonUtils.data1.put("address", "");
+        CommonUtils.data1.put("company", "");
+        CommonUtils.data1.put("region", "");
+        CommonUtils.data1.put("education", "");
+        CommonUtils.data1.put("type", "");
+        CommonUtils.data1.put("period", "");
+        CommonUtils.data1.put("education_price", "");
+        CommonUtils.data1.put("carry_period", "");
+        CommonUtils.data1.put("order", "");
     }
+
     private void getPostOption() {
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -2266,15 +2394,15 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                 //final ProgressHUD progressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, PostActivity.this);
                 RequestParams params = new RequestParams();
                 params.put("fid", fid);
-                if(sortid==null || fid.equals("")) {
+                if (sortid == null || fid.equals("")) {
                     //CommonUtils.dismissProgress(progressDialog);
                     Intent intent = new Intent(PostActivity.this, PostCategoryActivity.class);
                     pActivity.startChildActivity("post_category", intent);
                 }
                 params.put("sortid", sortid);
                 String url = "news/postoption";
-                System.out.println("sortid++++"+sortid);
-                System.out.println("fid++++"+fid);
+                System.out.println("sortid++++" + sortid);
+                System.out.println("fid++++" + fid);
                 APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -2306,6 +2434,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
             }
         }, 5);
     }
+
     private void initPostOptionView(JSONObject list) {
         arrayObj = new JSONObject[7];
         RelativeLayout rlt_input_data1;
@@ -2315,14 +2444,15 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
         RelativeLayout rlt_input_data5;
         RelativeLayout rlt_input_data6;
         RelativeLayout rlt_input_data7;
+        RelativeLayout rlt_input_data10;
         selPropertyName = "";
         selPropertyIndex = -1;
         selTitleProperty = "";
         selTitleProperty1 = "";
         selTitleProperty2 = "";
 
-        if(list!=null && list.length()>0) {
-            if(fid.equals("2") && (sortid==4 || sortid==9)) {
+        if (list != null && list.length() > 0) {
+            if (fid.equals("2") && (sortid == 4 || sortid == 9)) {
                 rlt_input_data1 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data1);
                 rlt_input_data2 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data2);
                 rlt_input_data3 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data3);
@@ -2330,6 +2460,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                 rlt_input_data5 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data5);
                 rlt_input_data6 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data6);
                 rlt_input_data7 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data7);
+                rlt_input_data10 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data10);
                 for (int i = 0; i < list.length(); i++) {
                     //try {
                     //JSONObject item = list.getJSONObject(i);
@@ -2445,6 +2576,24 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                                 }
                             });
                             break;
+                        case 6:
+                            arrayObj[6] = list.optJSONObject("price");
+                            rlt_input_data10.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    if (showAction == 0) {
+                                        createActionSheet(arrayObj[6]);
+                                        showAction = 1;
+                                        selPropertyName = "price";
+                                        selPropertyIndex = 6;
+                                    } else {
+                                        showAction = 0;
+                                        selPropertyName = "";
+                                        selPropertyIndex = -1;
+                                    }
+                                }
+                            });
+                            break;
                         default:
 
                             break;
@@ -2455,7 +2604,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                     }
                     */
                 }
-            }else if(fid=="2") {
+            } else if (fid == "2") {
                 rlt_input_data1 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data1);
                 rlt_input_data2 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data2);
                 rlt_input_data3 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data3);
@@ -2606,7 +2755,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                     }
                     */
                 }
-            }else if(fid=="93" || fid=="42"){
+            } else if (fid == "93" || fid == "42") {
                 rlt_input_data1 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data1);
                 rlt_input_data2 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data2);
                 for (int i = 0; i < list.length(); i++) {
@@ -2654,7 +2803,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                             break;
                     }
                 }
-            }else if(fid=="38"){
+            } else if (fid == "38") {
                 rlt_input_data1 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data1);
                 rlt_input_data2 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data2);
                 rlt_input_data3 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data3);
@@ -2662,7 +2811,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                 rlt_input_data5 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data5);
                 rlt_input_data6 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data6);
                 for (int i = 0; i < list.length(); i++) {
-                    System.out.println("search++"+list.toString());
+                    System.out.println("search++" + list.toString());
                     switch (i) {
                         case 0:
                             arrayObj[0] = list.optJSONObject("region");
@@ -2781,7 +2930,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                             break;
                     }
                 }
-            }else if(fid=="39"){
+            } else if (fid == "39") {
                 rlt_input_data1 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data1);
                 rlt_input_data2 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data2);
                 for (int i = 0; i < list.length(); i++) {
@@ -2829,7 +2978,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                             break;
                     }
                 }
-            }else if(fid=="40"){
+            } else if (fid == "40") {
                 rlt_input_data1 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data1);
                 rlt_input_data2 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data2);
                 rlt_input_data3 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data3);
@@ -2896,7 +3045,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                             break;
                     }
                 }
-            }else if(fid=="107" || fid=="44"){
+            } else if (fid == "107" || fid == "44") {
                 rlt_input_data1 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data1);
                 rlt_input_data2 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data2);
                 rlt_input_data3 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data3);
@@ -2963,7 +3112,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                             break;
                     }
                 }
-            }else if(fid=="48"){
+            } else if (fid == "48") {
                 rlt_input_data1 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data1);
                 rlt_input_data2 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data2);
                 rlt_input_data3 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data3);
@@ -3030,7 +3179,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                             break;
                     }
                 }
-            }else if(fid=="74"){
+            } else if (fid == "74") {
                 rlt_input_data1 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data1);
                 rlt_input_data2 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data2);
                 rlt_input_data3 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data3);
@@ -3135,7 +3284,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                             break;
                     }
                 }
-            }else if(fid=="94"){
+            } else if (fid == "94") {
                 rlt_input_data1 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data1);
                 rlt_input_data2 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data2);
                 rlt_input_data3 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data3);
@@ -3202,7 +3351,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                             break;
                     }
                 }
-            }else if(fid=="83"){
+            } else if (fid == "83") {
                 rlt_input_data1 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data1);
                 rlt_input_data2 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data2);
                 rlt_input_data3 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data3);
@@ -3288,7 +3437,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                             break;
                     }
                 }
-            }else if(fid=="92"){
+            } else if (fid == "92") {
                 rlt_input_data1 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data1);
                 rlt_input_data2 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data2);
                 rlt_input_data3 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data3);
@@ -3375,7 +3524,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                             break;
                     }
                 }
-            }else if(fid=="50"){
+            } else if (fid == "50") {
                 rlt_input_data1 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data1);
                 rlt_input_data2 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data2);
                 rlt_input_data3 = (RelativeLayout) findViewById(R.id.post_parentcontent).findViewById(R.id.rlt_input_data3);
@@ -3445,7 +3594,8 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
             }
         }
     }
-    public void getImg(){
+
+    public void getImg() {
         System.out.println("Gallery button");
         // start multiple photos selector
         Intent intent = new Intent(PostActivity.this, ImagesSelectorActivity.class);
@@ -3461,17 +3611,18 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
 // start the selector
         this.startActivityForResult(intent, CommonUtils.GALLERY_PICTURE);
     }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // get selected images from selector
-        if(requestCode == CommonUtils.GALLERY_PICTURE) {
-            if(resultCode == RESULT_OK) {
+        if (requestCode == CommonUtils.GALLERY_PICTURE) {
+            if (resultCode == RESULT_OK) {
                 mResults = data.getStringArrayListExtra(SelectorSettings.SELECTOR_RESULTS);
                 assert mResults != null;
 
                 // show results in textview
                 StringBuffer sb = new StringBuffer();
                 sb.append(String.format("Totally %d images selected:", mResults.size())).append("\n");
-                for(String result : mResults) {
+                for (String result : mResults) {
                     System.out.println(result);
                     setResult(result);
                     sb.append(result).append("\n");
@@ -3481,7 +3632,8 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-    public void setResult(String filePath){
+
+    public void setResult(String filePath) {
         //Cursor c = getContentResolver().query(selectedImage, filePath,
         //        null, null, null);
         //c.moveToFirst();
@@ -3495,12 +3647,13 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
         options.inSampleSize = 2;
 
         bitmap = BitmapFactory.decodeFile(filePath, options); // load
-        if(bitmap==null) {
+        if (bitmap == null) {
             return;
         }
         bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth(), bitmap.getHeight(), true);
         storeImageTosdCard(bitmap);
     }
+
     public void selectResult(int requestCode, int resultCode, Intent data) {
 
         bitmap = null;
@@ -3513,9 +3666,9 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                 data.getSelector();
                 Uri selectedImage = data.getData();
                 System.out.println(selectedImage);
-                String[] filePath = { MediaStore.Images.Media.DATA };
+                String[] filePath = {MediaStore.Images.Media.DATA};
                 System.out.println(filePath);
-                System.out.println("pp+"+filePath[0]);
+                System.out.println("pp+" + filePath[0]);
                 Cursor c = getContentResolver().query(selectedImage, filePath,
                         null, null, null);
                 c.moveToFirst();
@@ -3538,6 +3691,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
             }
         }
     }
+
     private void storeImageTosdCard(Bitmap processedBitmap) {
         try {
             // TODO Auto-generated method stub
@@ -3549,7 +3703,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
             if (!storageDirectory.exists()) {
                 storageDirectory = Environment.getExternalStoragePublicDirectory("data");
             }
-            File mediaFile = new File(storageDirectory + File.separator + "IMG_" + timeStamp + mFiles.length+".png");
+            File mediaFile = new File(storageDirectory + File.separator + "IMG_" + timeStamp + mFiles.length + ".png");
 
             if (mediaFile.exists()) {
                 mediaFile.delete();
@@ -3578,31 +3732,31 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                 ImageView img_ic_upload = (ImageView) findViewById(R.id.img_detail);
                 img_ic_upload.setImageResource(android.R.color.transparent);
                 img_ic_upload.setImageBitmap(processedBitmap);
-                if(mSelectedBMP==null){
-                    mSelectedBMP = new Bitmap[] { processedBitmap };
-                    mFiles =  new File[1];
+                if (mSelectedBMP == null) {
+                    mSelectedBMP = new Bitmap[]{processedBitmap};
+                    mFiles = new File[1];
                     mFiles[0] = mediaFile;
-                }else{
+                } else {
                     Bitmap[] oldSelectBMP = mSelectedBMP;
                     File[] oldFile = mFiles;
-                    mSelectedBMP = new Bitmap[oldSelectBMP.length+1];
-                    mFiles = new File[oldFile.length+1];
-                    for(int i=0;i<oldSelectBMP.length;i++){
+                    mSelectedBMP = new Bitmap[oldSelectBMP.length + 1];
+                    mFiles = new File[oldFile.length + 1];
+                    for (int i = 0; i < oldSelectBMP.length; i++) {
                         mSelectedBMP[i] = oldSelectBMP[i];
                         mFiles[i] = oldFile[i];
-                        System.out.println(String.valueOf(i)+mFiles[i].getAbsoluteFile());
+                        System.out.println(String.valueOf(i) + mFiles[i].getAbsoluteFile());
                     }
-                    mSelectedBMP[mSelectedBMP.length-1] = processedBitmap;
-                    mFiles[mSelectedBMP.length-1] = mediaFile;
-                    System.out.println("mediaFile+"+mediaFile.getAbsoluteFile());
+                    mSelectedBMP[mSelectedBMP.length - 1] = processedBitmap;
+                    mFiles[mSelectedBMP.length - 1] = mediaFile;
+                    System.out.println("mediaFile+" + mediaFile.getAbsoluteFile());
                 }
-                if(mFiles.length>0){
+                if (mFiles.length > 0) {
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.MATCH_PARENT
                     );
                     thumbLinearLayout.setLayoutParams(params);
-                }else{
+                } else {
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             0
@@ -3611,9 +3765,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                 }
                 initBMPView();
                 //uploadUserPhoto(processedBitmap);
-            }
-
-            catch (Exception e) {
+            } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
@@ -3623,17 +3775,15 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
         }
 
     }
-    private void initData()
-    {
-        mImgIds = new int[] { };
+
+    private void initData() {
+        mImgIds = new int[]{};
     }
 
-    private void initView()
-    {
+    private void initView() {
         mGallery = (LinearLayout) findViewById(R.id.id_gallery);
 
-        for (int i = 0; i < mImgIds.length; i++)
-        {
+        for (int i = 0; i < mImgIds.length; i++) {
 
             View view = mInflater.inflate(R.layout.activity_gallery_item,
                     mGallery, false);
@@ -3643,16 +3793,15 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
             img.setImageResource(mImgIds[i]);
             TextView txt = (TextView) view
                     .findViewById(R.id.id_index_gallery_item_text);
-            txt.setText("info "+i);
+            txt.setText("info " + i);
             mGallery.addView(view);
         }
     }
-    private void initBMPView()
-    {
+
+    private void initBMPView() {
         mGallery = (LinearLayout) findViewById(R.id.id_gallery);
         mGallery.removeAllViews();
-        for (int i = 0; i < mSelectedBMP.length; i++)
-        {
+        for (int i = 0; i < mSelectedBMP.length; i++) {
 
             View view = mInflater.inflate(R.layout.activity_gallery_item,
                     mGallery, false);
@@ -3680,17 +3829,17 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                     int m_index = view.getId();
                     Bitmap[] oldSelectBMP = mSelectedBMP;
                     File[] oldFile = mFiles;
-                    mSelectedBMP = new Bitmap[oldSelectBMP.length-1];
-                    mFiles = new File[oldSelectBMP.length-1];
+                    mSelectedBMP = new Bitmap[oldSelectBMP.length - 1];
+                    mFiles = new File[oldSelectBMP.length - 1];
                     int j = 0;
-                    for(int i=0;i<oldSelectBMP.length;i++){
-                        if(i!=m_index) {
+                    for (int i = 0; i < oldSelectBMP.length; i++) {
+                        if (i != m_index) {
                             mSelectedBMP[j] = oldSelectBMP[i];
                             mFiles[j] = oldFile[i];
                             j++;
                         }
                     }
-                    if(mFiles.length==0){
+                    if (mFiles.length == 0) {
                         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                                 LinearLayout.LayoutParams.MATCH_PARENT,
                                 0
@@ -3708,13 +3857,14 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
             img_ic_upload.setImageBitmap(mSelectedBMP[i]);
         }
     }
-    public void createActionSheet(JSONObject state_name){
-        if(state_name==null || (state_name!=null && state_name.length()==0)){
+
+    public void createActionSheet(JSONObject state_name) {
+        if (state_name == null || (state_name != null && state_name.length() == 0)) {
             return;
         }
         String[] arr = new String[state_name.length()];
         Integer j = 0;
-        for(int i=0; i < state_name.length(); i++){
+        for (int i = 0; i < state_name.length(); i++) {
             j++;
             arr[i] = state_name.optString(j.toString());
         }
@@ -3726,6 +3876,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                 .setListener(PostActivity.this)
                 .show();
     }
+
     public void onAddField(View v) {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View rowView = inflater.inflate(R.layout.activity_post_item1, null);
@@ -3741,45 +3892,45 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
     public void onCancel(DialogInterface dialog) {
 
     }
+
     @Override
     public void onDismiss(ActionSheet actionSheet, boolean isCancel) {
-        showAction=0;
+        showAction = 0;
     }
 
     @Override
     public void onOtherButtonClick(ActionSheet actionSheet, int index) {
-        showAction=0;
-        String val = String.valueOf(index+1);
+        showAction = 0;
+        String val = String.valueOf(index + 1);
 //        CommonUtils.data1.put(selPropertyName, index+1);
-        if(selPropertyName.equals("region") && selPropertyName_second.equals("yanji")) {
+        if (selPropertyName.equals("region") && selPropertyName_second.equals("yanji")) {
             int v_index = index + 1;
-            String s_index = CommonUtils.data1.get(selPropertyName).toString()+"."+v_index;
+            String s_index = CommonUtils.data1.get(selPropertyName).toString() + "." + v_index;
             CommonUtils.data1.put(selPropertyName, s_index);
             JSONObject region_name = arrayObj[0].optJSONObject("yanji");
-            selPropertyName_thirdVal = selPropertyName_secondVal +" "+region_name.optString(val);
+            selPropertyName_thirdVal = selPropertyName_secondVal + " " + region_name.optString(val);
 //            CommonUtils.data1.put(selPropertyName, s_index);
-        }else if(selPropertyName.equals("region")){
+        } else if (selPropertyName.equals("region")) {
             JSONObject region_name = arrayObj[0].optJSONObject("main");
             selPropertyName_secondVal = region_name.optString(val);
             selPropertyName_thirdVal = region_name.optString(val);
-            CommonUtils.data1.put(selPropertyName, index+1);
+            CommonUtils.data1.put(selPropertyName, index + 1);
+        } else {
+            CommonUtils.data1.put(selPropertyName, index + 1);
         }
-        else{
-            CommonUtils.data1.put(selPropertyName, index+1);
-        }
-        if(arrayObj==null || arrayObj.length<=selPropertyIndex || (selPropertyIndex>-1 && arrayObj[selPropertyIndex].length()<1)){
+        if (arrayObj == null || arrayObj.length <= selPropertyIndex || (selPropertyIndex > -1 && arrayObj[selPropertyIndex].length() < 1)) {
             return;
         }
-        System.out.println("region++"+selPropertyName + "::"+selPropertyName_second);
-        if(selPropertyName.equals("region") && index==0 && !selPropertyName_second.equals("yanji")){
-            System.out.println("region++"+arrayObj[selPropertyIndex]);
+        System.out.println("region++" + selPropertyName + "::" + selPropertyName_second);
+        if (selPropertyName.equals("region") && index == 0 && !selPropertyName_second.equals("yanji")) {
+            System.out.println("region++" + arrayObj[selPropertyIndex]);
             JSONObject region_second = arrayObj[selPropertyIndex].optJSONObject("yanji");
-            if(region_second!=null && region_second.length()>0) {
+            if (region_second != null && region_second.length() > 0) {
                 String[] arr = new String[region_second.length()];
                 Integer j = 0;
                 for (int i = 0; i < region_second.length(); i++) {
                     System.out.println("Region Second" + i + region_second.optString(j.toString()));
-                    j = i+1;
+                    j = i + 1;
                     arr[i] = region_second.optString(j.toString());
                 }
                 selPropertyName_second = "yanji";
@@ -3791,15 +3942,15 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                         .setListener(PostActivity.this)
                         .show();
                 return;
-            }else{
+            } else {
                 selPropertyName_second = "";
             }
-        }else{
+        } else {
             selPropertyName_second = "";
         }
-        if(selPropertyName.equals("region")){
+        if (selPropertyName.equals("region")) {
             ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + selPropertyName_thirdVal);
-        }else{
+        } else {
             switch (selPropertyIndex) {
                 case 0:
                     ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data1))).setText("" + arrayObj[selPropertyIndex].optString(val));
@@ -3826,31 +3977,35 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                     }
                     break;
                 case 6:
-                    ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data8))).setText("" + arrayObj[selPropertyIndex].optString(val));
+                    if (fid.equals("2") && (sortid == 4 || sortid == 9)) {
+                        ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data10))).setText("" + arrayObj[selPropertyIndex].optString(val));
+                    } else {
+                        ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data8))).setText("" + arrayObj[selPropertyIndex].optString(val));
+                    }
                     break;
             }
         }
-        switch (fid){
+        switch (fid) {
             case "2":
-                if(selTitleProperty !=""){
+                if (selTitleProperty != "") {
                     CommonUtils.data1.put(selTitleProperty, selProperty[index]);
-                    EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
-                    String square = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9))).getText().toString()+"m²";
-                    String v = ((EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7))).getText().toString();
+                    EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
+                    String square = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9))).getText().toString() + "m²";
+                    String v = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7))).getText().toString();
                     title.setText(v + " " + selProperty[index] + " " + square);
                     selTitleProperty = "";
                 }
                 break;
             case "38":
-                if(selTitleProperty1!=""){
+                if (selTitleProperty1 != "") {
                     CommonUtils.data1.put(selTitleProperty1, selPropertyName_thirdVal);
-                    EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
-                    title.setText(selPropertyName_thirdVal+ " " +CommonUtils.data1.get("level_desc"));
+                    EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
+                    title.setText(selPropertyName_thirdVal + " " + CommonUtils.data1.get("level_desc"));
                     selTitleProperty1 = "";
                 }
-                if(selTitleProperty2!=""){
+                if (selTitleProperty2 != "") {
                     CommonUtils.data1.put(selTitleProperty2, selProperty[index]);
-                    EditText title = (EditText)((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
+                    EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
                     title.setText(CommonUtils.data1.get("region_desc") + " " + selProperty[index]);
                     selTitleProperty2 = "";
                 }
@@ -3858,229 +4013,215 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
         }
         actionSheet.dismiss();
     }
-    public void postData(){
+
+    public void postData() {
         RelativeLayout rlt_post_data = (RelativeLayout) findViewById(R.id.rlt_post_data);
         rlt_post_data.setEnabled(false);
-        Toast.makeText(mContext, "发布中", Toast.LENGTH_SHORT).show();
-        final ProgressHUD progressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, PostActivity.this);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                RequestParams params = new RequestParams();
-                params.put("uid",CommonUtils.data1.get("userID"));
-                params.put("fid", CommonUtils.data1.get("fId"));
-                params.put("sortid", CommonUtils.data1.get("sortId"));
-                String url = "/post/limit";
-                System.out.println("news/post/limit"+CommonUtils.data1.get("userID"));
-                System.out.println("news/post/limit"+CommonUtils.data1.get("fId"));
-                System.out.println("news/post/limit"+CommonUtils.data1.get("sortId"));
-                APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        CommonUtils.dismissProgress(progressDialog);
-                        //CommonUtils.dismissProgress(progressDialog);
-                        System.out.println("limit_post++"+response);
-                        if (response.optString("ret").equals("1")) {
-                            freePostData();
-                        }else{
-                            finish();
-                            Intent intent = new Intent(PostActivity.this, ChargePostActivity.class);
-                            intent.putExtra("userID", userID);
-                            intent.putExtra("fid", fid);
-                            intent.putExtra("sortid", sortid.toString());
-                            PostActivity.this.startActivityForResult(intent, CommonUtils.REQUEST_CODE_ANOTHER);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        CommonUtils.dismissProgress(progressDialog);
-                        System.out.println("statuscode"+statusCode);
-                        Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        CommonUtils.dismissProgress(progressDialog);
-                        Toast.makeText(mContext, responseString, Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        }, 20);
+//        mProgressDialog = ProgressHUD.show(PostActivity.this, res.getString(R.string.processing), true, false, PostActivity.this);
+        freePostData();
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                RequestParams params = new RequestParams();
+//                params.put("uid",CommonUtils.data1.get("userID"));
+//                params.put("fid", CommonUtils.data1.get("fId"));
+//                params.put("sortid", CommonUtils.data1.get("sortId"));
+//                String url = "/post/limit";
+//                System.out.println("news/post/limit"+CommonUtils.data1.get("userID"));
+//                System.out.println("news/post/limit"+CommonUtils.data1.get("fId"));
+//                System.out.println("news/post/limit"+CommonUtils.data1.get("sortId"));
+//                APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
+//                    @Override
+//                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//                        CommonUtils.dismissProgress(mProgressDialog);
+//                        //CommonUtils.dismissProgress(progressDialog);
+//                        System.out.println("limit_post++"+response);
+//                        if (response.optString("ret").equals("1")) {
+//                            freePostData();
+//                        }else{
+//                            finish();
+//                            Intent intent = new Intent(PostActivity.this, ChargePostActivity.class);
+//                            intent.putExtra("userID", userID);
+//                            intent.putExtra("fid", fid);
+//                            intent.putExtra("sortid", sortid.toString());
+//                            PostActivity.this.startActivityForResult(intent, CommonUtils.REQUEST_CODE_ANOTHER);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+//                        CommonUtils.dismissProgress(mProgressDialog);
+//                        System.out.println("statuscode"+statusCode);
+//                        Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    @Override
+//                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+//                        CommonUtils.dismissProgress(mProgressDialog);
+//                        Toast.makeText(mContext, responseString, Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//            }
+//        }, 20);
     }
-    public void freePostData(){
-        if(!CommonUtils.isLogin){
+
+    public void freePostData() {
+        if (!CommonUtils.isLogin) {
             Toast.makeText(mContext, "请登录吧", Toast.LENGTH_SHORT).show();
             return;
         }
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                final ProgressHUD progressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, PostActivity.this);
-                RequestParams params = new RequestParams();
-                params.put("uid",CommonUtils.data1.get("userID"));
-                params.put("fid", CommonUtils.data1.get("fId"));
+        mProgressDialog = ProgressHUD.show(PostActivity.this, res.getString(R.string.processing), true, false, PostActivity.this);
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("uid", CommonUtils.data1.get("userID"));
+        params.put("fid", CommonUtils.data1.get("fId"));
+        params.put("sortid", CommonUtils.data1.get("sortId"));
+        params.put("region", CommonUtils.data1.get("region"));
+        params.put("qq", CommonUtils.data1.get("qq"));
+        params.put("telephone", CommonUtils.data1.get("telephone"));
+        params.put("phone", CommonUtils.data1.get("phone"));
+        params.put("title", CommonUtils.data1.get("title"));
+        params.put("message", CommonUtils.data1.get("message"));
+        switch (CommonUtils.data1.get("fId").toString()) {
+            case "2":
+                params.put("source", CommonUtils.data1.get("source"));
+                params.put("house_number", CommonUtils.data1.get("house_number"));
+                params.put("floors", CommonUtils.data1.get("floors"));
+                params.put("contact", CommonUtils.data1.get("contact"));
+                params.put("house_type", CommonUtils.data1.get("house_type"));
+                params.put("house_level", CommonUtils.data1.get("house_level"));
+                params.put("havesun", CommonUtils.data1.get("havesun"));
+                params.put("villiage", CommonUtils.data1.get("villiage"));
+                params.put("award_method", CommonUtils.data1.get("award_method"));
+                params.put("square", CommonUtils.data1.get("square"));
+                params.put("square_range", CommonUtils.data1.get("square_range"));
+                params.put("price", CommonUtils.data1.get("price"));
+                break;
+            case "93":
+                params.put("type", CommonUtils.data1.get("type"));
+                params.put("contact", CommonUtils.data1.get("contact"));
+                params.put("price", CommonUtils.data1.get("price"));
+                break;
+            case "38": //招兼职信息发布
+                params.put("contact", CommonUtils.data1.get("contact"));
+                params.put("numbers", CommonUtils.data1.get("numbers"));
+                params.put("level", CommonUtils.data1.get("level"));
+                params.put("salary_range", CommonUtils.data1.get("salary_range"));
+                params.put("award_period", CommonUtils.data1.get("award_period"));
+                params.put("sex_demand", CommonUtils.data1.get("sex_demand"));
+                params.put("salary", CommonUtils.data1.get("salary"));
+                params.put("experience", CommonUtils.data1.get("experience"));
+                params.put("education", CommonUtils.data1.get("education"));
+                params.put("nation", CommonUtils.data1.get("nation"));
+                break;
+            case "42": //便民服务信息发布
+                params.put("type", CommonUtils.data1.get("type"));
+                params.put("contact", CommonUtils.data1.get("contact"));
+                break;
+            case "39": //车辆出租信息发布
                 params.put("sortid", CommonUtils.data1.get("sortId"));
-                params.put("region", CommonUtils.data1.get("region"));
-                params.put("qq", CommonUtils.data1.get("qq"));
-                params.put("telephone", CommonUtils.data1.get("telephone"));
-                params.put("phone", CommonUtils.data1.get("phone"));
-                params.put("title", CommonUtils.data1.get("title"));
-                params.put("message", CommonUtils.data1.get("message"));
-                switch(CommonUtils.data1.get("fId").toString()){
-                    case "2":
-                        params.put("source", CommonUtils.data1.get("source"));
-                        params.put("house_number", CommonUtils.data1.get("house_number"));
-                        params.put("floors", CommonUtils.data1.get("floors"));
-                        params.put("contact", CommonUtils.data1.get("contact"));
-                        params.put("house_type", CommonUtils.data1.get("house_type"));
-                        params.put("house_level", CommonUtils.data1.get("house_level"));
-                        params.put("havesun", CommonUtils.data1.get("havesun"));
-                        params.put("villiage", CommonUtils.data1.get("villiage"));
-                        params.put("award_method", CommonUtils.data1.get("award_method"));
-                        params.put("square", CommonUtils.data1.get("square"));
-                        params.put("square_range", CommonUtils.data1.get("square_range"));
-                        params.put("price", CommonUtils.data1.get("price"));
-                        break;
-                    case "93":
-                        params.put("type", CommonUtils.data1.get("type"));
-                        params.put("contact", CommonUtils.data1.get("contact"));
-                        params.put("price", CommonUtils.data1.get("price"));
-                        break;
-                    case "38": //招兼职信息发布
-                        params.put("contact", CommonUtils.data1.get("contact"));
-                        params.put("numbers", CommonUtils.data1.get("numbers"));
-                        params.put("level", CommonUtils.data1.get("level"));
-                        params.put("salary_range", CommonUtils.data1.get("salary_range"));
-                        params.put("award_period", CommonUtils.data1.get("award_period"));
-                        params.put("sex_demand", CommonUtils.data1.get("sex_demand"));
-                        params.put("salary", CommonUtils.data1.get("salary"));
-                        params.put("experience", CommonUtils.data1.get("experience"));
-                        params.put("education", CommonUtils.data1.get("education"));
-                        params.put("nation", CommonUtils.data1.get("nation"));
-                        break;
-                    case "42": //便民服务信息发布
-                        params.put("type", CommonUtils.data1.get("type"));
-                        params.put("contact", CommonUtils.data1.get("contact"));
-                        break;
-                    case "39": //车辆出租信息发布
-                        params.put("sortid", CommonUtils.data1.get("sortId"));
-                        params.put("abaility_estimate", CommonUtils.data1.get("abaility_estimate"));
-                        params.put("years_estimate", CommonUtils.data1.get("years_estimate"));
-                        params.put("contact", CommonUtils.data1.get("contact"));
-                        params.put("car_type", CommonUtils.data1.get("car_type"));
-                        params.put("car_brand", CommonUtils.data1.get("car_brand"));
-                        params.put("car_speed", CommonUtils.data1.get("car_speed"));
-                        params.put("price", CommonUtils.data1.get("price"));
-                        break;
-                    case "40": //物品出售信息发布
-                        params.put("level", CommonUtils.data1.get("level"));
-                        params.put("price", CommonUtils.data1.get("price"));
-                        params.put("type", CommonUtils.data1.get("type"));
-                        params.put("contact", CommonUtils.data1.get("contact"));
-                        break;
-                    case "107":
-                        params.put("group", CommonUtils.data1.get("group"));
-                        params.put("type", CommonUtils.data1.get("type"));
-                        params.put("contact", CommonUtils.data1.get("contact"));
-                        break;
-                    case "44":
-                        params.put("group", CommonUtils.data1.get("group"));
-                        params.put("type", CommonUtils.data1.get("type"));
-                        params.put("price", CommonUtils.data1.get("price"));
-                        params.put("contact", CommonUtils.data1.get("contact"));
-                        break;
-                    case "48":
-                        params.put("type", CommonUtils.data1.get("type"));
-                        params.put("age", CommonUtils.data1.get("age"));
-                        params.put("sex", CommonUtils.data1.get("sex"));
-                        params.put("name", CommonUtils.data1.get("name"));
-                        break;
-                    case "74":
-                        params.put("contact", CommonUtils.data1.get("contact"));
-                        params.put("type", CommonUtils.data1.get("type"));
-                        params.put("period", CommonUtils.data1.get("period"));
-                        params.put("price", CommonUtils.data1.get("price"));
-                        params.put("group", CommonUtils.data1.get("group"));
-                        break;
-                    case "92":
-                        params.put("contact", CommonUtils.data1.get("contact"));
-                        params.put("type", CommonUtils.data1.get("type"));
-                        params.put("source", CommonUtils.data1.get("source"));
-                        params.put("award_method", CommonUtils.data1.get("award_method"));
-                        break;
-                    case "94":
-                        params.put("contact", CommonUtils.data1.get("contact"));
-                        params.put("type", CommonUtils.data1.get("type"));
-                        params.put("company", CommonUtils.data1.get("company"));
-                        params.put("price", CommonUtils.data1.get("price"));
-                        break;
-                    case "83":
-                        params.put("contact", CommonUtils.data1.get("contact"));
-                        params.put("type", CommonUtils.data1.get("type"));
-                        params.put("period", CommonUtils.data1.get("period"));
-                        params.put("group", CommonUtils.data1.get("group"));
-                        break;
-                    case "50":
-                        params.put("contact", CommonUtils.data1.get("contact"));
-                        params.put("type", CommonUtils.data1.get("type"));
-                        params.put("order", CommonUtils.data1.get("order"));
-                        break;
+                params.put("abaility_estimate", CommonUtils.data1.get("abaility_estimate"));
+                params.put("years_estimate", CommonUtils.data1.get("years_estimate"));
+                params.put("contact", CommonUtils.data1.get("contact"));
+                params.put("car_type", CommonUtils.data1.get("car_type"));
+                params.put("car_brand", CommonUtils.data1.get("car_brand"));
+                params.put("car_speed", CommonUtils.data1.get("car_speed"));
+                params.put("price", CommonUtils.data1.get("price"));
+                break;
+            case "40": //物品出售信息发布
+                params.put("level", CommonUtils.data1.get("level"));
+                params.put("price", CommonUtils.data1.get("price"));
+                params.put("type", CommonUtils.data1.get("type"));
+                params.put("contact", CommonUtils.data1.get("contact"));
+                break;
+            case "107":
+                params.put("group", CommonUtils.data1.get("group"));
+                params.put("type", CommonUtils.data1.get("type"));
+                params.put("contact", CommonUtils.data1.get("contact"));
+                break;
+            case "44":
+                params.put("group", CommonUtils.data1.get("group"));
+                params.put("type", CommonUtils.data1.get("type"));
+                params.put("price", CommonUtils.data1.get("price"));
+                params.put("contact", CommonUtils.data1.get("contact"));
+                break;
+            case "48":
+                params.put("type", CommonUtils.data1.get("type"));
+                params.put("age", CommonUtils.data1.get("age"));
+                params.put("sex", CommonUtils.data1.get("sex"));
+                params.put("name", CommonUtils.data1.get("name"));
+                break;
+            case "74":
+                params.put("contact", CommonUtils.data1.get("contact"));
+                params.put("type", CommonUtils.data1.get("type"));
+                params.put("period", CommonUtils.data1.get("period"));
+                params.put("price", CommonUtils.data1.get("price"));
+                params.put("group", CommonUtils.data1.get("group"));
+                break;
+            case "92":
+                params.put("contact", CommonUtils.data1.get("contact"));
+                params.put("type", CommonUtils.data1.get("type"));
+                params.put("source", CommonUtils.data1.get("source"));
+                params.put("award_method", CommonUtils.data1.get("award_method"));
+                break;
+            case "94":
+                params.put("contact", CommonUtils.data1.get("contact"));
+                params.put("type", CommonUtils.data1.get("type"));
+                params.put("company", CommonUtils.data1.get("company"));
+                params.put("price", CommonUtils.data1.get("price"));
+                break;
+            case "83":
+                params.put("contact", CommonUtils.data1.get("contact"));
+                params.put("type", CommonUtils.data1.get("type"));
+                params.put("period", CommonUtils.data1.get("period"));
+                params.put("group", CommonUtils.data1.get("group"));
+                break;
+            case "50":
+                params.put("contact", CommonUtils.data1.get("contact"));
+                params.put("type", CommonUtils.data1.get("type"));
+                params.put("order", CommonUtils.data1.get("order"));
+                break;
+        }
+        String url = "api/news/post";
+        NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
+            @Override
+            public void onResponse(Call<JSONObject> call, Response<JSONObject> resp) {
+                try {
+                    JSONObject response = resp.body();
+                    if (response.getInt("code") == 1) {
+                        long tid = response.getLong("tid");
+                        //JSONObject list = response.getJSONObject("option");
+                        CommonUtils.data1.put("tid", Long.toString(tid));
+                        uploadUserPhoto(tid);
+                    } else {
+                        CommonUtils.dismissProgress(mProgressDialog);
+                        Toast.makeText(mContext, response.optString("message"), Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (JSONException e) {
+                    CommonUtils.dismissProgress(mProgressDialog);
+                    Toast.makeText(mContext, getText(R.string.message_error_identify_format), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
                 }
-                String url = "news/post";
-                APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        CommonUtils.dismissProgress(progressDialog);
-                        try {
-                            System.out.println("post:"+response);
-                            if (response.getInt("code") == 1) {
-                                long tid = response.getLong("tid");
-                                //JSONObject list = response.getJSONObject("option");
-                                CommonUtils.data1.put("tid", Long.toString(tid));
-                                uploadUserPhoto(tid);
-                            }else{
-                                Toast.makeText(mContext, response.optString("message"), Toast.LENGTH_SHORT).show();
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        CommonUtils.dismissProgress(progressDialog);
-                        //Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        CommonUtils.dismissProgress(progressDialog);
-                        System.out.println("responseString:"+responseString);
-                        //Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
-                    }
-                });
             }
-        }, 5);
+
+            @Override
+            public void onFailure(Call<JSONObject> call, Throwable t) {
+                CommonUtils.dismissProgress(mProgressDialog);
+                //Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+            }
+
+        });
     }
+
     private void uploadUserPhoto(long _tid) {
-        final ProgressHUD progressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, PostActivity.this);
-        if (CommonUtils.mFiles == null || CommonUtils.mFiles.length<1 || CommonUtils.mFiles[0]==null) {
+        if (CommonUtils.mFiles == null || CommonUtils.mFiles.length < 1 || CommonUtils.mFiles[0] == null) {
             Toast.makeText(mContext, "发布成功", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(PostActivity.this, RoomDetailActivity.class);
             String fid = CommonUtils.data1.get("fId").toString();
             String sortid = CommonUtils.data1.get("sortId").toString();
             CommonUtils.share_bmp = BitmapFactory.decodeResource(getResources(), R.drawable.default_img);
-            /*
-            if(CommonUtils.share_bmp.getByteCount()>23000) {
-                if (CommonUtils.share_bmp != null && !CommonUtils.share_bmp.isRecycled()) {
-                    CommonUtils.share_bmp = Bitmap.createScaledBitmap(CommonUtils.share_bmp, 32, 32, true);
-                }
-            }
-            */
-            CommonUtils.dismissProgress(progressDialog);
-            String url = APIManager.User_URL+"news/paper/"+Long.toString(_tid);
+            CommonUtils.dismissProgress(mProgressDialog);
+            String url = APIManager.User_URL + "news/paper/" + Long.toString(_tid);
             intent.putExtra("fid", fid);
             intent.putExtra("sortid", sortid);
             intent.putExtra("newsId", Long.toString(_tid));
@@ -4089,24 +4230,17 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
             intent.putExtra("url", url);
             finish();
             PostActivity.this.startActivity(intent);
-        }else {
-            RequestParams params = new RequestParams();
+        } else {
+            HashMap<String, Object> params = new HashMap<String, Object>();
             try {
                 params.put("tid", String.valueOf(_tid));
                 params.put("act", "upload");
-                System.out.println("test"+CommonUtils.mFiles.length);
-                //params.put("liangyao_user_photo", new File(selectedImagePath), "image/png");
-                for (int i = 0; i < CommonUtils.mFiles.length; i++) {
-                    params.put("file[" + i + "]", CommonUtils.mFiles[i]);
-                    //params.put("file[]", CommonUtils.mFiles[i], "image/png");
-                    System.out.println(i + "::" + CommonUtils.mFiles[i].getAbsolutePath());
-                }
-
+                System.out.println("test" + CommonUtils.mFiles.length);
                 String url = APIManager.Ucenter_URL;
-                APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
+                NetRetrofit.getInstance().upload(url, params, CommonUtils.mFiles, new Callback<JSONObject>() {
                     @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        CommonUtils.dismissProgress(progressDialog);
+                    public void onResponse(Call<JSONObject> call, Response<JSONObject> resp) {
+                        CommonUtils.dismissProgress(mProgressDialog);
                         Toast.makeText(mContext, "发布成功", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(PostActivity.this, RoomDetailActivity.class);
                         String fid = CommonUtils.data1.get("fId").toString();
@@ -4116,13 +4250,6 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                             CommonUtils.share_bmp = CommonUtils.getBitmapFromURL(CommonUtils.mFiles[0].getAbsolutePath());
                         if (CommonUtils.share_bmp == null)
                             CommonUtils.share_bmp = BitmapFactory.decodeResource(getResources(), R.drawable.default_img);
-                        /*
-                        if(CommonUtils.share_bmp.getByteCount()>23000) {
-                            if (CommonUtils.share_bmp != null && !CommonUtils.share_bmp.isRecycled()) {
-                                CommonUtils.share_bmp = Bitmap.createScaledBitmap(CommonUtils.share_bmp, 32, 32, true);
-                            }
-                        }
-                        */
                         String url = APIManager.User_URL + "news/paper/" + CommonUtils.data1.get("tid").toString();
                         intent.putExtra("fid", fid);
                         intent.putExtra("sortid", sortid);
@@ -4130,8 +4257,8 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                         intent.putExtra("title", CommonUtils.data1.get("title").toString());
                         intent.putExtra("desc", CommonUtils.data1.get("message").toString());
                         intent.putExtra("url", url);
-                        for(int i=0;i<CommonUtils.mFiles.length;i++){
-                            if(!(CommonUtils.mFiles[i].equals(null) || CommonUtils.mFiles[i].equals("")) && CommonUtils.mFiles[i].exists()){
+                        for (int i = 0; i < CommonUtils.mFiles.length; i++) {
+                            if (!(CommonUtils.mFiles[i].equals(null) || CommonUtils.mFiles[i].equals("")) && CommonUtils.mFiles[i].exists()) {
                                 CommonUtils.mFiles[i].delete();
                             }
                         }
@@ -4140,63 +4267,25 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
                     }
 
                     @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        System.out.println("img01+" + errorResponse);
-                        CommonUtils.dismissProgress(progressDialog);
-                        //Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        CommonUtils.dismissProgress(progressDialog);
-                        //CommonUtils.dismissProgress(progressDialog);
-                        //Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
-                        Toast.makeText(mContext, "发布成功", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(PostActivity.this, RoomDetailActivity.class);
-                        String fid = CommonUtils.data1.get("fId").toString();
-                        String sortid = CommonUtils.data1.get("sortId").toString();
-                        CommonUtils.share_bmp = BitmapFactory.decodeResource(getResources(), R.drawable.default_img);
-                        if (!CommonUtils.mFiles[0].getAbsolutePath().equals(""))
-                            CommonUtils.share_bmp = CommonUtils.getBitmapFromURL(CommonUtils.mFiles[0].getAbsolutePath());
-                        if (CommonUtils.share_bmp == null)
-                            CommonUtils.share_bmp = BitmapFactory.decodeResource(getResources(), R.drawable.default_img);
-                        /*
-                        if(CommonUtils.share_bmp.getByteCount()>23000) {
-                            if (CommonUtils.share_bmp != null && !CommonUtils.share_bmp.isRecycled()) {
-                                CommonUtils.share_bmp = Bitmap.createScaledBitmap(CommonUtils.share_bmp, 32, 32, true);
-                            }
-                        }
-                        */
-                        String url = APIManager.User_URL + "news/paper/" + CommonUtils.data1.get("tid").toString();
-                        intent.putExtra("fid", fid);
-                        intent.putExtra("sortid", sortid);
-                        intent.putExtra("newsId", CommonUtils.data1.get("tid").toString());
-                        intent.putExtra("title", CommonUtils.data1.get("title").toString());
-                        intent.putExtra("desc", CommonUtils.data1.get("message").toString());
-                        intent.putExtra("url", url);
-                        for(int i=0;i<CommonUtils.mFiles.length;i++){
-                            if(!(CommonUtils.mFiles[i].equals(null) || CommonUtils.mFiles[i].equals("")) && CommonUtils.mFiles[i].exists()){
-                                CommonUtils.mFiles[i].delete();
-                            }
-                        }
-                        finish();
-                        PostActivity.this.startActivity(intent);
+                    public void onFailure(Call<JSONObject> call, Throwable t) {
+                        System.out.println("img01+" + t.getMessage());
+                        CommonUtils.dismissProgress(mProgressDialog);
+                        Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
                     }
                 });
             } catch (Exception e) {
+                CommonUtils.dismissProgress(mProgressDialog);
             }
         }
-        CommonUtils.dismissProgress(progressDialog);
-        //} catch (FileNotFoundException e) {
-        //    e.printStackTrace();
-        //}
     }
+
     @Override
     public void onBackPressed() {
         //Intent intent = new Intent(PostActivity.this, PostCategoryActivity.class);
         //pActivity.startChildActivity("post_category", intent);
         this.finish();
     }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -4205,6 +4294,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
         }
         return super.onKeyDown(keyCode, event);
     }
+
     @Override
     protected void onResume() {
         super.onResume();

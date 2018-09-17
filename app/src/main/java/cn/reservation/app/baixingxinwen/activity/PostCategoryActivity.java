@@ -513,30 +513,35 @@ public class PostCategoryActivity extends AppCompatActivity implements View.OnCl
                 params.put("fid", fid);
                 params.put("sortid", Integer.toString(sortid));
                 String url = "api/post/limit";
+                // 전화번호가 join되였는가를 먼저 검사하고 아니면 post할수 없다.
+                if(CommonUtils.userInfo.getUserJoinMobile() != null && !CommonUtils.userInfo.getUserJoinMobile().equals("")) {
+                    NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
+                        @Override
+                        public void onResponse(Call<JSONObject> call, Response<JSONObject> resp) {
+                            try {
+                                JSONObject response = resp.body();
+                                if (response.getInt("ret") == 1) {
+                                    PostCategoryActivity.this.startActivityForResult(finalIntent, CommonUtils.REQUEST_CODE_ANOTHER);
+                                } else {
+                                    CommonUtils.showAlertDialog(mContext, "您在本版块的发布数量已达到上限", null);
+                                }
 
-                NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
-                    @Override
-                    public void onResponse(Call<JSONObject> call, Response<JSONObject> resp) {
-                        try {
-                            JSONObject response = resp.body();
-                            if (response.getInt("ret") == 1) {
-                                PostCategoryActivity.this.startActivityForResult(finalIntent, CommonUtils.REQUEST_CODE_ANOTHER);
-                            } else {
-                                CommonUtils.showAlertDialog(mContext, "您在本版块的发布数量已达到上限", null);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
                             }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
                         }
-                    }
 
-                    @Override
-                    public void onFailure(Call<JSONObject> call, Throwable t) {
-                        //progressDialog.dismiss();
-                        Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<JSONObject> call, Throwable t) {
+                            //progressDialog.dismiss();
+                            Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                else{
+                    CommonUtils.showAlertDialog(mContext, "您必须转到“我的/账号安全”页面并拨打电话号码", null);
+                }
 
 
             }

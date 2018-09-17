@@ -10,7 +10,6 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -33,12 +32,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.baiiu.filter.DropDownMenu;
 import com.baiiu.filter.interfaces.OnFilterDoneListener;
 import com.baoyz.actionsheet.ActionSheet;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
@@ -49,24 +45,19 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.adapter.DropMenuAdapter;
 import cn.reservation.app.baixingxinwen.adapter.SearchItemListAdapter;
-import cn.reservation.app.baixingxinwen.api.APIManager;
-import cn.reservation.app.baixingxinwen.api.JsonResponseListener;
 import cn.reservation.app.baixingxinwen.api.NetRetrofit;
-import cn.reservation.app.baixingxinwen.api.NetworkManager;
 import cn.reservation.app.baixingxinwen.dropdownmenu.entity.FilterUrl;
 import cn.reservation.app.baixingxinwen.utils.AnimatedActivity;
 import cn.reservation.app.baixingxinwen.utils.BasePopupWindow;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
 import cn.reservation.app.baixingxinwen.utils.DictionaryUtils;
 import cn.reservation.app.baixingxinwen.utils.SearchItem;
-import cz.msebera.android.httpclient.Header;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -135,6 +126,8 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         selectedKeyTab = new Hashtable();
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
+
+
 
         self = this;
 
@@ -351,7 +344,15 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
             //setContentView(R.layout.activity_search1);
             fid = (String) intent.getSerializableExtra("fid");
             sortid = (String) intent.getSerializableExtra("sortid");
+//            boolean idFullSearch = (boolean) intent.getSerializableExtra("idFullSearch");
+//            if(idFullSearch){
+//                paramsUpdated = new HashMap<>();
+//                paramsUpdated.put("keyword", "");
+//                paramsUpdated.put("page", "1");
+//            }
             editSearchTxt.setHint("搜索");
+            dropDownMenu.hideFixedTabIndicator();
+            findViewById(R.id.rlt_post).setVisibility(RelativeLayout.GONE);
         }
 
 //        getSearchOption();
@@ -627,92 +628,100 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         int id = view.getId();
         Intent intent;
         if (id == R.id.rlt_post) {//点击发布按钮
-            intent = new Intent(SearchActivity.this, PostCategoryActivity.class);
-            switch (postItem){
-                case "4"://招聘信息
-                    fid = "38";
-                    sortid = "7,53";
-                    intent.putExtra("PostItem", postItem);
-                    pActivity.startChildActivity("activity_search", intent);
-                    break;
-                case "5"://求职简历
-                    fid = "38";
-                    sortid = "8,28";
-                    intent.putExtra("PostItem", postItem);
-                    pActivity.startChildActivity("activity_search", intent);
-                    break;
-                case "6"://便民服务
-                    fid = "42";
-                    sortid = "13,34";
-                    intent.putExtra("PostItem", postItem);
-                    pActivity.startChildActivity("activity_search", intent);
-                    break;
-                case "7"://车辆交易
-                    fid = "39";
-                    sortid = "58,2";
-                    intent.putExtra("PostItem", postItem);
-                    pActivity.startChildActivity("activity_search", intent);
-                    break;
-                case "8"://二手买卖
-                    //搜索二手买卖
-                    fid = "40";
-                    sortid = "0";
-                    intent.putExtra("PostItem", postItem);
-                    pActivity.startChildActivity("activity_search", intent);
-                    break;
-                case "11"://婚姻交友
-                    //搜索婚姻交友
-                    fid = "48";
-                    sortid = "0";
-                    intent.putExtra("PostItem", postItem);
-                    pActivity.startChildActivity("activity_search", intent);
-                    break;
-                case "13"://电话号码
-                    //搜索求购号码
-                    fid = "94";
-                    sortid = "40,41";
-                    intent.putExtra("PostItem", postItem);
-                    pActivity.startChildActivity("activity_search", intent);
-                    break;
-                default:
-                    HashMap<String, Object> params = new HashMap<String, Object>();
-                    params.put("uid", CommonUtils.userInfo.getUserID());
-                    params.put("fid", fid);
-                    params.put("sortid", sortid);
-                    String url = "api/post/limit";
+            // 전화번호가 join되였는가를 먼저 검사하고 아니면 post할수 없다.
+            if(CommonUtils.userInfo.getUserJoinMobile() != null && !CommonUtils.userInfo.getUserJoinMobile().equals("")){
+                intent = new Intent(SearchActivity.this, PostCategoryActivity.class);
+                switch (postItem){
+                    case "4"://招聘信息
+                        fid = "38";
+                        sortid = "7,53";
+                        intent.putExtra("PostItem", postItem);
+                        pActivity.startChildActivity("activity_search", intent);
+                        break;
+                    case "5"://求职简历
+                        fid = "38";
+                        sortid = "8,28";
+                        intent.putExtra("PostItem", postItem);
+                        pActivity.startChildActivity("activity_search", intent);
+                        break;
+                    case "6"://便民服务
+                        fid = "42";
+                        sortid = "13,34";
+                        intent.putExtra("PostItem", postItem);
+                        pActivity.startChildActivity("activity_search", intent);
+                        break;
+                    case "7"://车辆交易
+                        fid = "39";
+                        sortid = "58,2";
+                        intent.putExtra("PostItem", postItem);
+                        pActivity.startChildActivity("activity_search", intent);
+                        break;
+                    case "8"://二手买卖
+                        //搜索二手买卖
+                        fid = "40";
+                        sortid = "0";
+                        intent.putExtra("PostItem", postItem);
+                        pActivity.startChildActivity("activity_search", intent);
+                        break;
+                    case "11"://婚姻交友
+                        //搜索婚姻交友
+                        fid = "48";
+                        sortid = "0";
+                        intent.putExtra("PostItem", postItem);
+                        pActivity.startChildActivity("activity_search", intent);
+                        break;
+                    case "13"://电话号码
+                        //搜索求购号码
+                        fid = "94";
+                        sortid = "40,41";
+                        intent.putExtra("PostItem", postItem);
+                        pActivity.startChildActivity("activity_search", intent);
+                        break;
+                    default:
+                        HashMap<String, Object> params = new HashMap<String, Object>();
+                        params.put("uid", CommonUtils.userInfo.getUserID());
+                        params.put("fid", fid);
+                        params.put("sortid", sortid);
+                        String url = "api/post/limit";
 
-                    NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
-                        @Override
-                        public void onResponse(Call<JSONObject> call, Response<JSONObject> resp) {
-                            try {
-                                JSONObject response = resp.body();
-                                if (response.getInt("ret") == 1) {
-                                    Intent finalIntent = new Intent(SearchActivity.this, PostActivity.class);
-                                    finalIntent.putExtra("PostItem", postItem);
-                                    SearchActivity.this.startActivityForResult(finalIntent, CommonUtils.REQUEST_CODE_ANOTHER);
-                                } else {
-                                    CommonUtils.showAlertDialog(mContext, "您在本版块的发布数量已达到上限", null);
+                        NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
+                            @Override
+                            public void onResponse(Call<JSONObject> call, Response<JSONObject> resp) {
+                                try {
+                                    JSONObject response = resp.body();
+                                    if (response.getInt("ret") == 1) {
+                                        Intent finalIntent = new Intent(SearchActivity.this, PostActivity.class);
+                                        finalIntent.putExtra("PostItem", postItem);
+                                        SearchActivity.this.startActivityForResult(finalIntent, CommonUtils.REQUEST_CODE_ANOTHER);
+                                    } else {
+                                        CommonUtils.showAlertDialog(mContext, "您在本版块的发布数量已达到上限", null);
+                                    }
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
                                 }
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Call<JSONObject> call, Throwable t) {
-                            //progressDialog.dismiss();
-                            Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                            @Override
+                            public void onFailure(Call<JSONObject> call, Throwable t) {
+                                //progressDialog.dismiss();
+                                Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+                            }
+                        });
 
 
 //                    intent = new Intent(SearchActivity.this, PostActivity.class);
 //                    intent.putExtra("PostItem", postItem);
 //                    SearchActivity.this.startActivityForResult(intent, CommonUtils.REQUEST_CODE_ANOTHER);
 //                    break;
+                }
             }
+            else{
+                CommonUtils.showAlertDialog(mContext, "您必须转到“我的/账号安全”页面并拨打电话号码", null);
+            }
+
+
         }
         else if (id == R.id.rlt_back){//点击返回按钮
             popUp.dismiss();
@@ -728,6 +737,10 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                 //getSearchKey();
                 mIntPage = 1;
                 searchItemListAdapter.clearItems();
+                paramsUpdated.put("fid", fid);
+                paramsUpdated.put("sortid", sortid);
+                paramsUpdated.put("page", mIntPage);
+                paramsUpdated.put("keyword", keyword);
                 getSearchItemsRetrofit();
             }else{
                 Toast.makeText(mContext, "请输入搜索字", Toast.LENGTH_SHORT).show();
@@ -753,60 +766,6 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         params.x=0;
         params.y=0;
         windowManager.addView(view, params);
-    }
-    private void getSearchOption() {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                //final ProgressHUD progressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, SearchActivity.this);
-                RequestParams params = new RequestParams();
-                params.put("fid", fid);
-                if(sortid!=null && sortid!="") {
-                    params.put("sortid", sortid);
-                }
-                String url = "news/searchoption";
-                APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        try {
-                            if (response.getInt("code") == 1) {
-                                JSONArray list = response.getJSONArray("ret");
-
-                                //메뉴를 위한 코드
-                                searchResultJsonArray = list;
-                                initFilterDropDownView(list);
-//                                mFilterContentView.setOnClickListener(self);
-                                ////////////////////////////////////////////////////
-
-//                                boolean price_state = false;
-////                                System.out.println("hasprice+"+response);
-//                                if(response.optString("hasprice").equals("1")){
-//                                    price_state = true;
-//                                }
-//                                initSearchOptionView(list, price_state);
-                            }
-                            //CommonUtils.dismissProgress(progressDialog);
-
-                        } catch (JSONException e) {
-                            //CommonUtils.dismissProgress(progressDialog);
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        //CommonUtils.dismissProgress(progressDialog);
-                        Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        //CommonUtils.dismissProgress(progressDialog);
-                        Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
     }
     private void getSearchOptionRetrofit() {
         HashMap<String, Object> params = new HashMap<>();
@@ -854,283 +813,6 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 
     }
 
-    private void getSearchOptionVolley() {
-        Map<String, String> params = new HashMap<>();
-        params.put("fid", fid);
-        if(sortid!=null && sortid!="") {
-            params.put("sortid", sortid);
-        }
-        String url = APIManager.getUrl("news/searchoption");
-
-        NetworkManager.getInstance().sendJsonRequest(url, Request.Method.POST, params, new JsonResponseListener<JSONObject>() {
-            @Override
-            public void getResult(JSONObject response) {
-                try {
-                    if (response.getInt("code") == 1) {
-                        JSONArray list = response.getJSONArray("ret");
-
-                        //메뉴를 위한 코드
-                        searchResultJsonArray = list;
-                        initFilterDropDownView(list);
-//                                mFilterContentView.setOnClickListener(self);
-                        ////////////////////////////////////////////////////
-
-//                        boolean price_state = false;
-////                                System.out.println("hasprice+"+response);
-//                        if(response.optString("hasprice").equals("1")){
-//                            price_state = true;
-//                        }
-//                        initSearchOptionView(list, price_state);
-                    }
-                    //CommonUtils.dismissProgress(progressDialog);
-
-                } catch (JSONException e) {
-                    //CommonUtils.dismissProgress(progressDialog);
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void errorHandler(String errorMessage) {
-                //CommonUtils.dismissProgress(progressDialog);
-                Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
-//    private void getSearchItems() {
-//        indicatorLayout.setVisibility(View.VISIBLE);
-////        if(dropDownMenu != null){
-////            dropDownMenu.setVisibility(View.GONE);
-////        }
-//
-//        CommonUtils.hideKeyboard(SearchActivity.this);
-//        new Handler().post(new Runnable() {
-//            @Override
-//            public void run() {
-//                //final ProgressHUD progressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, SearchActivity.this);
-//                if(fid==null || fid==""){
-//                    //CommonUtils.dismissProgress(progressDialog);
-//                    return;
-//                }
-//                RequestParams params = new RequestParams();
-//                params.put("fid", fid);
-//                params.put("sortid", sortid);
-//                params.put("page", mIntPage);
-////                System.out.println("hkey"+selectedKeyTab.size());
-//                //if(selectedKeyTab.size()==0){
-//                    Enumeration keys = selectedKeyTab.keys();
-//                    while (keys.hasMoreElements()) {
-//                        Object key =  keys.nextElement();
-//                        if(!(String.valueOf(selectedKeyTab.get(key))).equals(""))
-//                            params.put(String.valueOf(key), String.valueOf(selectedKeyTab.get(key)));
-////                        System.out.println(key+"++kkkk++"+selectedKeyTab.get(key));
-//                    }
-//                //}
-//                /*
-//                if(selectedVTab!=null && selectedVTab!=-1) {
-//                    params.put(selectedSTab, selectedVTab);
-//                }
-//                */
-////                params.put("keyword", keyword);
-////                if(!price.equals(""))
-////                    params.put("price", price);
-//
-//
-//                String url = "news/list";
-//                APIManager.post(mContext, url, paramsUpdated, null, new JsonHttpResponseHandler() {
-//                    @Override
-//                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-//                        try {
-//                            if (response.getInt("code") == 1) {
-//                                //isLoadMore = response.getBoolean("hasmore");
-//                                System.out.println("response++"+response);
-//                                JSONArray list = response.getJSONArray("ret");
-//                                System.out.println("list++"+list);
-//                                if((list==null || list.length()<1) && mIntPage==1){
-//                                    isLoadMore = false;
-//                                    ((LinearLayout)SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.VISIBLE);
-//                                    //CommonUtils.dismissProgress(progressDialog);
-//                                    return;
-//                                }else if(list.length()<8){
-//                                    isLoadMore = false;
-//                                }else{
-//                                    isLoadMore = true;
-//                                }
-//                                ((LinearLayout)SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.GONE);
-//                                for(int i=0; i<list.length(); i++) {
-//                                    JSONObject item = list.getJSONObject(i);
-//                                    DictionaryUtils dictionaryUtils = new DictionaryUtils();
-//                                    String tid = item.optString("tid");
-//                                    //String topic_sortid = item.optString("sortid");
-//                                    dictionaryUtils.setProperty(item,fid);
-//                                    String img_url = "";
-//                                    if(item.optJSONObject("fields")!=null && item.optJSONObject("fields").optJSONObject("picture")!=null && !item.optJSONObject("fields").optJSONObject("picture").optString("url").equals("")){
-//                                        img_url = item.optJSONObject("fields").optJSONObject("picture").optString("url");
-//                                    }
-//                                    String desc = item.optString("title");
-//                                    String txt_home_favor_price = dictionaryUtils.getProperty("txt_home_favor_price");
-//                                    String property01 = dictionaryUtils.getProperty("txt_property1");
-//                                    String property02 = dictionaryUtils.getProperty("txt_property2");
-//                                    String property03 = dictionaryUtils.getProperty("txt_property3");
-//                                    String poststick = item.optString("poststick");
-//                                    //if(i%5==0 && i!=0) {
-//                                    //    searchItemListAdapter.addItem(new SearchItem(
-//                                    //            Long.parseLong(tid), img_url, desc, txt_home_favor_price, property01, "", property02, "", property03, "", fid, String.valueOf(sortid), poststick, img_url));
-//                                    //}else {
-//                                    if(!tid.equals("")) {
-//                                        searchItemListAdapter.addItem(new SearchItem(
-//                                                Long.parseLong(tid), img_url, desc, txt_home_favor_price, property01, "", property02, "", property03, "", fid, String.valueOf(sortid), poststick, "", ""));
-//                                        //}
-//                                    }else{
-//                                        String advert_url =  item.optString("link");
-//                                        String advert_img_url = item.optString("advert");
-//                                        if (!advert_url.substring(0, 4).equals("http")) {
-//                                            advert_url = "http://"+advert_url;
-//                                        }
-//                                        searchItemListAdapter.addItem(new SearchItem(
-//                                                -1, "", "", "", "", "", "", "", "", "", "-1", "", "", advert_img_url, advert_url));
-//                                    }
-//                                }
-//                                mIntPage++;
-//                            } else {
-//                                isLoadMore = false;
-//                                ((LinearLayout)SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.VISIBLE);
-//                                if (mIntPage == 1) {
-//                                    searchItemListAdapter.clearItems();
-//                                }
-//                                mIntPage = 1;
-//                            }
-//                            searchItemListAdapter.notifyDataSetChanged();
-//                            lstSearch.invalidateViews();
-//
-//
-//                            indicatorLayout.setVisibility(View.GONE);
-////                            if(dropDownMenu != null){
-////                                dropDownMenu.setVisibility(View.VISIBLE);
-////                            }
-//                            //CommonUtils.dismissProgress(progressDialog);
-//
-//                        } catch (JSONException e) {
-//                            //CommonUtils.dismissProgress(progressDialog);
-//                            e.printStackTrace();
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-//                        //CommonUtils.dismissProgress(progressDialog);
-//                        Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
-//                    }
-//
-//                    @Override
-//                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-//                        //CommonUtils.dismissProgress(progressDialog);
-//                        Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//            }
-//        });
-//    }
-
-//    private void getSearchItemsVolley() {
-//        indicatorLayout.setVisibility(View.VISIBLE);
-//        CommonUtils.hideKeyboard(SearchActivity.this);
-//        if(fid==null || fid==""){
-//            //CommonUtils.dismissProgress(progressDialog);
-//            return;
-//        }
-//
-//        String url = APIManager.getUrl("news/list");
-//        NetworkManager.getInstance().sendJsonRequest(url, POST, paramsUpdated, new JsonResponseListener<JSONObject>() {
-//            @Override
-//            public void getResult(JSONObject response) {
-//                try {
-//                    if (response.getInt("code") == 1) {
-//                        //isLoadMore = response.getBoolean("hasmore");
-////                        System.out.println("response++"+response);
-//                        JSONArray list = response.getJSONArray("ret");
-////                        System.out.println("list++"+list);
-//                        if((list==null || list.length()<1) && mIntPage==1){
-//                            isLoadMore = false;
-//                            ((LinearLayout)SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.VISIBLE);
-//                            //CommonUtils.dismissProgress(progressDialog);
-//                            return;
-//                        }else if(list.length()<8){
-//                            isLoadMore = false;
-//                        }else{
-//                            isLoadMore = true;
-//                        }
-//                        ((LinearLayout)SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.GONE);
-//                        for(int i=0; i<list.length(); i++) {
-//                            JSONObject item = list.getJSONObject(i);
-//                            DictionaryUtils dictionaryUtils = new DictionaryUtils();
-//                            String tid = item.optString("tid");
-//                            //String topic_sortid = item.optString("sortid");
-//                            dictionaryUtils.setProperty(item);
-//                            String img_url = "";
-//                            if(item.optJSONObject("fields")!=null && item.optJSONObject("fields").optJSONObject("picture")!=null && !item.optJSONObject("fields").optJSONObject("picture").optString("url").equals("")){
-//                                img_url = item.optJSONObject("fields").optJSONObject("picture").optString("url");
-//                            }
-//                            String desc = item.optString("title");
-////                            String txt_home_favor_price = dictionaryUtils.getProperty("txt_home_favor_price");
-////                            String property01 = dictionaryUtils.getProperty("txt_property1");
-////                            String property02 = dictionaryUtils.getProperty("txt_property2");
-////                            String property03 = dictionaryUtils.getProperty("txt_property3");
-////                            String poststick = item.optString("poststick");
-//                            //if(i%5==0 && i!=0) {
-//                            //    searchItemListAdapter.addItem(new SearchItem(
-//                            //            Long.parseLong(tid), img_url, desc, txt_home_favor_price, property01, "", property02, "", property03, "", fid, String.valueOf(sortid), poststick, img_url));
-//                            //}else {
-//                            if(!tid.equals("")) {
-//                                searchItemListAdapter.addItem(new SearchItem(
-//                                        Long.parseLong(tid), img_url, desc, dictionaryUtils, item));
-////                                searchItemListAdapter.addItem(new SearchItem(
-////                                        Long.parseLong(tid), img_url, desc, txt_home_favor_price, property01, "", property02, "", property03, "", fid, String.valueOf(sortid), poststick, "", ""));
-//                                //}
-//                            }else{
-//                                String advert_url =  item.optString("link");
-//                                String advert_img_url = item.optString("advert");
-//                                if (!advert_url.substring(0, 4).equals("http")) {
-//                                    advert_url = "http://"+advert_url;
-//                                }
-//                                searchItemListAdapter.addItem(new SearchItem(
-//                                        -1, "", "", "", "", "", "", "", "", "", "-1", "", "", advert_img_url, advert_url));
-//                            }
-//                        }
-//                        mIntPage++;
-//                    } else {
-//                        isLoadMore = false;
-//                        ((LinearLayout)SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.VISIBLE);
-//                        if (mIntPage == 1) {
-//                            searchItemListAdapter.clearItems();
-//                        }
-//                        mIntPage = 1;
-//                    }
-//                    searchItemListAdapter.notifyDataSetChanged();
-//                    lstSearch.invalidateViews();
-//
-//
-//                    indicatorLayout.setVisibility(View.GONE);
-////                            if(dropDownMenu != null){
-////                                dropDownMenu.setVisibility(View.VISIBLE);
-////                            }
-//                    //CommonUtils.dismissProgress(progressDialog);
-//
-//                } catch (JSONException e) {
-//                    //CommonUtils.dismissProgress(progressDialog);
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            @Override
-//            public void errorHandler(String errorMessage) {
-//                //CommonUtils.dismissProgress(progressDialog);
-//                Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//
-//    }
 
     private void getSearchItemsRetrofit() {
         indicatorLayout.setVisibility(View.VISIBLE);
@@ -1147,14 +829,10 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                 try {
                     JSONObject response = resp.body();
                     if (response.getInt("code") == 1) {
-                        //isLoadMore = response.getBoolean("hasmore");
-//                        System.out.println("response++"+response);
                         JSONArray list = response.getJSONArray("ret");
-//                        System.out.println("list++"+list);
                         if((list==null || list.length()<1) && mIntPage==1){
                             isLoadMore = false;
                             ((LinearLayout)SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.VISIBLE);
-                            //CommonUtils.dismissProgress(progressDialog);
                             return;
                         }else if(list.length()<8){
                             isLoadMore = false;
@@ -1173,21 +851,9 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                                 img_url = item.optJSONObject("fields").optJSONObject("picture").optString("url");
                             }
                             String desc = item.optString("title");
-//                            String txt_home_favor_price = dictionaryUtils.getProperty("txt_home_favor_price");
-//                            String property01 = dictionaryUtils.getProperty("txt_property1");
-//                            String property02 = dictionaryUtils.getProperty("txt_property2");
-//                            String property03 = dictionaryUtils.getProperty("txt_property3");
-//                            String poststick = item.optString("poststick");
-                            //if(i%5==0 && i!=0) {
-                            //    searchItemListAdapter.addItem(new SearchItem(
-                            //            Long.parseLong(tid), img_url, desc, txt_home_favor_price, property01, "", property02, "", property03, "", fid, String.valueOf(sortid), poststick, img_url));
-                            //}else {
                             if(!tid.equals("")) {
                                 searchItemListAdapter.addItem(new SearchItem(
                                         Long.parseLong(tid), img_url, desc, dictionaryUtils, item));
-//                                searchItemListAdapter.addItem(new SearchItem(
-//                                        Long.parseLong(tid), img_url, desc, txt_home_favor_price, property01, "", property02, "", property03, "", fid, String.valueOf(sortid), poststick, "", ""));
-                                //}
                             }else{
                                 String advert_url =  item.optString("link");
                                 String advert_img_url = item.optString("advert");

@@ -246,14 +246,14 @@ public class SearchItemView extends LinearLayout {
         mProperty03.setText(searchItem.getmProperty03());
 
         mTop = (ImageView)findViewById(R.id.img_news_top);
-        switch (searchItem.getmPostState()){
-            case "0":
-                mTop.setVisibility(INVISIBLE);
-                break;
-            case "1":
-                mTop.setVisibility(VISIBLE);
-                break;
-        }
+//        switch (searchItem.getmPostState()){
+//            case "0":
+//                mTop.setVisibility(INVISIBLE);
+//                break;
+//            case "1":
+//                mTop.setVisibility(VISIBLE);
+//                break;
+//        }
     }
 
     public void setThumbnail(String thumbnail, String mFid, String mSortid, String mAdverUrl) {
@@ -488,13 +488,13 @@ public class SearchItemView extends LinearLayout {
 
         mProperty03.setText(searchItem.getmProperty03());
 
-        switch (searchItem.getmPostState()){
-            case "0":
-                mTop.setVisibility(INVISIBLE);
-                break;
-            case "1":
-                mTop.setVisibility(VISIBLE);
-                break;
-        }
+//        switch (searchItem.getmPostState()){
+//            case "0":
+//                mTop.setVisibility(INVISIBLE);
+//                break;
+//            case "1":
+//                mTop.setVisibility(VISIBLE);
+//                break;
+//        }
     }
 }

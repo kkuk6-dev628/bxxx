@@ -28,7 +28,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -173,7 +172,54 @@ public class CommonUtils {
         data1.put("carry_period","");
         data1.put("order","");
     }
+    public static void customActionBarWithRightButton(Context context, final AppCompatActivity activity,
+                                                      boolean isShow, String title, String rightText, final View.OnClickListener rightClick) {
+        ActionBar actionBar =  activity.getSupportActionBar();
+        if (!isShow) {
+            actionBar.hide();
+            return;
+        }
+        actionBar.setDisplayShowHomeEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(false);
 
+        BitmapDrawable background = new BitmapDrawable(BitmapFactory.decodeResource(context.getResources(), R.drawable.top_bg));
+        actionBar.setBackgroundDrawable(background);
+
+        LayoutInflater mInflater = LayoutInflater.from(context);
+        View mCustomView = mInflater.inflate(R.layout.custom_actionbar, null);
+        TextView mTitleText = (TextView) mCustomView.findViewById(R.id.actionbar_title);
+        mTitleText.setText(title);
+
+        RelativeLayout mBackLayout = (RelativeLayout) mCustomView.findViewById(R.id.layout_back);
+        mBackLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.onBackPressed();
+            }
+        });
+
+        TextView mRightButton = mCustomView.findViewById(R.id.textButton_right);
+        mRightButton.setText(rightText);
+        mRightButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(rightClick != null){
+                    rightClick.onClick(v);
+                }
+            }
+        });
+
+        ActionBar.LayoutParams p = new ActionBar.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                Gravity.CENTER);
+
+        actionBar.setCustomView(mCustomView, p);
+        actionBar.setDisplayShowCustomEnabled(true);
+        if (Build.VERSION.SDK_INT >= 21) {
+            setStatusBarColor(activity, activity.getResources().getColor(R.color.colorPrimaryDark));
+        }
+    }
     public static void customActionBar(Context context, final AppCompatActivity activity, boolean isShow, String title) {
         ActionBar actionBar =  activity.getSupportActionBar();
         if (!isShow) {
@@ -199,7 +245,7 @@ public class CommonUtils {
             }
         });
 
-        ImageButton mRightButton = (ImageButton) mCustomView.findViewById(R.id.imageButton_right);
+        TextView mRightButton = mCustomView.findViewById(R.id.textButton_right);
         mRightButton.setVisibility(View.GONE);
 
         ActionBar.LayoutParams p = new ActionBar.LayoutParams(

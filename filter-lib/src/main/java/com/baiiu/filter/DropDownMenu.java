@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.baiiu.filter.adapter.MenuAdapter;
@@ -47,6 +48,10 @@ public class DropDownMenu extends RelativeLayout implements View.OnClickListener
     public DropDownMenu(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
+    }
+
+    public void hideFixedTabIndicator(){
+        fixedTabIndicator.setVisibility(LinearLayout.GONE);
     }
 
     private void init(Context context) {
