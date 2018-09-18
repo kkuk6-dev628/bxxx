@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.TabActivity;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -156,6 +157,15 @@ public class TabHostActivity extends TabActivity implements TabHost.OnTabChangeL
             tabs.addTab(tab);
         }
         tabWidget.setDividerDrawable(null);
+
+        // badge 개수를 얻어서 그것을 현시시킨다.
+        SharedPreferences sharedPref = this.getSharedPreferences(
+                "Notifications", Context.MODE_PRIVATE);
+        int badgeCount = sharedPref.getInt("badgeCount", -1);
+        if(badgeCount > 0){
+                setTextViewNotificationsBadge(badgeCount);
+        }
+        //////////////////////////////////////////////////////
 
 
 
