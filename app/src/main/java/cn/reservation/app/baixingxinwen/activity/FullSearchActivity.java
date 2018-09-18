@@ -67,8 +67,8 @@ public class FullSearchActivity extends AppCompatActivity implements DialogInter
         rltBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(FullSearchActivity.this, HomeActivity.class);
-                pActivity.startChildActivity("home", intent);
+//                Intent intent = new Intent(FullSearchActivity.this, HomeActivity.class);
+//                pActivity.startChildActivity("home", intent);
             }
         });
         lstSearch = (ListView) findViewById(R.id.lst_full_search_content);
@@ -235,15 +235,17 @@ public class FullSearchActivity extends AppCompatActivity implements DialogInter
     @Override
     public void onBackPressed() {
         //this.getParent().getParent().onBackPressed();
-        Intent intent = new Intent(FullSearchActivity.this, HomeActivity.class);
-        pActivity.startChildActivity("home", intent);
+//        Intent intent = new Intent(FullSearchActivity.this, HomeActivity.class);
+//        pActivity.startChildActivity("home", intent);
+        finish();
     }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         System.out.println("****event****" + event + "****" + keyCode);
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent intent = new Intent(FullSearchActivity.this, HomeActivity.class);
-            pActivity.startChildActivity("home", intent);
+//            Intent intent = new Intent(FullSearchActivity.this, HomeActivity.class);
+//            pActivity.startChildActivity("home", intent);
+            finish();
             return true;
         }
         return super.onKeyDown(keyCode, event);

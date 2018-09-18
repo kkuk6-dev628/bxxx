@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -128,6 +129,12 @@ public class CustomCategoryItem extends LinearLayout implements View.OnClickList
 
         Intent intent;
         rltMainClickable.setClickable(false);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                rltMainClickable.setClickable(true);
+            }
+        }, 1000);
 
 //        Intent intent = new Intent(this.mContext, SearchActivity.class);
 //        intent.putExtra("name", item_name);

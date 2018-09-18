@@ -552,13 +552,14 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
     }
     @Override
     public void onBackPressed() {
-        this.getParent().getParent().onBackPressed();
+        HomeGroupActivity.HomeGroupStack.finishChildActivity();
     }
 
     @Override
     public void onCancel(DialogInterface dialog) {
 
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -914,14 +915,15 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
             }
         }
     }
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         System.out.println("****event****" + event + "****" + keyCode);
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             Intent intent;
             pActivity.finishChildActivity();
-            intent = new Intent(MeActivity.this, HomeActivity.class);
-            pActivity.startChildActivity("home_activity", intent);
-            TabHostActivity.tabWidget.setCurrentTab(0);
+//            intent = new Intent(MeActivity.this, HomeActivity.class);
+//            pActivity.startChildActivity("home_activity", intent);
+            TabHostActivity.setCurrentTab(0);
             return true;
         }
         return super.onKeyDown(keyCode, event);

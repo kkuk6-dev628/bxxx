@@ -21,8 +21,6 @@ public class NewsGroupActivity extends AnimatedActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(NewsGroupActivity.this, HomeActivity.class);
-        startChildActivity("home", intent);
-        TabHostActivity.tabWidget.setCurrentTab(0);
+        TabHostActivity.setCurrentTab(0);
     }
 }

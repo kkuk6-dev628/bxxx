@@ -9,6 +9,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -45,6 +46,11 @@ public class TabHostActivity extends TabActivity implements TabHost.OnTabChangeL
     public static TabWidget tabWidget;
     public boolean checkTabsListener = false;
     public static TabHostActivity TabHostStack;
+
+    public static void setCurrentTab(int tabIndex){
+        TabHostActivity.tabWidget.setCurrentTab(tabIndex);
+        TabHostActivity.tabs.setCurrentTab(tabIndex);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -331,6 +337,11 @@ public class TabHostActivity extends TabActivity implements TabHost.OnTabChangeL
         });
 
         CommonUtils.showAlertDialog(this, dialog, view, 250);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override

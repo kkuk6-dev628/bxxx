@@ -726,8 +726,9 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         else if (id == R.id.rlt_back){//点击返回按钮
             popUp.dismiss();
             CommonUtils.hideKeyboard(SearchActivity.this);
-            intent = new Intent(SearchActivity.this, HomeActivity.class);
-            pActivity.startChildActivity("home", intent);
+//            intent = new Intent(SearchActivity.this, HomeActivity.class);
+//            pActivity.startChildActivity("home", intent);
+            HomeGroupActivity.HomeGroupStack.finishChildActivity();
         }
         else if (id == R.id.rlt_search){//点击搜索按钮
             keyword = ((TextView) findViewById(R.id.edit_search_title)).getText().toString();
@@ -1257,15 +1258,12 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
     }
     @Override
     public void onBackPressed() {
-        //this.getParent().getParent().onBackPressed();
-        Intent intent = new Intent(SearchActivity.this, HomeActivity.class);
-        pActivity.startChildActivity("home", intent);
+        HomeGroupActivity.HomeGroupStack.finishChildActivity();
     }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent intent = new Intent(SearchActivity.this, HomeActivity.class);
-            pActivity.startChildActivity("home", intent);
+            HomeGroupActivity.HomeGroupStack.finishChildActivity();
             return true;
         }
         return super.onKeyDown(keyCode, event);

@@ -54,6 +54,7 @@ import cn.reservation.app.baixingxinwen.api.APIManager;
 import cn.reservation.app.baixingxinwen.api.NetRetrofit;
 import cn.reservation.app.baixingxinwen.utils.AnimatedActivity;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
+import cn.reservation.app.baixingxinwen.utils.PhoneVerifyDialog;
 import cz.msebera.android.httpclient.Header;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -1317,8 +1318,50 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
         }
 
         getPostOption();
+        final EditText phone = findViewById(R.id.edit_input_data14);
         if (CommonUtils.isLogin)
-            ((EditText) findViewById(R.id.edit_input_data14)).setText(CommonUtils.userInfo.getUserJoinMobile());
+            phone.setText(CommonUtils.userInfo.getUserJoinMobile());
+        phone.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String phoneNumber = phone.getText().toString();
+                if(phoneNumber.length() == 11 && !phoneNumber.equals(CommonUtils.userInfo.getUserJoinMobile())){
+                    final PhoneVerifyDialog verifyDlg = new PhoneVerifyDialog(PostActivity.this);
+                    verifyDlg.setOkListener(
+                            new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+//                                    verifyDlg.dismiss();
+                                }
+                            });
+                    verifyDlg.setCancelListener(
+                            new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    phone.setText(CommonUtils.userInfo.getUserJoinMobile());
+                                }
+                            }
+                    );
+                    verifyDlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialogInterface) {
+                            phone.setText(CommonUtils.userInfo.getUserJoinMobile());
+                        }
+                    });
+                    verifyDlg.show();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
         mContext = TabHostActivity.TabHostStack;
         res = getResources();
         CommonUtils.customActionBar(mContext, this, true, title);
@@ -4228,8 +4271,8 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
             intent.putExtra("title", CommonUtils.data1.get("title").toString());
             intent.putExtra("desc", CommonUtils.data1.get("message").toString());
             intent.putExtra("url", url);
-            finish();
-            PostActivity.this.startActivity(intent);
+            HomeGroupActivity.HomeGroupStack.finishChildActivity();
+            TabHostActivity.TabHostStack.startActivity(intent);
         } else {
             HashMap<String, Object> params = new HashMap<String, Object>();
             try {
@@ -4283,13 +4326,13 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
     public void onBackPressed() {
         //Intent intent = new Intent(PostActivity.this, PostCategoryActivity.class);
         //pActivity.startChildActivity("post_category", intent);
-        this.finish();
+        finish();
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            PostActivity.this.finish();
+            finish();
             return true;
         }
         return super.onKeyDown(keyCode, event);

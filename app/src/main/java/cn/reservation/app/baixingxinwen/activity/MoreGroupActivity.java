@@ -21,8 +21,8 @@ public class MoreGroupActivity extends AnimatedActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(MoreGroupActivity.this, HomeActivity.class);
-        startChildActivity("home", intent);
+//        Intent intent = new Intent(MoreGroupActivity.this, HomeActivity.class);
+//        startChildActivity("home", intent);
         TabHostActivity.tabWidget.setCurrentTab(0);
     }
 

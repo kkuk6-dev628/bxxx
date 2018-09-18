@@ -188,4 +188,6 @@
 	<string name="home_wait">敬请期待</string>
     <string name="report_received_message">已举报，处理结果将以站内信的形式发送给您</string>
     <string name="report_fill_message">请输入验证码</string>
+    <string name="delete_news_message">确定删除吗</string>
+    <string name="change_phone">点击确定立即发送验证码</string>
 </resources>

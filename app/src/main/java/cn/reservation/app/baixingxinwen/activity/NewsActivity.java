@@ -352,16 +352,16 @@ public class NewsActivity extends AppCompatActivity implements DialogInterface.O
             getSupportFragmentManager().popBackStack();
         }
         */
-        Intent intent = new Intent(NewsActivity.this, HomeActivity.class);
-        pActivity.startChildActivity("home", intent);
+//        Intent intent = new Intent(NewsActivity.this, HomeActivity.class);
+//        pActivity.startChildActivity("home", intent);
         TabHostActivity.tabWidget.setCurrentTab(0);
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent intent = new Intent(NewsActivity.this, HomeActivity.class);
-            pActivity.startChildActivity("home", intent);
+//            Intent intent = new Intent(NewsActivity.this, HomeActivity.class);
+//            pActivity.startChildActivity("home", intent);
             TabHostActivity.tabWidget.setCurrentTab(0);
             return true;
         }

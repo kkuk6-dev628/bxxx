@@ -366,14 +366,12 @@ public class UserSafeActivity extends AppCompatActivity implements DialogInterfa
     }
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(UserSafeActivity.this, MeActivity.class);
-        pActivity.startChildActivity("me", intent);
+        pActivity.finishChildActivity();
     }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent intent = new Intent(UserSafeActivity.this, MeActivity.class);
-            pActivity.startChildActivity("me", intent);
+            pActivity.finishChildActivity();
             return true;
         }
         return super.onKeyDown(keyCode, event);

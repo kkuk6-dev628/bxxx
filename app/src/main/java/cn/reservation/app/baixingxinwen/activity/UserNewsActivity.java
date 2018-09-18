@@ -441,7 +441,7 @@ public class UserNewsActivity extends AppCompatActivity implements DialogInterfa
         TextView txt_alert_dlg_content = (TextView) logout_view.findViewById(R.id.txt_alert_dialog_content);
         final Dialog dialog = new Dialog(mContext);
 
-        txt_alert_dlg_content.setText("您确定要解绑微信吗？");
+        txt_alert_dlg_content.setText(getString(R.string.delete_news_message));
         TextView btnLogout_weixin = (TextView) logout_view.findViewById(R.id.btn_ok);
         TextView btnExit = (TextView) logout_view.findViewById(R.id.btn_cancel);
         btnLogout_weixin.setOnClickListener(new View.OnClickListener() {

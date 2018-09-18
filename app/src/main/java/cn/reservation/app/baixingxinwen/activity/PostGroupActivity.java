@@ -21,9 +21,10 @@ public class PostGroupActivity extends AnimatedActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(PostGroupActivity.this, HomeActivity.class);
-        startChildActivity("home", intent);
+//        Intent intent = new Intent(PostGroupActivity.this, HomeActivity.class);
+//        startChildActivity("home", intent);
         TabHostActivity.tabWidget.setCurrentTab(0);
+        TabHostActivity.tabs.setCurrentTab(0);
     }
 
 }

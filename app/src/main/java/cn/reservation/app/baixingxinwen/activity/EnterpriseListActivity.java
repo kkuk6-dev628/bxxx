@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -16,8 +15,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.walnutlabs.android.ProgressHUD;
 
 import org.json.JSONArray;
@@ -25,17 +22,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.adapter.EnterpriseItemListAdapter;
-import cn.reservation.app.baixingxinwen.api.APIManager;
+import cn.reservation.app.baixingxinwen.api.NetRetrofit;
 import cn.reservation.app.baixingxinwen.utils.AnimatedActivity;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
 import cn.reservation.app.baixingxinwen.utils.EnterpriseItem;
-import cz.msebera.android.httpclient.Header;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 @SuppressWarnings("deprecation")
-public class EnterpriseListActivity extends AppCompatActivity implements DialogInterface.OnCancelListener{
+public class EnterpriseListActivity extends AppCompatActivity implements DialogInterface.OnCancelListener {
     private static String TAG = EnterpriseListActivity.class.getSimpleName();
 
     private Context mContext;
@@ -76,7 +76,7 @@ public class EnterpriseListActivity extends AppCompatActivity implements DialogI
         enterpriseItemListAdapter = new EnterpriseItemListAdapter(this);
         enterpriseItemListAdapter.setListItems(enterpriseItems);
         lstEnterprise.setAdapter(enterpriseItemListAdapter);
-        getEnterprise();
+//        getEnterprise();
         lstEnterprise.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -99,12 +99,13 @@ public class EnterpriseListActivity extends AppCompatActivity implements DialogI
 
         lstEnterprise.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(AbsListView arg0, int scrollState) { }
+            public void onScrollStateChanged(AbsListView arg0, int scrollState) {
+            }
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 lstEnterprise.invalidateViews();
-                if(firstVisibleItem + visibleItemCount == totalItemCount) {
+                if (firstVisibleItem + visibleItemCount == totalItemCount) {
                     if (isLoadMore) {
                         getEnterprise();
                         isLoadMore = false;
@@ -114,78 +115,72 @@ public class EnterpriseListActivity extends AppCompatActivity implements DialogI
         });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getEnterprise();
+    }
+
     private void getEnterprise() {
-        new Handler().postDelayed(new Runnable() {
+        final ProgressHUD progressDialog = ProgressHUD.show(pActivity, res.getString(R.string.processing), true, false, EnterpriseListActivity.this);
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("page", mIntPage);
+        params.put("catid", mCatid);
+        String url = "api/business/list";
+        NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
             @Override
-            public void run() {
-                final ProgressHUD progressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, EnterpriseListActivity.this);
-                RequestParams params = new RequestParams();
-                params.put("page", mIntPage);
-                params.put("catid", mCatid);
-                String url = "business/list";
-                APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        try {
-                            if (response.optInt("code") == 1) {
-                                System.out.println(response);
+            public void onResponse(Call<JSONObject> call, Response<JSONObject> res) {
+                try {
+                    CommonUtils.dismissProgress(progressDialog);
+                    JSONObject response = res.body();
+                    if (response != null && response.getInt("code") == 1) {
+                        System.out.println(response);
 
-                                JSONArray list = response.getJSONArray("ret");
-                                if(list==null){
-                                    CommonUtils.dismissProgress(progressDialog);
-                                    return;
-                                }else if(list.length()<10){
-                                    isLoadMore = false;
-                                }else{
-                                    isLoadMore = true;
-                                }
-                                arrPhone =new String[list.length()];
-                                for(int i=0; i<list.length(); i++) {
-                                    JSONObject item = list.getJSONObject(i);
-                                    String img_url = item.optString("avatar");
-                                    String name = item.optString("bname");
-                                    String desc = item.optString("description");
-                                    String phone = item.optString("phone");
-                                    String tid = item.optString("bid");
-                                    arrPhone[i] = phone;
-                                    enterpriseItemListAdapter.addItem(new EnterpriseItem(
-                                            Long.parseLong(tid), img_url, name, desc,phone));
-                                }
-                                mIntPage++;
-                            } else {
-                                if (mIntPage == 1) {
-                                    enterpriseItemListAdapter.clearItems();
-                                }
-                                mIntPage = 1;
-                            }
-                            //if(enterpriseItemListAdapter!=null) {
-                            enterpriseItemListAdapter.notifyDataSetChanged();
-                            //}
-                            lstEnterprise.invalidateViews();
-                            CommonUtils.dismissProgress(progressDialog);
-
-                        } catch (JSONException e) {
-                            CommonUtils.dismissProgress(progressDialog);
-                            e.printStackTrace();
+                        JSONArray list = response.getJSONArray("ret");
+                        if (list == null) {
+                            return;
+                        } else {
+                            isLoadMore = list.length() >= 10;
                         }
+                        arrPhone = new String[list.length()];
+                        for (int i = 0; i < list.length(); i++) {
+                            JSONObject item = list.getJSONObject(i);
+                            String img_url = item.optString("avatar");
+                            String name = item.optString("bname");
+                            String desc = item.optString("description");
+                            String phone = item.optString("phone");
+                            String tid = item.optString("bid");
+                            arrPhone[i] = phone;
+                            enterpriseItemListAdapter.addItem(new EnterpriseItem(
+                                    Long.parseLong(tid), img_url, name, desc, phone));
+                        }
+                        mIntPage++;
+                    } else {
+                        if (mIntPage == 1) {
+                            enterpriseItemListAdapter.clearItems();
+                        }
+                        mIntPage = 1;
                     }
+                    //if(enterpriseItemListAdapter!=null) {
+                    enterpriseItemListAdapter.notifyDataSetChanged();
+                    //}
+                    lstEnterprise.invalidateViews();
 
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        progressDialog.dismiss();
-                        Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        progressDialog.dismiss();
-                        Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                } catch (JSONException e) {
+                    CommonUtils.dismissProgress(progressDialog);
+                    e.printStackTrace();
+                }
             }
-        }, 500);
+
+            @Override
+            public void onFailure(Call<JSONObject> call, Throwable t) {
+                progressDialog.dismiss();
+                Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
+
     @Override
     public void onCancel(DialogInterface dialog) {
 
@@ -193,18 +188,20 @@ public class EnterpriseListActivity extends AppCompatActivity implements DialogI
 
     @Override
     public void onBackPressed() {
-        Intent intent;
-        intent = new Intent(EnterpriseListActivity.this, HomeActivity.class);
-        pActivity.startChildActivity("home_activity", intent);
+//        Intent intent;
+//        intent = new Intent(EnterpriseListActivity.this, HomeActivity.class);
+//        pActivity.startChildActivity("home_activity", intent);
+        HomeGroupActivity.HomeGroupStack.finishChildActivity();
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         System.out.println("****event****" + event + "****" + keyCode);
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent intent;
-            intent = new Intent(EnterpriseListActivity.this, HomeActivity.class);
-            pActivity.startChildActivity("home_activity", intent);
+//            Intent intent;
+//            intent = new Intent(EnterpriseListActivity.this, HomeActivity.class);
+//            pActivity.startChildActivity("home_activity", intent);
+            HomeGroupActivity.HomeGroupStack.finishChildActivity();
             return true;
         }
         return super.onKeyDown(keyCode, event);

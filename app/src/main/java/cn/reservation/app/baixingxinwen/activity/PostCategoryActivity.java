@@ -552,16 +552,17 @@ public class PostCategoryActivity extends AppCompatActivity implements View.OnCl
         //super.onBackPressed();
         //overridePendingTransition(R.anim.pop_in, R.anim.pop_out);
         //this.getParent().getParent().onBackPressed();
-        Intent intent = new Intent(PostCategoryActivity.this, HomeActivity.class);
-        pActivity.startChildActivity("home", intent);
+//        Intent intent = new Intent(PostCategoryActivity.this, HomeActivity.class);
+//        pActivity.startChildActivity("home", intent);
         TabHostActivity.tabWidget.setCurrentTab(0);
     }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent intent = new Intent(PostCategoryActivity.this, HomeActivity.class);
-            pActivity.startChildActivity("home", intent);
+//            Intent intent = new Intent(PostCategoryActivity.this, HomeActivity.class);
+//            pActivity.startChildActivity("home", intent);
             TabHostActivity.tabWidget.setCurrentTab(0);
+            TabHostActivity.tabs.setCurrentTab(0);
             return true;
         }
         return super.onKeyDown(keyCode, event);
