@@ -98,6 +98,19 @@ public class HomeActivity extends AppCompatActivity implements DialogInterface.O
         setContentView(R.layout.activity_home);
         sharedPref = this.getPreferences(Context.MODE_PRIVATE);
 
+        // badge 개수를 얻어서 그것을 현시시킨다.
+        SharedPreferences sharedPref = this.getSharedPreferences(
+                "Notifications", Context.MODE_PRIVATE);
+        int badgeCount = sharedPref.getInt("badgeCount", -1);
+        if(badgeCount > 0){
+            if(TabHostActivity.TabHostStack.getTextViewNotificationsObject() != null){
+                TabHostActivity.TabHostStack.setTextViewNotificationsBadge(badgeCount);
+            }
+        }
+        //////////////////////////////////////////////////////
+
+
+
         config = new Configuration();
         mContext = TabHostActivity.TabHostStack;
         res = mContext.getResources();

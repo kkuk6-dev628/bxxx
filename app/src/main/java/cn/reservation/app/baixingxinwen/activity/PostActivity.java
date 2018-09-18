@@ -1321,46 +1321,46 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
         final EditText phone = findViewById(R.id.edit_input_data14);
         if (CommonUtils.isLogin)
             phone.setText(CommonUtils.userInfo.getUserJoinMobile());
-        phone.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String phoneNumber = phone.getText().toString();
-                if(phoneNumber.length() == 11 && !phoneNumber.equals(CommonUtils.userInfo.getUserJoinMobile())){
-                    final PhoneVerifyDialog verifyDlg = new PhoneVerifyDialog(PostActivity.this);
-                    verifyDlg.setOkListener(
-                            new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-//                                    verifyDlg.dismiss();
-                                }
-                            });
-                    verifyDlg.setCancelListener(
-                            new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    phone.setText(CommonUtils.userInfo.getUserJoinMobile());
-                                }
-                            }
-                    );
-                    verifyDlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                        @Override
-                        public void onDismiss(DialogInterface dialogInterface) {
-                            phone.setText(CommonUtils.userInfo.getUserJoinMobile());
-                        }
-                    });
-                    verifyDlg.show();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
-        });
+//        phone.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//                String phoneNumber = phone.getText().toString();
+//                if(phoneNumber.length() == 11 && !phoneNumber.equals(CommonUtils.userInfo.getUserJoinMobile())){
+//                    final PhoneVerifyDialog verifyDlg = new PhoneVerifyDialog(PostActivity.this);
+//                    verifyDlg.setOkListener(
+//                            new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+////                                    verifyDlg.dismiss();
+//                                }
+//                            });
+//                    verifyDlg.setCancelListener(
+//                            new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View view) {
+//                                    phone.setText(CommonUtils.userInfo.getUserJoinMobile());
+//                                }
+//                            }
+//                    );
+//                    verifyDlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                        @Override
+//                        public void onDismiss(DialogInterface dialogInterface) {
+//                            phone.setText(CommonUtils.userInfo.getUserJoinMobile());
+//                        }
+//                    });
+//                    verifyDlg.show();
+//                }
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//            }
+//        });
 
         mContext = TabHostActivity.TabHostStack;
         res = getResources();
@@ -4058,10 +4058,43 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
     }
 
     public void postData() {
-        RelativeLayout rlt_post_data = (RelativeLayout) findViewById(R.id.rlt_post_data);
-        rlt_post_data.setEnabled(false);
+        final RelativeLayout rlt_post_data = (RelativeLayout) findViewById(R.id.rlt_post_data);
+        final EditText phone = findViewById(R.id.edit_input_data14);
+        final String phoneNumber = phone.getText().toString();
+        if(!phoneNumber.equals(CommonUtils.userInfo.getUserJoinMobile())){
+            final PhoneVerifyDialog verifyDlg = new PhoneVerifyDialog(PostActivity.this, phoneNumber);
+
+            verifyDlg.setOkListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            rlt_post_data.setEnabled(false);
+                            CommonUtils.data1.put("phone", phoneNumber);
+                            freePostData();
+                        }
+                    });
+            verifyDlg.setCancelListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            phone.setText(CommonUtils.userInfo.getUserJoinMobile());
+                            CommonUtils.data1.put("phone", CommonUtils.userInfo.getUserJoinMobile());
+                        }
+                    }
+            );
+            verifyDlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    phone.setText(CommonUtils.userInfo.getUserJoinMobile());
+                    CommonUtils.data1.put("phone", CommonUtils.userInfo.getUserJoinMobile());
+                }
+            });
+            verifyDlg.show();
+        }
+
+//        rlt_post_data.setEnabled(false);
 //        mProgressDialog = ProgressHUD.show(PostActivity.this, res.getString(R.string.processing), true, false, PostActivity.this);
-        freePostData();
+//        freePostData();
 //        new Handler().postDelayed(new Runnable() {
 //            @Override
 //            public void run() {

@@ -2,6 +2,7 @@ package cn.reservation.app.baixingxinwen.api;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -140,11 +141,30 @@ public class BdPushMessageReceiver extends PushMessageReceiver {
                 String myvalue = null;
                 if (!customJson.isNull("mykey")) {
                     myvalue = customJson.getString("mykey");
+
                 }
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
+        }
+
+        // badge 개수를 얻어서 그것을 증가시킨다.
+        SharedPreferences sharedPref = context.getSharedPreferences(
+                "Notifications", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        int badgeCount = sharedPref.getInt("badgeCount", -1);
+        if(badgeCount == -1){
+            badgeCount = 1;
+        }
+        else{
+            badgeCount += 1;
+        }
+        editor.putInt("badgeCount", badgeCount);
+        editor.apply();
+
+        if(TabHostActivity.TabHostStack.getTextViewNotificationsObject() != null){
+            TabHostActivity.TabHostStack.setTextViewNotificationsBadge(badgeCount);
         }
         // Demo更新界面展示代码，应用请在这里加入自己的处理逻辑
         // 你可以參考 onNotificationClicked中的提示从自定义内容获取具体值

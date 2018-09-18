@@ -58,7 +58,7 @@
                     android:layout_centerVertical="true"
                     android:minWidth="42dp"
                     app:srcCompat="@drawable/new_ic_phone" />
-                <EditText
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/edit_phone_number"
@@ -68,7 +68,7 @@
                     android:textSize="14sp"
                     android:layout_marginLeft="10dp"
                     android:imeOptions="actionNext"
-                    android:inputType="number"
+                    android:inputType="none"
                     android:hint="@string/mobile"
                     android:singleLine="true"
                     android:layout_centerVertical="true"

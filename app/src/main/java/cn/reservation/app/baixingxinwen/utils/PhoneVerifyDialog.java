@@ -31,11 +31,13 @@ public class PhoneVerifyDialog extends Dialog implements View.OnClickListener{
     private int mIntLeftTime;
     private String mStrLeftTime;
 
-    public PhoneVerifyDialog(@NonNull Context context) {
+    public PhoneVerifyDialog(@NonNull Context context, String phoneNumber) {
         super(context);
         mContext = context;
+        mPhoneNumber = phoneNumber;
     }
 
+    private String mPhoneNumber;
     private Context mContext;
     private Button mBtnOK;
     private Button mBtnCancel;
@@ -53,6 +55,8 @@ public class PhoneVerifyDialog extends Dialog implements View.OnClickListener{
         setContentView(R.layout.alert_phone_verify);
         mBtnOK = (Button) findViewById(R.id.btn_ok);
         mBtnCancel = (Button) findViewById(R.id.btn_cancel);
+        TextView phoneNumber = findViewById(R.id.edit_phone_number);
+        phoneNumber.setText(mPhoneNumber);
         mTxtSendRequest = findViewById(R.id.txt_left_time);
         mTxtSendRequest.setOnClickListener(this);
         mBtnOK.setOnClickListener(this);
@@ -93,7 +97,7 @@ public class PhoneVerifyDialog extends Dialog implements View.OnClickListener{
                 dismiss();
                 break;
             case R.id.txt_left_time:
-                this.getVerifyCode(mTxtSendRequest.getText().toString());
+                this.getVerifyCode(mPhoneNumber);
                 break;
             default:
                 break;

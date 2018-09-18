@@ -1,5 +1,6 @@
 package cn.reservation.app.baixingxinwen.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.TabActivity;
 import android.content.ComponentName;
@@ -29,6 +30,7 @@ import cn.reservation.app.baixingxinwen.api.WXAPI;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
 import cn.reservation.app.baixingxinwen.utils.UserInfo;
 
+
 //import com.theartofdev.edmodo.cropper.CropImage;
 
 @SuppressWarnings("deprecation")
@@ -46,6 +48,7 @@ public class TabHostActivity extends TabActivity implements TabHost.OnTabChangeL
     public static TabWidget tabWidget;
     public boolean checkTabsListener = false;
     public static TabHostActivity TabHostStack;
+    private TextView textViewNotificationsBadge;
 
     public static void setCurrentTab(int tabIndex){
         TabHostActivity.tabWidget.setCurrentTab(tabIndex);
@@ -137,10 +140,26 @@ public class TabHostActivity extends TabActivity implements TabHost.OnTabChangeL
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             tab.setContent(intent);
             //Setting the Indicator
-            tab.setIndicator("", getResources().getDrawable(TAB_INDICATOR[i]));
+//            tab.setIndicator("", getResources().getDrawable(TAB_INDICATOR[i]));
+            if(i == 2){
+                View chatTab = getLayoutInflater().inflate(R.layout.badge, null);
+                textViewNotificationsBadge = chatTab.findViewById(R.id.new_notifications);
+                tab.setIndicator(chatTab);
+
+//                BadgeView badge = new BadgeView(this, item);
+//                badge.setText("1");
+//                badge.show();
+            }
+            else{
+                tab.setIndicator("", getResources().getDrawable(TAB_INDICATOR[i]));
+            }
             tabs.addTab(tab);
         }
         tabWidget.setDividerDrawable(null);
+
+
+
+
 
         checkTabsListener = true;
 
@@ -374,5 +393,25 @@ public class TabHostActivity extends TabActivity implements TabHost.OnTabChangeL
                 Toast.makeText(this, "失败: " + result.getError(), Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    public int getTextViewNotificationsBadge() {
+        return Integer.parseInt((String) textViewNotificationsBadge.getText());
+    }
+
+    public TextView getTextViewNotificationsObject() {
+        return textViewNotificationsBadge;
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void setTextViewNotificationsBadge(int badgeCount) {
+        if(badgeCount <= 0){
+            this.textViewNotificationsBadge.setVisibility(TextView.GONE);
+        }
+        else{
+            this.textViewNotificationsBadge.setVisibility(TextView.VISIBLE);
+            this.textViewNotificationsBadge.setText(Integer.toString(badgeCount));
+        }
+
     }
 }

@@ -58,6 +58,18 @@ public class NewsActivity extends AppCompatActivity implements DialogInterface.O
         res = getResources();
         pActivity = (AnimatedActivity) NewsActivity.this.getParent();
 
+        // badge 를 없앤다.
+        SharedPreferences sharedPref = this.getSharedPreferences(
+                "Notifications", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt("badgeCount", 0);
+        editor.apply();
+
+        if(TabHostActivity.TabHostStack.getTextViewNotificationsObject() != null){
+            TabHostActivity.TabHostStack.setTextViewNotificationsBadge(0);
+        }
+        //////////////////////////////////////////////////////
+
         CommonUtils.customActionBar(mContext, this, true, "我的消息");
         SharedPreferences pref = getSharedPreferences("userData", MODE_PRIVATE);
         userID = Long.toString(pref.getLong("userID", 0));
