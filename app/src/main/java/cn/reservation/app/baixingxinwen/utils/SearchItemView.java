@@ -404,17 +404,18 @@ public class SearchItemView extends LinearLayout {
         mPrice.setText(price);
     }
     public void setPostState(String postState) {
-        switch(postState){
-            case "0":
-                mTop.setVisibility(INVISIBLE);
-                break;
-            case "1":
-                mTop.setVisibility(VISIBLE);
-                break;
-            default:
-                mTop.setVisibility(INVISIBLE);
-                break;
-        }
+        mTop.setVisibility(INVISIBLE);
+//        switch(postState){
+//            case "0":
+//                mTop.setVisibility(INVISIBLE);
+//                break;
+//            case "1":
+//                mTop.setVisibility(VISIBLE);
+//                break;
+//            default:
+//                mTop.setVisibility(INVISIBLE);
+//                break;
+//        }
     }
     public void setAdver(String thumbnail){
         System.out.println("advert:"+thumbnail);

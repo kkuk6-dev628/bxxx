@@ -4091,6 +4091,9 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
             });
             verifyDlg.show();
         }
+        else{
+            freePostData();
+        }
 
 //        rlt_post_data.setEnabled(false);
 //        mProgressDialog = ProgressHUD.show(PostActivity.this, res.getString(R.string.processing), true, false, PostActivity.this);

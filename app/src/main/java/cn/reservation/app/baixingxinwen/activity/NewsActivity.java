@@ -366,7 +366,7 @@ public class NewsActivity extends AppCompatActivity implements DialogInterface.O
         */
 //        Intent intent = new Intent(NewsActivity.this, HomeActivity.class);
 //        pActivity.startChildActivity("home", intent);
-        TabHostActivity.tabWidget.setCurrentTab(0);
+        TabHostActivity.setCurrentTab(0);
     }
 
     @Override
@@ -374,7 +374,7 @@ public class NewsActivity extends AppCompatActivity implements DialogInterface.O
         if (keyCode == KeyEvent.KEYCODE_BACK) {
 //            Intent intent = new Intent(NewsActivity.this, HomeActivity.class);
 //            pActivity.startChildActivity("home", intent);
-            TabHostActivity.tabWidget.setCurrentTab(0);
+            TabHostActivity.setCurrentTab(0);
             return true;
         }
         return super.onKeyDown(keyCode, event);

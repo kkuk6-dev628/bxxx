@@ -168,7 +168,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
                         login_username = userName;
                         login_password = passWord;
                         uid = response.getString("uid");
-                        CommonUtils.isLogin = true;
+//                        CommonUtils.isLogin = true;
                         qq = response.optString("qq");
                         wechat = response.optString("wechat");
                         mobile = response.optString("mobile");

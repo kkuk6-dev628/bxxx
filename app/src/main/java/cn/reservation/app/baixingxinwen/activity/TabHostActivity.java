@@ -270,6 +270,7 @@ public class TabHostActivity extends TabActivity implements TabHost.OnTabChangeL
         tabs.setCurrentTab(0);
         Intent intent = new Intent(TabHostActivity.this, LoginActivity.class);
         intent.putExtra("from_activity", "me_activity");
+//        TabHostActivity.this.startActivityForResult(intent, CommonUtils.REQUEST_CODE_LOGIN);
         TabHostActivity.this.startActivityForResult(intent, CommonUtils.REQUEST_CODE_LOGIN);
         TabHostActivity.this.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
     }

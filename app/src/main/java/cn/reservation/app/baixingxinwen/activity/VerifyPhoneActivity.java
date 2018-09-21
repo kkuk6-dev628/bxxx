@@ -68,7 +68,16 @@ public class VerifyPhoneActivity extends AppCompatActivity implements DialogInte
         mContext = VerifyPhoneActivity.this;
         res = mContext.getResources();
         pActivity = (AnimatedActivity) VerifyPhoneActivity.this.getParent();
-        CommonUtils.customActionBar(mContext, this, true, "手机绑定");
+        String type = (String) getIntent().getSerializableExtra("type");
+
+        mBtnConfirmCode = (TextView) findViewById(R.id.btn_confirm_code);
+
+        if (type != null && type.equals("login")) {
+            CommonUtils.customActionBar(mContext, this, true, "登录");
+            mBtnConfirmCode.setText("登录");
+        } else {
+            CommonUtils.customActionBar(mContext, this, true, "手机绑定");
+        }
         mStrVerifyCode = "";
         mEditPhone = (EditText) findViewById(R.id.edit_phone_number);
         mEditPhone.setText(strPhone);
@@ -85,7 +94,7 @@ public class VerifyPhoneActivity extends AppCompatActivity implements DialogInte
                 if (!mStrVerifyCode.equals("") && mEditVerifyCode.getText().toString().equals(mStrVerifyCode)) {
                     isVerified = true;
                     stopTimerTask();
-                    if(CommonUtils.userInfo != null){
+                    if (CommonUtils.userInfo != null) {
                         CommonUtils.userInfo.setUserPhone(strPhone);
                     }
                 }
@@ -97,7 +106,7 @@ public class VerifyPhoneActivity extends AppCompatActivity implements DialogInte
             }
         });
         mTxtLeftTime = (TextView) findViewById(R.id.txt_left_time);
-        mBtnConfirmCode = (TextView) findViewById(R.id.btn_confirm_code);
+
         mBtnConfirmCode.setOnClickListener(this);
         mTxtLeftTime.setOnClickListener(this);
     }
@@ -117,7 +126,7 @@ public class VerifyPhoneActivity extends AppCompatActivity implements DialogInte
             if (mStrVerifyCode.equals(strVerifyCode)) {
                 isVerified = true;
                 mBtnConfirmCode.setText(mContext.getString(R.string.success));
-                if(CommonUtils.userInfo != null){
+                if (CommonUtils.userInfo != null) {
                     CommonUtils.userInfo.setUserJoinMobile(strPhone);
                 }
                 stopTimerTask();
@@ -154,12 +163,11 @@ public class VerifyPhoneActivity extends AppCompatActivity implements DialogInte
                     JSONObject response = res.body();
                     if (response != null && response.getInt("code") == 1) {
                         int ret = response.optJSONObject("ret").optInt("result");
-                        if(ret > 0) {
+                        if (ret > 0) {
                             mStrVerifyCode = response.optJSONObject("ret").optString("retkey");
                             isVerified = false;
                             startTimer();
-                        }
-                        else{
+                        } else {
                             Toast.makeText(mContext, response.optJSONObject("ret").getString("message"), Toast.LENGTH_SHORT).show();
                         }
                     } else {
@@ -179,7 +187,7 @@ public class VerifyPhoneActivity extends AppCompatActivity implements DialogInte
     }
 
     private void signPhone(final String strPhone) {
-        mProgressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, this);
+        mProgressDialog = ProgressHUD.show(TabHostActivity.TabHostStack, res.getString(R.string.processing), true, false, this);
 
         String act = (String) getIntent().getSerializableExtra("act");
         if (act == null) {
@@ -217,7 +225,7 @@ public class VerifyPhoneActivity extends AppCompatActivity implements DialogInte
                     Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
                 }
             });
-        } else if(act.equals("login")) {
+        } else if (act.equals("login")) {
             HashMap<String, Object> params = new HashMap<>();
             params.put("phone", strPhone);
             String url = "api/user/profilephone";
@@ -232,12 +240,12 @@ public class VerifyPhoneActivity extends AppCompatActivity implements DialogInte
                             CommonUtils.isLogin = true;
                             System.out.println(userObj);
                             Integer gender = 0;
-                            if(!userObj.optString("gender").isEmpty()){
+                            if (!userObj.optString("gender").isEmpty()) {
                                 gender = Integer.parseInt(userObj.optString("gender"));
                             }
                             CommonUtils.userInfo = new UserInfo(Long.valueOf(userObj.optString("uid")), userObj.optString("username"),
-                                    gender, userObj.optString("birthyear")+ "/"+ userObj.optString("birthmonth")+"/"+userObj.optString("userday"), strPhone,
-                                    userObj.optString("avatar"), userObj.optString("credits"), userObj.optString("grouptitle"), userObj.optString("realname"),userObj.optString("uid"), "", "", strPhone, userObj.optString("credits"), userObj.optString("grouptitle"), "phone", userObj.optString("username"), "",userObj.optString("changeid") ,userObj.optString("dateline"));
+                                    gender, userObj.optString("birthyear") + "/" + userObj.optString("birthmonth") + "/" + userObj.optString("userday"), strPhone,
+                                    userObj.optString("avatar"), userObj.optString("credits"), userObj.optString("grouptitle"), userObj.optString("realname"), userObj.optString("uid"), "", "", strPhone, userObj.optString("credits"), userObj.optString("grouptitle"), "phone", userObj.optString("username"), "", userObj.optString("changeid"), userObj.optString("dateline"));
 
                             SharedPreferences.Editor editor = getSharedPreferences("userData", MODE_PRIVATE).edit();
                             editor.putLong("userID", CommonUtils.userInfo.getUserID());
@@ -262,11 +270,24 @@ public class VerifyPhoneActivity extends AppCompatActivity implements DialogInte
                             editor.putString("dateline", CommonUtils.userInfo.getDateline());
                             editor.apply();
 
-                            if(!CommonUtils.channel_id.isEmpty()){
+                            if (!CommonUtils.channel_id.isEmpty()) {
                                 CommonUtils.registerChannelId(mContext);
-                            }                        } else {
+                            }
+
+                            if (pActivity != null) {
+                                pActivity.finishChildActivity();
+                            } else {
+//                                Intent mainIntent = new Intent(VerifyPhoneActivity.this, TabHostActivity.class);
+//                                VerifyPhoneActivity.this.startActivity(mainIntent);
+                                finish();
+//                finish();
+                            }
+
+                        } else {
                             Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
-                            finish();
+
+
+//                            finish();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -318,17 +339,25 @@ public class VerifyPhoneActivity extends AppCompatActivity implements DialogInte
 
     @Override
     public void onBackPressed() {
-        finish();
+        if (pActivity != null) {
+            pActivity.finishChildActivity();
+        } else {
+//            Intent mainIntent = new Intent(VerifyPhoneActivity.this, TabHostActivity.class);
+//            VerifyPhoneActivity.this.startActivity(mainIntent);
+            finish();
+        }
+//        finish();
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent intent = new Intent(VerifyPhoneActivity.this, UserSafeActivity.class);
-            if(pActivity != null) {
-                pActivity.startChildActivity("user_safe", intent);
-            }
-            else{
+//            Intent intent = new Intent(VerifyPhoneActivity.this, UserSafeActivity.class);
+            if (pActivity != null) {
+                pActivity.finishChildActivity();
+            } else {
+//                Intent mainIntent = new Intent(VerifyPhoneActivity.this, TabHostActivity.class);
+//                VerifyPhoneActivity.this.startActivity(mainIntent);
                 finish();
             }
             return true;
