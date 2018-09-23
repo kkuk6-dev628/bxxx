@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.baiiu.filter.interfaces.OnFilterDoneListener;
 
+import org.json.JSONArray;
+
 import java.util.List;
 
 import butterknife.BindView;
@@ -34,7 +36,7 @@ public class BetterDoubleGridView extends LinearLayout implements View.OnClickLi
     private List<String> mTopGridData;
     private List<String> mBottomGridList;
     private OnFilterDoneListener mOnFilterDoneListener;
-
+    private JSONArray mGridData;
 
     public BetterDoubleGridView(Context context) {
         this(context, null);
@@ -62,6 +64,11 @@ public class BetterDoubleGridView extends LinearLayout implements View.OnClickLi
         ButterKnife.bind(this, this);
     }
 
+
+    public BetterDoubleGridView setGridData(JSONArray gridData){
+        this.mGridData = gridData;
+        return this;
+    }
 
     public BetterDoubleGridView setmTopGridData(List<String> mTopGridData) {
         this.mTopGridData = mTopGridData;

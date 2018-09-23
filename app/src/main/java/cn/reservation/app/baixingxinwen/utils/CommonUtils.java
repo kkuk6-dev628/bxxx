@@ -483,12 +483,12 @@ public class CommonUtils {
     }
 
     public static void dismissProgress(final ProgressHUD progressHUD) {
-        new Handler().postDelayed(new Runnable() {
+        new Handler().post(new Runnable() {
             @Override
             public void run() {
                 progressHUD.dismiss();
             }
-        }, 800);
+        });
     }
 
     public static String getUrlEncoded(String url) {

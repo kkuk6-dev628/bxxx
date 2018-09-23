@@ -29,6 +29,7 @@ import java.util.List;
 import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.dropdownmenu.entity.FilterType;
 import cn.reservation.app.baixingxinwen.dropdownmenu.entity.FilterUrl;
+import cn.reservation.app.baixingxinwen.dropdownmenu.entity.view.betterDoubleGrid.BetterDoubleGridView;
 //import com.baiiu.dropdownmenu.entity.FilterType;
 //import com.baiiu.dropdownmenu.entity.FilterUrl;
 
@@ -112,7 +113,10 @@ public class DropMenuAdapter implements MenuAdapter {
             else{
                 item = this.basicDataJsonArray.getJSONObject(position-1);
                 String type = item.optString("type");
-                if(type.contains("region") || type.contains("more")){
+                if(type.contains("region")){
+                    view = createDoubleListView(position);
+                }
+                else if(type.contains("more")){
                     view = createDoubleListView(position);
                 }
                 else if(type.contains("number") || type.contains("text")){
@@ -534,24 +538,24 @@ public class DropMenuAdapter implements MenuAdapter {
     }
 
 
-//    private View createBetterDoubleGrid() {
-//
-//        List<String> phases = new ArrayList<>();
-//        for (int i = 0; i < 10; ++i) {
-//            phases.add("3top" + i);
-//        }
-//        List<String> areas = new ArrayList<>();
-//        for (int i = 0; i < 10; ++i) {
-//            areas.add("3bottom" + i);
-//        }
-//
-//
-//        return new BetterDoubleGridView(mContext)
-//                .setmTopGridData(phases)
-//                .setmBottomGridList(areas)
-//                .setOnFilterDoneListener(onFilterDoneListener)
-//                .build();
-//    }
+    private View createBetterDoubleGrid(final int position) {
+
+        List<String> phases = new ArrayList<>();
+        for (int i = 0; i < 10; ++i) {
+            phases.add("3top" + i);
+        }
+        List<String> areas = new ArrayList<>();
+        for (int i = 0; i < 10; ++i) {
+            areas.add("3bottom" + i);
+        }
+
+
+        return new BetterDoubleGridView(mContext)
+                .setmTopGridData(phases)
+                .setmBottomGridList(areas)
+                .setOnFilterDoneListener(onFilterDoneListener)
+                .build();
+    }
 
 
 //    private View createDoubleGrid() {

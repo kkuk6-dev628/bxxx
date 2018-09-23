@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -3742,11 +3741,12 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
 
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
             //Log.e(TAG, "selectedImagePath0:" + String.valueOf(selectedImagePath));
-            File storageDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-            if (!storageDirectory.exists()) {
-                storageDirectory = Environment.getExternalStoragePublicDirectory("data");
-            }
-            File mediaFile = new File(storageDirectory + File.separator + "IMG_" + timeStamp + mFiles.length + ".png");
+//            File storageDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+//            if (!storageDirectory.exists()) {
+//                storageDirectory = Environment.getExternalStoragePublicDirectory("data");
+//            }
+            File outputDir = mContext.getCacheDir(); // context being the Activity pointer
+            File mediaFile = File.createTempFile("IMG_", ".jpg", outputDir);
 
             if (mediaFile.exists()) {
                 mediaFile.delete();
@@ -3761,7 +3761,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
 
                 // Compress into png format image from 0% - 100%
                 processedBitmap
-                        .compress(Bitmap.CompressFormat.PNG, 100, output);
+                        .compress(Bitmap.CompressFormat.JPEG, 100, output);
                 output.flush();
                 output.close();
 
