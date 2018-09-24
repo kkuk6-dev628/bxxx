@@ -45,6 +45,8 @@ import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -1601,65 +1603,22 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                     searchItemListAdapter.clearItems();
                     getSearchItemsRetrofit();
                 }
-                else if(type.contains("more")){
+                else if(type.contains("more") && FilterUrl.instance().filterParams != null){
 
-                    JSONArray infoArray = mainItem.getJSONArray("info");
-                    JSONObject infoItem = infoArray.getJSONObject(rowPosition);
-                    String typeInfoItem = infoItem.optString("type");
-                    String analysisInfoItem = infoItem.optString("analysis");
-
-                    if(analysisInfoItem.contains("sortid")) {
-                        String sortid = infoItem.optString("optionid");
-                        String[] sortids = sortid.split(",");
-                        if (sortids.length > 1) {
-                            sortid = sortids[itemPosition];
-                            paramsUpdated.put("sortid", sortid);
-
-                            searchItemListAdapter.clearItems();
-                            getSearchItemsRetrofit();
+                    HashMap receivedParams = FilterUrl.instance().filterParams;
+                    Iterator it = receivedParams.entrySet().iterator();
+                    while (it.hasNext()) {
+                        Map.Entry pair = (Map.Entry)it.next();
+                        if(paramsUpdated.containsKey(pair.getKey())){
+                            paramsUpdated.remove(pair.getKey());
                         }
+                        if(!"clear".equals(pair.getValue())){
+                            paramsUpdated.put((String)pair.getKey(), pair.getValue());
+                        }
+                        it.remove(); // avoids a ConcurrentModificationException
                     }
-                    else{
-                        if(typeInfoItem.contains("click")){
-
-                            String sortid = infoItem.optString("optionid");
-                            String[] sortids = sortid.split(",");
-                            if(sortids.length > 1){
-                                sortid = sortids[rowPosition];
-                                paramsUpdated.put("sortid", sortid);
-
-                                searchItemListAdapter.clearItems();
-                                getSearchItemsRetrofit();
-                            }
-                        }
-                        else if(!typeInfoItem.contains("number") && !typeInfoItem.contains("text")){
-                            String optionid = infoItem.optString("optionid");
-
-                            String paramKey = "option_" + optionid;
-                            String paramValue = Integer.toString(itemPosition + 1);
-
-                            paramsUpdated.put(paramKey, paramValue);
-
-                            searchItemListAdapter.clearItems();
-                            getSearchItemsRetrofit();
-                        }
-                        else{
-                            String unit = infoItem.optString("unit");
-                            optionIdForNumber = infoItem.optString("optionid");
-                            RelativeLayout rlt_price_search = (RelativeLayout) numberSearchView.findViewById(R.id.rlt_price_search);
-                            ((EditText) numberSearchView.findViewById(R.id.edit_min_price)).setText("");
-                            ((EditText) numberSearchView.findViewById(R.id.edit_min_price)).setHint("最低值 (" + unit + ")");
-                            ((EditText) numberSearchView.findViewById(R.id.edit_max_price)).setText("");
-                            ((EditText) numberSearchView.findViewById(R.id.edit_max_price)).setHint("最高值 (" + unit + ")");
-
-                            dropDownMenu.showNumberSearchView();
-                            isNumberSearch = true;
-
-//                            numberSearchView.setVisibility(View.VISIBLE);
-                        }
-                    }
-
-
+                    searchItemListAdapter.clearItems();
+                    getSearchItemsRetrofit();
 
                 }
                 else if(!type.contains("number") && !type.contains("text")){

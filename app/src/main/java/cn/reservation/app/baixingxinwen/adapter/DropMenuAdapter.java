@@ -29,6 +29,7 @@ import java.util.List;
 import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.dropdownmenu.entity.FilterType;
 import cn.reservation.app.baixingxinwen.dropdownmenu.entity.FilterUrl;
+import cn.reservation.app.baixingxinwen.dropdownmenu.entity.view.MultiGroupList.MultiGroupListView;
 import cn.reservation.app.baixingxinwen.dropdownmenu.entity.view.betterDoubleGrid.BetterDoubleGridView;
 //import com.baiiu.dropdownmenu.entity.FilterType;
 //import com.baiiu.dropdownmenu.entity.FilterUrl;
@@ -117,7 +118,7 @@ public class DropMenuAdapter implements MenuAdapter {
                     view = createDoubleListView(position);
                 }
                 else if(type.contains("more")){
-                    view = createDoubleListView(position);
+                    view = createMultiGroupListView(position);
                 }
                 else if(type.contains("number") || type.contains("text")){
                     String unit = item.optString("unit");
@@ -193,6 +194,31 @@ public class DropMenuAdapter implements MenuAdapter {
 
 
         return view;
+    }
+
+    private View createMultiGroupListView(int position) {
+        try {
+            JSONObject data = this.basicDataJsonArray.getJSONObject(position-1);
+            final MultiGroupListView view = new MultiGroupListView(mContext, data.getJSONArray("info"));
+            view.setColumnPosition(position);
+            view.setOnFilterDoneListener(new OnFilterDoneListener() {
+                @Override
+                public void onFilterDone(int position, String positionTitle, String urlValue) {
+                    FilterUrl.instance().filterParams = view.getFilterParams();
+                    DropMenuAdapter.this.onFilterDone(position, 0, 0);
+                }
+
+                @Override
+                public void onFilterDoneReturnPosition(int columnPosition, int rowPosition, int itemPosition) {
+
+                }
+            });
+
+            return view;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
@@ -595,7 +621,7 @@ public class DropMenuAdapter implements MenuAdapter {
             return;
         }
 
-        onFilterDoneListener.onFilterDoneReturnPosition(FilterUrl.instance().columnPosition, FilterUrl.instance().rowPosition, FilterUrl.instance().itemPosition);
+        onFilterDoneListener.onFilterDoneReturnPosition(FilterUrl.instance().columnPosition, rowPosition, itemPosition);
 
 //        if (onFilterDoneListener != null && FilterUrl.instance().columnPosition > -1) {
 //            onFilterDoneListener.onFilterDone(FilterUrl.instance().columnPosition, "", "");

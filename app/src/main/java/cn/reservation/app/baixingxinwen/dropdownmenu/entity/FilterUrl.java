@@ -2,6 +2,8 @@ package cn.reservation.app.baixingxinwen.dropdownmenu.entity;
 
 import android.text.TextUtils;
 
+import java.util.HashMap;
+
 /**
  * 描述：
  */
@@ -28,6 +30,8 @@ public class FilterUrl {
     public String singleGridPosition;
     public String doubleGridTop;
     public String doubleGridBottom;
+
+    public HashMap<String, Object> filterParams;
 
     public int columnPosition = -1;
     public int rowPosition = -1;
