@@ -166,11 +166,6 @@ public class TabHostActivity extends TabActivity implements TabHost.OnTabChangeL
                 setTextViewNotificationsBadge(badgeCount);
         }
         //////////////////////////////////////////////////////
-
-
-
-
-
         checkTabsListener = true;
 
         for (int i = 0; i < tabs.getTabWidget().getChildCount(); i++) {

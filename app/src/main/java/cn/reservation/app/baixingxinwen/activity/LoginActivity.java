@@ -92,7 +92,7 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             intent.putExtra("type", "login");
             intent.putExtra("act", "login");
             LoginActivity.this.startActivity(intent);
-            LoginActivity.this.finish();
+//            LoginActivity.this.finish();
             LoginActivity.this.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
         } else if (id == R.id.btn_ok) {
             if (!validateInput()){

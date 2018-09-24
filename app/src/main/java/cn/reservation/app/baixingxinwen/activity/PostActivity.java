@@ -1,5 +1,6 @@
 package cn.reservation.app.baixingxinwen.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,15 +16,18 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -1415,9 +1419,11 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
         String square = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9))).getText().toString();
         System.out.println("villiage++++++++++" + villiage);
         CommonUtils.mFiles = mFiles;
+        if(sortid != 4){
+            CommonUtils.data1.put("price", ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data10))).getText());
+        }
         CommonUtils.data1.put("villiage", villiage);
         CommonUtils.data1.put("square", square);
-//        CommonUtils.data1.put("price", ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data10))).getText());
         CommonUtils.data1.put("floors", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data11))).getText());
         CommonUtils.data1.put("contact", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).getText());
         CommonUtils.data1.put("qq", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data13))).getText());
@@ -2477,6 +2483,7 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
         }, 5);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initPostOptionView(JSONObject list) {
         arrayObj = new JSONObject[7];
         RelativeLayout rlt_input_data1;
@@ -2492,6 +2499,28 @@ public class PostActivity extends AppCompatActivity implements DialogInterface.O
         selTitleProperty = "";
         selTitleProperty1 = "";
         selTitleProperty2 = "";
+
+        EditText inputMessage = findViewById(R.id.edit_input_message);
+
+        inputMessage.setScroller(new Scroller(mContext));
+        inputMessage.setMaxLines(1);
+        inputMessage.setVerticalScrollBarEnabled(true);
+        inputMessage.setMovementMethod(new ScrollingMovementMethod());
+        inputMessage.setSingleLine(false);
+        inputMessage.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (v.getId() == R.id.edit_input_message) {
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                    switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                        case MotionEvent.ACTION_UP:
+                            v.getParent().requestDisallowInterceptTouchEvent(false);
+                            break;
+                    }
+                }
+                return false;
+            }
+        });
 
         if (list != null && list.length() > 0) {
             if (fid.equals("2") && (sortid == 4 || sortid == 9)) {

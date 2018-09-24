@@ -18,15 +18,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -184,7 +187,7 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
         String title = "信息发布更新";
         RelativeLayout rlt_post_data;
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView1;
+        View rowView1 = null;
         EditText villiage_edit;
         EditText square_edit;
         EditText brand_edit;
@@ -236,7 +239,9 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                             EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
                             String square = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9))).getText().toString();
                             String house_number = CommonUtils.data1.get("house_number_desc").toString();
-                            //String s_title = title.getText().toString();
+                            if (!square.trim().equals("")) {
+                                square = square + "m²";
+                            }
                             title.setText(s + " " + house_number + " " + square);
                         }
                     }
@@ -308,7 +313,9 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                             EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
                             String square = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9))).getText().toString();
                             String house_number = data1.get("house_number_desc").toString();
-                            //String s_title = title.getText().toString();
+                            if (!square.trim().equals("")) {
+                                square = square + "m²";
+                            }
                             title.setText(s + " " + house_number + " " + square);
                         }
                     }
@@ -333,7 +340,7 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                             String v = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7))).getText().toString();
                             String house_number = data1.get("house_number_desc").toString();
                             //String s_title = title.getText().toString();
-                            title.setText(v + " " + house_number + " " + s);
+                            title.setText(v + " " + house_number + " " + s + "m²");
                         }
                     }
                 });
@@ -379,7 +386,9 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                             EditText title = (EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_title));
                             String square = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9))).getText().toString();
                             String house_number = CommonUtils.data1.get("house_number_desc").toString();
-                            //String s_title = title.getText().toString();
+                            if (!square.trim().equals("")) {
+                                square = square + "m²";
+                            }
                             title.setText(s + " " + house_number + " " + square);
                         }
                     }
@@ -404,7 +413,7 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                             String v = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data7))).getText().toString();
                             String house_number = CommonUtils.data1.get("house_number_desc").toString();
                             //String s_title = title.getText().toString();
-                            title.setText(v + " " + house_number + " " + s);
+                            title.setText(v + " " + house_number + " " + s + "m²");
                         }
                     }
                 });
@@ -630,7 +639,7 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                                 String speed = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
                                 String year = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
                                 //String s_title = title.getText().toString();
-                                title.setText(s + " " + year + " " + speed);
+                                changeTxtTitle(title, s.toString(), year, speed);
                             }
                         }
                     });
@@ -654,7 +663,7 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                                 String brand = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
                                 String year = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
                                 //String s_title = title.getText().toString();
-                                title.setText(brand + " " + year + " " + s);
+                                changeTxtTitle(title, brand, year, s.toString());
                             }
                         }
                     });
@@ -678,7 +687,7 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                                 String brand = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
                                 String speed = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
                                 //String s_title = title.getText().toString();
-                                title.setText(brand + " " + s + " " + speed);
+                                changeTxtTitle(title, brand, s.toString(), speed);
                             }
                         }
                     });
@@ -714,7 +723,7 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                                 String speed = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
                                 String year = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
                                 //String s_title = title.getText().toString();
-                                title.setText(s + " " + year + " " + speed);
+                                changeTxtTitle(title, s.toString(), year, speed);
                             }
                         }
                     });
@@ -738,7 +747,7 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                                 String brand = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
                                 String year = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data_year))).getText().toString();
                                 //String s_title = title.getText().toString();
-                                title.setText(brand + " " + year + " " + s);
+                                changeTxtTitle(title, brand, year, s.toString());
                             }
                         }
                     });
@@ -762,7 +771,7 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                                 String brand = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data5))).getText().toString();
                                 String speed = ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data4))).getText().toString();
                                 //String s_title = title.getText().toString();
-                                title.setText(brand + " " + s + " " + speed);
+                                changeTxtTitle(title, brand, s.toString(), speed);
                             }
                         }
                     });
@@ -1064,6 +1073,27 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
             // Add the new row before the add field button.
             parentLinearLayout.addView(rowView0, 0);
         }
+        EditText inputMessage = findViewById(R.id.edit_input_message);
+
+        inputMessage.setScroller(new Scroller(mContext));
+        inputMessage.setMaxLines(1);
+        inputMessage.setVerticalScrollBarEnabled(true);
+        inputMessage.setMovementMethod(new ScrollingMovementMethod());
+        inputMessage.setSingleLine(false);
+        inputMessage.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (v.getId() == R.id.edit_input_message) {
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                    switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                        case MotionEvent.ACTION_UP:
+                            v.getParent().requestDisallowInterceptTouchEvent(false);
+                            break;
+                    }
+                }
+                return false;
+            }
+        });
         CommonUtils.customActionBar(mContext, this, true, "编辑");
     }
 
@@ -1131,6 +1161,10 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
                                 ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data9))).setText(response.optJSONObject("ret").optString("square"));
                                 ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data10))).setText(response.optJSONObject("ret").optString("price"));
                                 ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data15))).setText(response.optJSONObject("ret").optString("telephone"));
+                                JSONArray pic = response.optJSONObject("ret").optJSONArray("picture");
+                                if (pic != null) {
+                                    initImageGalleries(pic);
+                                }
                             }
 
                         } catch (JSONException e) {
@@ -2227,7 +2261,9 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
         CommonUtils.mFiles = mFiles;
         CommonUtils.data1.put("villiage", villiage);
         CommonUtils.data1.put("square", square);
-        CommonUtils.data1.put("price", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data10))).getText());
+        if(sortid != 4){
+            CommonUtils.data1.put("price", ((TextView) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.txt_input_data10))).getText());
+        }
         CommonUtils.data1.put("floors", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data11))).getText());
         CommonUtils.data1.put("contact", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_contact))).getText());
         CommonUtils.data1.put("qq", ((EditText) ((findViewById(R.id.post_parentcontent)).findViewById(R.id.edit_input_data13))).getText());
@@ -5046,6 +5082,18 @@ public class UpdateActivity extends AppCompatActivity implements DialogInterface
         } else {
             freePostData();
         }
+    }
+    private void changeTxtTitle(EditText txtTitle, String brand, String year, String speed) {
+        String yearStr = "";
+        if (year != null && !year.equals("")) {
+            yearStr = year + "年检到期 ";
+        }
+
+        String speedStr = "";
+        if (speed != null && !speed.equals("")) {
+            speedStr = speed + "万公里";
+        }
+        txtTitle.setText(brand + " " + yearStr + speedStr);
     }
 
     public void freePostData() {

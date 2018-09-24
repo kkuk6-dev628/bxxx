@@ -8,6 +8,7 @@
     android:orientation="vertical"
     android:weightSum="3.5">
     <ScrollView
+        android:id="@+id/scroll_post_cat"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/lyt_bottom_button"

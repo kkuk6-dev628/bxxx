@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -199,6 +200,17 @@ public class PostCategoryActivity extends AppCompatActivity implements View.OnCl
                 default:
 
                     break;
+            }
+
+            if(postItem.equals("11") || postItem.equals("13")){
+                final ScrollView scrollView = findViewById(R.id.scroll_post_cat);
+                scrollView.post(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                    }
+                });;
             }
         }
     }
@@ -551,19 +563,22 @@ public class PostCategoryActivity extends AppCompatActivity implements View.OnCl
     public void onBackPressed() {
         //super.onBackPressed();
         //overridePendingTransition(R.anim.pop_in, R.anim.pop_out);
-        //this.getParent().getParent().onBackPressed();
+//        this.getParent().getParent().onBackPressed();
 //        Intent intent = new Intent(PostCategoryActivity.this, HomeActivity.class);
 //        pActivity.startChildActivity("home", intent);
-        TabHostActivity.tabWidget.setCurrentTab(0);
-        TabHostActivity.tabs.setCurrentTab(0);
+        if(postItem!=null){
+            pActivity.finishChildActivity();
+        }
+        else{
+            TabHostActivity.setCurrentTab(0);
+        }
     }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
 //            Intent intent = new Intent(PostCategoryActivity.this, HomeActivity.class);
 //            pActivity.startChildActivity("home", intent);
-            TabHostActivity.tabWidget.setCurrentTab(0);
-            TabHostActivity.tabs.setCurrentTab(0);
+            TabHostActivity.setCurrentTab(0);
             return true;
         }
         return super.onKeyDown(keyCode, event);

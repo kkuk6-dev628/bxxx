@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -67,8 +68,10 @@ import retrofit2.Response;
 
 @SuppressWarnings("deprecation")
 public class SearchActivity extends AppCompatActivity implements DialogInterface.OnCancelListener, ActionSheet.ActionSheetListener, View.OnClickListener, OnFilterDoneListener {
-    @BindView(R.id.dropDownMenu) DropDownMenu dropDownMenu;
-    @BindView(R.id.mFilterContentView) LinearLayout mFilterContentView;
+    @BindView(R.id.dropDownMenu)
+    DropDownMenu dropDownMenu;
+    @BindView(R.id.mFilterContentView)
+    LinearLayout mFilterContentView;
 //    DropDownMenu dropDownMenu;
 //    LinearLayout mFilterContentView;
 
@@ -123,12 +126,10 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         Intent intent = getIntent();
 
 
-
         showAction = 0;
         selectedKeyTab = new Hashtable();
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
-
 
 
         self = this;
@@ -148,10 +149,9 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 
                 // 0.15 ratio is perhaps enough to determine keypad height.
                 isKeyboardShown = keypadHeight > screenHeight * 0.15;
-                if(isKeyboardShown && popUp.isShowing()){
+                if (isKeyboardShown && popUp.isShowing()) {
                     popUp.dismiss();
-                }
-                else{
+                } else {
 //                    if(popUp!=null && !popUp.isShowing()) {
 //                        popUp.showAtLocation(findViewById(R.id.lyt_search_parent), Gravity.BOTTOM | Gravity.RIGHT, 0, 200);
 //                    }
@@ -164,7 +164,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
             }
         });
 
-        dropDownMenu = (DropDownMenu)findViewById(R.id.dropDownMenu);
+        dropDownMenu = (DropDownMenu) findViewById(R.id.dropDownMenu);
         indicatorLayout = (LinearLayout) findViewById(R.id.indicatorLayout);
         AVLoadingIndicatorView avi = (AVLoadingIndicatorView) indicatorLayout.findViewById(R.id.AVLoadingIndicatorView);
         avi.setIndicator("LineScaleIndicator");
@@ -175,8 +175,8 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         editSearchTxt = (EditText) findViewById(R.id.edit_search_title);
         preLast = 4;
         findViewById(R.id.rlt_post).setOnClickListener(this);
-        if(postItem!=null){
-            switch(postItem){
+        if (postItem != null) {
+            switch (postItem) {
                 case "1":
                     //setContentView(R.layout.activity_search1);
                     editSearchTxt.setHint("搜索房屋出售");
@@ -342,7 +342,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                     sortid = "26";
                     break;
             }
-        }else{
+        } else {
             //setContentView(R.layout.activity_search1);
             fid = (String) intent.getSerializableExtra("fid");
             sortid = (String) intent.getSerializableExtra("sortid");
@@ -385,8 +385,8 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                 SearchItem searchItem = (SearchItem) searchItemListAdapter.getItem(position);
                 Long long_id = searchItem.getmSearchID();
                 String fid = searchItem.getmFid();
-                System.out.println("LongID+"+long_id);
-                if(!fid.equals("-1")) {
+                System.out.println("LongID+" + long_id);
+                if (!fid.equals("-1")) {
                     String sortid = searchItem.getmSortid();
                     Intent intent = new Intent(SearchActivity.this, RoomDetailActivity.class);
                     intent.putExtra("fid", fid);
@@ -402,11 +402,11 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                         CommonUtils.share_bmp = BitmapFactory.decodeResource(getResources(), R.drawable.default_img);
                     popUp.dismiss();
                     SearchActivity.this.startActivity(intent);
-                }else{
+                } else {
                     Intent intent = new Intent(SearchActivity.this, AdverViewActivity.class);
                     intent.putExtra("adver_url", searchItem.getmAdverUrl());
                     popUp.dismiss();
-                    SearchActivity.this.startActivityForResult(intent,501);
+                    SearchActivity.this.startActivityForResult(intent, 501);
                 }
             }
         });
@@ -426,9 +426,8 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 
                     case MotionEvent.ACTION_UP:
 //                        int totalItemCountOfListSearch = lstSearch.getAdapter().getCount();
-                        if(preLast>6)
-                        {
-                            if(popUp!=null && !popUp.isShowing()) {
+                        if (preLast > 6) {
+                            if (popUp != null && !popUp.isShowing()) {
                                 popUp.showAtLocation(findViewById(R.id.lyt_search_parent), Gravity.BOTTOM | Gravity.RIGHT, 0, 200);
                             }
 //                            findViewById(R.id.lyt_search_parent).post(new Runnable() {
@@ -440,8 +439,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 //                                }
 //                            });
 //                            preLast = totalItemCountOfListSearch;
-                        }
-                        else if (popUp != null && popUp.isShowing() ) {
+                        } else if (popUp != null && popUp.isShowing()) {
                             popUp.dismiss();
                         }
 
@@ -459,11 +457,12 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 
         lstSearch.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
-            public void onScrollStateChanged(AbsListView arg0, int scrollState) { }
+            public void onScrollStateChanged(AbsListView arg0, int scrollState) {
+            }
 
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if(firstVisibleItem + visibleItemCount == totalItemCount) {
+                if (firstVisibleItem + visibleItemCount == totalItemCount) {
                     if (isLoadMore) {
                         paramsUpdated.put("page", String.valueOf(mIntPage));
                         getSearchItemsRetrofit();
@@ -475,7 +474,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 //                    if(popUp != null)
 //                        popUp.dismiss();
 
-                if(lastItem <= 6){
+                if (lastItem <= 6) {
                     if (popUp != null && popUp.isShowing()) {
                         popUp.dismiss();
                     }
@@ -518,7 +517,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                     intent.putExtra("from_activity", "me_activity");
                     SearchActivity.this.startActivityForResult(intent, CommonUtils.REQUEST_CODE_LOGIN);
                     SearchActivity.this.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
-                }else {
+                } else {
                     if (PostGroupActivity.PostGroupStack != null && PostGroupActivity.PostGroupStack.mIdList.size() > 1) {
                         PostGroupActivity.PostGroupStack.getLocalActivityManager().removeAllActivities();
                         PostGroupActivity.PostGroupStack.mIdList.clear();
@@ -544,7 +543,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                     intent.putExtra("from_activity", "me_activity");
                     SearchActivity.this.startActivityForResult(intent, CommonUtils.REQUEST_CODE_LOGIN);
                     SearchActivity.this.overridePendingTransition(R.anim.anim_in, R.anim.anim_out);
-                }else{
+                } else {
                     if (NewsGroupActivity.NewsGroupStack != null && NewsGroupActivity.NewsGroupStack.mIdList.size() > 1) {
                         NewsGroupActivity.NewsGroupStack.getLocalActivityManager().removeAllActivities();
                         NewsGroupActivity.NewsGroupStack.mIdList.clear();
@@ -614,7 +613,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 //    }
 
 
-    public boolean checkKeyboardShown(){
+    public boolean checkKeyboardShown() {
         InputMethodManager imm = (InputMethodManager) SearchActivity.this
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -626,37 +625,67 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
     }
 
     @Override
-    public void onClick(View view) {
+    public void onClick(final View view) {
         int id = view.getId();
         Intent intent;
         if (id == R.id.rlt_post) {//点击发布按钮
+            view.setClickable(false);
             // 전화번호가 join되였는가를 먼저 검사하고 아니면 post할수 없다.
-            if(CommonUtils.userInfo.getUserJoinMobile() != null && !CommonUtils.userInfo.getUserJoinMobile().equals("")){
+            if (CommonUtils.userInfo.getUserJoinMobile() != null && !CommonUtils.userInfo.getUserJoinMobile().equals("")) {
                 intent = new Intent(SearchActivity.this, PostCategoryActivity.class);
-                switch (postItem){
+                switch (postItem) {
                     case "4"://招聘信息
                         fid = "38";
                         sortid = "7,53";
                         intent.putExtra("PostItem", postItem);
                         pActivity.startChildActivity("activity_search", intent);
+
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                view.setClickable(true);
+                            }
+                        }, 1000);
+
                         break;
                     case "5"://求职简历
                         fid = "38";
                         sortid = "8,28";
                         intent.putExtra("PostItem", postItem);
                         pActivity.startChildActivity("activity_search", intent);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                view.setClickable(true);
+                            }
+                        }, 1000);
+
                         break;
                     case "6"://便民服务
                         fid = "42";
                         sortid = "13,34";
                         intent.putExtra("PostItem", postItem);
                         pActivity.startChildActivity("activity_search", intent);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                view.setClickable(true);
+                            }
+                        }, 1000);
+
                         break;
                     case "7"://车辆交易
                         fid = "39";
                         sortid = "58,2";
                         intent.putExtra("PostItem", postItem);
                         pActivity.startChildActivity("activity_search", intent);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                view.setClickable(true);
+                            }
+                        }, 1000);
+
                         break;
                     case "8"://二手买卖
                         //搜索二手买卖
@@ -664,6 +693,13 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                         sortid = "0";
                         intent.putExtra("PostItem", postItem);
                         pActivity.startChildActivity("activity_search", intent);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                view.setClickable(true);
+                            }
+                        }, 1000);
+
                         break;
                     case "11"://婚姻交友
                         //搜索婚姻交友
@@ -671,6 +707,13 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                         sortid = "0";
                         intent.putExtra("PostItem", postItem);
                         pActivity.startChildActivity("activity_search", intent);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                view.setClickable(true);
+                            }
+                        }, 1000);
+
                         break;
                     case "13"://电话号码
                         //搜索求购号码
@@ -678,6 +721,13 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                         sortid = "40,41";
                         intent.putExtra("PostItem", postItem);
                         pActivity.startChildActivity("activity_search", intent);
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                view.setClickable(true);
+                            }
+                        }, 1000);
+
                         break;
                     default:
                         HashMap<String, Object> params = new HashMap<String, Object>();
@@ -689,6 +739,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                         NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
                             @Override
                             public void onResponse(Call<JSONObject> call, Response<JSONObject> resp) {
+                                view.setClickable(true);
                                 try {
                                     JSONObject response = resp.body();
                                     if (response.getInt("ret") == 1) {
@@ -707,36 +758,27 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 
                             @Override
                             public void onFailure(Call<JSONObject> call, Throwable t) {
-                                //progressDialog.dismiss();
+                                view.setClickable(true);
                                 Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
                             }
                         });
-
-
-//                    intent = new Intent(SearchActivity.this, PostActivity.class);
-//                    intent.putExtra("PostItem", postItem);
-//                    SearchActivity.this.startActivityForResult(intent, CommonUtils.REQUEST_CODE_ANOTHER);
-//                    break;
                 }
-            }
-            else{
+            } else {
                 CommonUtils.showAlertDialog(mContext, "您必须转到“我的/账号安全”页面并拨打电话号码", null);
             }
 
 
-        }
-        else if (id == R.id.rlt_back){//点击返回按钮
+        } else if (id == R.id.rlt_back) {//点击返回按钮
             popUp.dismiss();
             CommonUtils.hideKeyboard(SearchActivity.this);
 //            intent = new Intent(SearchActivity.this, HomeActivity.class);
 //            pActivity.startChildActivity("home", intent);
             HomeGroupActivity.HomeGroupStack.finishChildActivity();
-        }
-        else if (id == R.id.rlt_search){//点击搜索按钮
+        } else if (id == R.id.rlt_search) {//点击搜索按钮
             keyword = ((TextView) findViewById(R.id.edit_search_title)).getText().toString();
             LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
             lyt_search_panel.removeAllViews();
-            if(!keyword.equals("")){
+            if (!keyword.equals("")) {
                 //getSearchKey();
                 mIntPage = 1;
                 searchItemListAdapter.clearItems();
@@ -745,35 +787,35 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                 paramsUpdated.put("page", mIntPage);
                 paramsUpdated.put("keyword", keyword);
                 getSearchItemsRetrofit();
-            }else{
+            } else {
                 Toast.makeText(mContext, "请输入搜索字", Toast.LENGTH_SHORT).show();
             }
-        }
-        else if (id == R.id.lyt_pop_menu){//点击MoveToTop按钮？
-            ((ListView)findViewById(R.id.lst_search_content)).smoothScrollToPosition(0);
+        } else if (id == R.id.lyt_pop_menu) {//点击MoveToTop按钮？
+            ((ListView) findViewById(R.id.lst_search_content)).smoothScrollToPosition(0);
         }
     }
-    private void showCustomTopMenu()
-    {
-        WindowManager windowManager = (WindowManager)getSystemService(WINDOW_SERVICE);
-        LayoutInflater layoutInflater=(LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view=layoutInflater.inflate(R.layout.to_top_view, null);
-        WindowManager.LayoutParams params=new WindowManager.LayoutParams(
+
+    private void showCustomTopMenu() {
+        WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = layoutInflater.inflate(R.layout.to_top_view, null);
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.TYPE_PHONE,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
 
-        params.gravity=Gravity.BOTTOM|Gravity.RIGHT;
-        params.x=0;
-        params.y=0;
+        params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
+        params.x = 0;
+        params.y = 0;
         windowManager.addView(view, params);
     }
+
     private void getSearchOptionRetrofit() {
         HashMap<String, Object> params = new HashMap<>();
         params.put("fid", fid);
-        if(sortid!=null && sortid!="") {
+        if (sortid != null && sortid != "") {
             params.put("sortid", sortid);
         }
         String url = "api/news/searchoption";
@@ -820,7 +862,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
     private void getSearchItemsRetrofit() {
         indicatorLayout.setVisibility(View.VISIBLE);
         CommonUtils.hideKeyboard(SearchActivity.this);
-        if(fid==null || fid==""){
+        if (fid == null || fid == "") {
             //CommonUtils.dismissProgress(progressDialog);
             return;
         }
@@ -833,35 +875,35 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                     JSONObject response = resp.body();
                     if (response.getInt("code") == 1) {
                         JSONArray list = response.getJSONArray("ret");
-                        if((list==null || list.length()<1) && mIntPage==1){
+                        if ((list == null || list.length() < 1) && mIntPage == 1) {
                             isLoadMore = false;
-                            ((LinearLayout)SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.VISIBLE);
+                            ((LinearLayout) SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.VISIBLE);
                             return;
-                        }else if(list.length()<8){
+                        } else if (list.length() < 8) {
                             isLoadMore = false;
-                        }else{
+                        } else {
                             isLoadMore = true;
                         }
-                        ((LinearLayout)SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.GONE);
-                        for(int i=0; i<list.length(); i++) {
+                        ((LinearLayout) SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.GONE);
+                        for (int i = 0; i < list.length(); i++) {
                             JSONObject item = list.getJSONObject(i);
                             DictionaryUtils dictionaryUtils = new DictionaryUtils();
                             String tid = item.optString("tid");
                             //String topic_sortid = item.optString("sortid");
                             dictionaryUtils.setProperty(item);
                             String img_url = "";
-                            if(item.optJSONObject("fields")!=null && item.optJSONObject("fields").optJSONObject("picture")!=null && !item.optJSONObject("fields").optJSONObject("picture").optString("url").equals("")){
+                            if (item.optJSONObject("fields") != null && item.optJSONObject("fields").optJSONObject("picture") != null && !item.optJSONObject("fields").optJSONObject("picture").optString("url").equals("")) {
                                 img_url = item.optJSONObject("fields").optJSONObject("picture").optString("url");
                             }
                             String desc = item.optString("title");
-                            if(!tid.equals("")) {
+                            if (!tid.equals("")) {
                                 searchItemListAdapter.addItem(new SearchItem(
                                         Long.parseLong(tid), img_url, desc, dictionaryUtils, item));
-                            }else{
-                                String advert_url =  item.optString("link");
+                            } else {
+                                String advert_url = item.optString("link");
                                 String advert_img_url = item.optString("advert");
                                 if (!advert_url.substring(0, 4).equals("http")) {
-                                    advert_url = "http://"+advert_url;
+                                    advert_url = "http://" + advert_url;
                                 }
                                 searchItemListAdapter.addItem(new SearchItem(
                                         -1, "", "", "", "", "", "", "", "", "", "-1", "", "", advert_img_url, advert_url));
@@ -870,7 +912,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                         mIntPage++;
                     } else {
                         isLoadMore = false;
-                        ((LinearLayout)SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.VISIBLE);
+                        ((LinearLayout) SearchActivity.this.findViewById(R.id.lyt_result_panel)).setVisibility(View.VISIBLE);
                         if (mIntPage == 1) {
                             searchItemListAdapter.clearItems();
                         }
@@ -895,7 +937,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
             }
 
             @Override
-            public void onFailure(Call<JSONObject> call, Throwable t){
+            public void onFailure(Call<JSONObject> call, Throwable t) {
                 //CommonUtils.dismissProgress(progressDialog);
                 Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
                 indicatorLayout.setVisibility(View.GONE);
@@ -920,484 +962,14 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         lyt_search_third.setLayoutParams(param);
         lyt_search_fourth.setLayoutParams(param);
         float weight = 0.0f;
-        if(list!=null && list.length()>0) {
-            if(price_state){
-                if(list.length()<4){
-                    weight = (float) 2.7 / (list.length()+1);
-                }else{
+        if (list != null && list.length() > 0) {
+            if (price_state) {
+                if (list.length() < 4) {
+                    weight = (float) 2.7 / (list.length() + 1);
+                } else {
                     weight = (float) 2.7 / list.length();
                 }
-            }else {
-                weight = (float) 2.7 / list.length();
-            }
-            for (int i = 0; i < list.length(); i++) {
-                try {
-                    JSONObject item = list.getJSONObject(i);
-                    switch (i) {
-                        case 0:
-                            ((TextView) findViewById(R.id.txt_search_first)).setText(item.optString("title"));
-                            option_ids[0] = item.optString("optionid");
-                            arrayObj[0] = item.optJSONObject("choice");
-                            param = new LinearLayout.LayoutParams(
-                                    0,
-                                    LayoutParams.MATCH_PARENT,
-                                    weight
-                            );
-                            lyt_search_first.setLayoutParams(param);
-                            lyt_search_first.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
-                                    lyt_search_panel.removeAllViews();
-                                    selectedVTab = option_ids[0];
-                                    createActionSheet(arrayObj[0], 0);
-                                }
-                            });
-                            break;
-                        case 1:
-                            ((TextView) findViewById(R.id.txt_search_second)).setText(item.optString("title"));
-                            option_ids[1] = item.optString("optionid");
-                            arrayObj[1] = item.optJSONObject("choice");
-                            param = new LinearLayout.LayoutParams(
-                                    0,
-                                    LayoutParams.MATCH_PARENT,
-                                    weight
-                            );
-                            lyt_search_second.setLayoutParams(param);
-                            lyt_search_second.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
-                                lyt_search_panel.removeAllViews();
-                                selectedVTab = option_ids[1];
-                                createActionSheet(arrayObj[1], 1);
-                                }
-                            });
-                            break;
-                        case 2:
-                            ((TextView) findViewById(R.id.txt_search_third)).setText(item.optString("title"));
-                            option_ids[2] = item.optString("optionid");
-                            arrayObj[2] = item.optJSONObject("choice");
-                            param = new LinearLayout.LayoutParams(
-                                    0,
-                                    LayoutParams.MATCH_PARENT,
-                                    weight
-                            );
-                            lyt_search_third.setLayoutParams(param);
-                            lyt_search_third.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
-                                lyt_search_panel.removeAllViews();
-                                selectedVTab = option_ids[2];
-                                createActionSheet(arrayObj[2], 2);
-                                }
-                            });
-                            break;
-                        default:
-                            //((TextView) findViewById(R.id.txt_search_fourth)).setText("更多");
-                            ((TextView) findViewById(R.id.txt_search_fourth)).setText(item.optString("title"));
-                            option_ids[3] = item.optString("optionid");
-                            arrayObj[3] = item.optJSONObject("choice");
-                            param = new LinearLayout.LayoutParams(
-                                    0,
-                                    LayoutParams.MATCH_PARENT,
-                                    weight
-                            );
-                            lyt_search_fourth.setLayoutParams(param);
-                            lyt_search_fourth.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
-                                lyt_search_panel.removeAllViews();
-                                selectedVTab = option_ids[3];
-                                createActionSheet(arrayObj[3], 3);
-                                }
-                            });
-                            break;
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            if(price_state){
-                param = new LinearLayout.LayoutParams(
-                        0,
-                        LayoutParams.MATCH_PARENT,
-                        weight
-                );
-                if(list.length()>2) {
-                    ((TextView) findViewById(R.id.txt_search_fourth)).setText("价格");
-                    lyt_search_fourth.setLayoutParams(param);
-                    lyt_search_fourth.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
-                            lyt_search_panel.removeAllViews();
-                            createSearchPrice();
-                        }
-                    });
-                }else if(list.length()>1) {
-                    ((TextView) findViewById(R.id.txt_search_third)).setText("价格");
-                    lyt_search_third.setLayoutParams(param);
-                    lyt_search_third.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
-                            lyt_search_panel.removeAllViews();
-                            createSearchPrice();
-                        }
-                    });
-                }
-            }
-        }
-    }
-    /*
-    public void createActionSheet(JSONObject state_name){
-        if(state_name==null || (state_name!=null && state_name.length()==0)){
-            return;
-        }
-        String[] arr = new String[state_name.length()];
-        Integer j = 0;
-        for(int i=0; i < state_name.length(); i++){
-            j++;
-            arr[i] = state_name.optString(j.toString());
-        }
-        ActionSheet.createBuilder(mContext, SearchActivity.this.getSupportFragmentManager())
-                .setCancelButtonTitle(res.getString(R.string.str_cancel))
-                .setOtherButtonTitles(arr)
-                .setCancelableOnTouchOutside(true)
-                .setListener(SearchActivity.this)
-                .show();
-    }
-    */
-    public void createActionSheet(JSONObject state_name_input, int type){
-        if(state_name_input==null || (state_name_input!=null && state_name_input.length()==0)){
-            return;
-        }
-
-
-        JSONObject state_name;
-
-        if(type == 0){
-            if(areaNavView.getVisibility() == NavigationView.VISIBLE){
-                areaNavView.setVisibility(NavigationView.GONE);
-            }
-            else{
-                areaNavView.setVisibility(NavigationView.VISIBLE);
-            }
-
-            state_name = (JSONObject)state_name_input.opt("main");
-        }
-        else{
-            state_name = state_name_input;
-        }
-
-        LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
-        lyt_search_panel.removeAllViews();
-        final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        String[] arr = new String[state_name.length()];
-        Integer j = 0;
-        for(int i=0; i <= state_name.length()/3; i++){
-            if(state_name.length()%3==0 && i==state_name.length()/3){
-                return;
-            }
-            j=i*3+1;
-            arr[i] = state_name.optString(j.toString());
-            View rowView1 = inflater.inflate(R.layout.dropdown_rows, null);
-            ((TextView) rowView1.findViewById(R.id.txt_dropdown_sub_first)).setText(state_name.optString(j.toString()));
-            if(selectedKeyTab.get("option_"+selectedVTab)!=null && selectedKeyTab.get("option_"+selectedVTab).equals(j)){
-                ((TextView) rowView1.findViewById(R.id.txt_dropdown_sub_first)).setTextColor(getResources().getColor(R.color.colorConfirmText));
-            }
-            final LinearLayout lyt_dropdown_sub_first = (LinearLayout) rowView1.findViewById(R.id.lyt_dropdown_sub_first);
-            LinearLayout lyt_dropdown_sub_second = (LinearLayout) rowView1.findViewById(R.id.lyt_dropdown_sub_second);
-            LinearLayout lyt_dropdown_sub_third = (LinearLayout) rowView1.findViewById(R.id.lyt_dropdown_sub_third);
-            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                    0,
-                    LayoutParams.MATCH_PARENT,
-                    0.0f
-            );
-            lyt_dropdown_sub_first.setLayoutParams(param);
-            lyt_dropdown_sub_second.setLayoutParams(param);
-            lyt_dropdown_sub_third.setLayoutParams(param);
-            if(state_name.optString(j.toString())!=""){
-                param = new LinearLayout.LayoutParams(
-                        0,
-                        LayoutParams.MATCH_PARENT,
-                        1.0f
-                );
-                lyt_dropdown_sub_first.setId(j);
-                lyt_dropdown_sub_first.setLayoutParams(param);
-                lyt_dropdown_sub_first.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        //selectedVTab = view.getId();
-                        selectedSTab = "option_"+selectedVTab;
-                        selectedKeyTab.put(selectedSTab, view.getId());
-                        LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
-                        lyt_search_panel.removeAllViews();
-                        searchItemListAdapter.clearItems();
-                        showAction = 0;
-                        mIntPage = 1;
-                        getSearchItemsRetrofit();
-                    }
-                });
-            }
-            j++;
-            ((TextView) rowView1.findViewById(R.id.txt_dropdown_sub_second)).setText(state_name.optString(j.toString()));
-            if(selectedKeyTab.get("option_"+selectedVTab)!=null && selectedKeyTab.get("option_"+selectedVTab).equals(j)){
-                ((TextView) rowView1.findViewById(R.id.txt_dropdown_sub_second)).setTextColor(getResources().getColor(R.color.colorConfirmText));
-            }
-            if(state_name.optString(j.toString())!=""){
-                param = new LinearLayout.LayoutParams(
-                        0,
-                        LayoutParams.MATCH_PARENT,
-                        1.0f
-                );
-                lyt_dropdown_sub_second.setLayoutParams(param);
-                lyt_dropdown_sub_second.setId(j);
-                lyt_dropdown_sub_second.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        //selectedVTab = view.getId();
-                        selectedSTab = "option_"+selectedVTab;
-                        selectedKeyTab.put(selectedSTab, view.getId());
-                        LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
-                        lyt_search_panel.removeAllViews();
-                        searchItemListAdapter.clearItems();
-                        showAction = 0;
-                        mIntPage = 1;
-                        getSearchItemsRetrofit();
-                    }
-                });
-            }
-            j++;
-            ((TextView) rowView1.findViewById(R.id.txt_dropdown_sub_third)).setText(state_name.optString(j.toString()));
-            if(selectedKeyTab.get("option_"+selectedVTab)!=null && selectedKeyTab.get("option_"+selectedVTab).equals(j)){
-                ((TextView) rowView1.findViewById(R.id.txt_dropdown_sub_third)).setTextColor(getResources().getColor(R.color.colorConfirmText));
-            }
-            if(state_name.optString(j.toString())!=""){
-                param = new LinearLayout.LayoutParams(
-                        0,
-                        LayoutParams.MATCH_PARENT,
-                        1.0f
-                );
-                lyt_dropdown_sub_third.setLayoutParams(param);
-                lyt_dropdown_sub_third.setId(j);
-                lyt_dropdown_sub_third.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        //selectedVTab = view.getId();
-                        selectedSTab = "option_"+selectedVTab;
-                        selectedKeyTab.put(selectedSTab, view.getId());
-                        LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
-                        lyt_search_panel.removeAllViews();
-                        searchItemListAdapter.clearItems();
-                        showAction = 0;
-                        mIntPage = 1;
-                        getSearchItemsRetrofit();
-                    }
-                });
-            }
-            lyt_search_panel.addView(rowView1, lyt_search_panel.getChildCount());
-        }
-    }
-    public void createSearchPrice(){
-        LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
-        lyt_search_panel.removeAllViews();
-        final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView1 = inflater.inflate(R.layout.dropdown_search, null);
-        RelativeLayout rlt_price_search = (RelativeLayout) rowView1.findViewById(R.id.rlt_price_search);
-        if(fid.equals("40") || fid.equals("92")){
-            ((EditText) rowView1.findViewById(R.id.edit_min_price)).setHint("最低值");
-            ((EditText) rowView1.findViewById(R.id.edit_max_price)).setHint("最高值");
-        }else{
-            ((EditText) rowView1.findViewById(R.id.edit_min_price)).setHint("最低值（万）");
-            ((EditText) rowView1.findViewById(R.id.edit_max_price)).setHint("最高值（万）");
-        }
-        rlt_price_search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                min_price = ((EditText) findViewById(R.id.edit_min_price)).getText().toString();
-                max_price = ((EditText) findViewById(R.id.edit_max_price)).getText().toString();
-                if(min_price.equals("")){
-                    Toast toast = Toast.makeText(mContext, "请输入最低值", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
-                    toast.show();
-                    ((EditText)(findViewById(R.id.edit_min_price))).setFocusableInTouchMode(true);
-                    ((EditText)(findViewById(R.id.edit_min_price))).requestFocus();
-                    return;
-                }
-                if(max_price.equals("")){
-                    Toast toast = Toast.makeText(mContext, "请输入最高值", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
-                    toast.show();
-                    ((EditText)(findViewById(R.id.edit_max_price))).setFocusableInTouchMode(true);
-                    ((EditText)(findViewById(R.id.edit_max_price))).requestFocus();
-                    return;
-                }
-                price = min_price+"-"+max_price;
-                LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
-                lyt_search_panel.removeAllViews();
-                searchItemListAdapter.clearItems();
-                showAction = 0;
-                mIntPage = 1;
-                getSearchItemsRetrofit();
-            }
-        });
-        RelativeLayout rlt_price_search_cancel = (RelativeLayout) rowView1.findViewById(R.id.rlt_price_search_cancel);
-        rlt_price_search_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                price = "";
-                ((EditText)(findViewById(R.id.edit_min_price))).setText("");
-                ((EditText)(findViewById(R.id.edit_max_price))).setText("");
-                LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
-                lyt_search_panel.removeAllViews();
-            }
-        });
-        lyt_search_panel.addView(rowView1, lyt_search_panel.getChildCount());
-    }
-    @Override
-    public void onBackPressed() {
-        HomeGroupActivity.HomeGroupStack.finishChildActivity();
-    }
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            HomeGroupActivity.HomeGroupStack.finishChildActivity();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onCancel(DialogInterface dialog) {
-
-    }
-    @Override
-    public void onDismiss(ActionSheet actionSheet, boolean isCancel) {
-        showAction=0;
-    }
-
-    @Override
-    public void onOtherButtonClick(ActionSheet actionSheet, int index) {
-        //String[] phone = mHospitalTel.split(",");
-        //Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:" + phone[index]));
-        //startActivity(intent);
-        showAction=0;
-        switch(index){
-            case 0:
-                break;
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-        }
-        actionSheet.dismiss();
-    }
-
-    private void initFilterDropDownView(JSONArray list) {
-
-//        mFilterContentView = (TextView)findViewById(R.id.mFilterContentView);
-        String[] titleList = new String[] { "第一个", "第二个", "第三个", "第四个" };
-        dropDownMenu.setMenuAdapter(new DropMenuAdapter(this, list, this));
-
-        char[] flags = new char[list.length() + 1];
-        flags[0] = 0;
-        for(int i = 0; i < list.length(); i++){
-            try {
-                JSONObject mainItem = list.getJSONObject(i);
-                String type = mainItem.optString("type");
-                if(type.contains("click"))
-                    flags[i + 1] = 0;
-                else
-                    flags[i + 1] = 1;
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        dropDownMenu.setShowDropdownFlags(flags);
-
-        final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        numberSearchView = inflater.inflate(R.layout.dropdown_search, null);
-        RelativeLayout rlt_price_search = (RelativeLayout) numberSearchView.findViewById(R.id.rlt_price_search);
-
-        rlt_price_search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                min_price = ((EditText) numberSearchView.findViewById(R.id.edit_min_price)).getText().toString();
-                max_price = ((EditText) numberSearchView.findViewById(R.id.edit_max_price)).getText().toString();
-                if(min_price.equals("")){
-                    Toast toast = Toast.makeText(mContext, "请输入最低值", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
-                    toast.show();
-                    ((EditText)(numberSearchView.findViewById(R.id.edit_min_price))).setFocusableInTouchMode(true);
-                    ((EditText)(numberSearchView.findViewById(R.id.edit_min_price))).requestFocus();
-                    return;
-                }
-                if(max_price.equals("")){
-                    Toast toast = Toast.makeText(mContext, "请输入最高值", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0, 250);;
-                    toast.show();
-                    ((EditText)(numberSearchView.findViewById(R.id.edit_max_price))).setFocusableInTouchMode(true);
-                    ((EditText)(numberSearchView.findViewById(R.id.edit_max_price))).requestFocus();
-                    return;
-                }
-                price = min_price+"<->"+max_price;
-//                LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
-//                lyt_search_panel.removeAllViews();
-
-                if(!optionIdForNumber.equals("")){
-                    paramsUpdated.put("option_"+ optionIdForNumber, price);
-                    searchItemListAdapter.clearItems();
-//                    showAction = 0;
-//                    mIntPage = 1;
-
-
-                    getSearchItemsRetrofit();
-                    dropDownMenu.close();
-                }
-
-            }
-        });
-
-        numberSearchView.setVisibility(View.GONE);
-//        dropDownMenu.setAllViews(numberSearchView);
-        dropDownMenu.setNumberSearchView(numberSearchView);
-    }
-
-    private void initSearchOptionMenu(JSONArray list, boolean price_state) {
-        arrayObj = new JSONObject[4];
-        LinearLayout lyt_search_first = (LinearLayout) findViewById(R.id.lyt_search_first);
-        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
-                0,
-                LayoutParams.MATCH_PARENT,
-                0.0f
-        );
-        LinearLayout lyt_search_second = (LinearLayout) findViewById(R.id.lyt_search_second);
-        LinearLayout lyt_search_third = (LinearLayout) findViewById(R.id.lyt_search_third);
-        LinearLayout lyt_search_fourth = (LinearLayout) findViewById(R.id.lyt_search_fourth);
-        lyt_search_first.setLayoutParams(param);
-        lyt_search_second.setLayoutParams(param);
-        lyt_search_third.setLayoutParams(param);
-        lyt_search_fourth.setLayoutParams(param);
-        float weight = 0.0f;
-        if(list!=null && list.length()>0) {
-            if(price_state){
-                if(list.length()<4){
-                    weight = (float) 2.7 / (list.length()+1);
-                }else{
-                    weight = (float) 2.7 / list.length();
-                }
-            }else {
+            } else {
                 weight = (float) 2.7 / list.length();
             }
             for (int i = 0; i < list.length(); i++) {
@@ -1490,13 +1062,13 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                     e.printStackTrace();
                 }
             }
-            if(price_state){
+            if (price_state) {
                 param = new LinearLayout.LayoutParams(
                         0,
                         LayoutParams.MATCH_PARENT,
                         weight
                 );
-                if(list.length()>2) {
+                if (list.length() > 2) {
                     ((TextView) findViewById(R.id.txt_search_fourth)).setText("价格");
                     lyt_search_fourth.setLayoutParams(param);
                     lyt_search_fourth.setOnClickListener(new View.OnClickListener() {
@@ -1507,7 +1079,485 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                             createSearchPrice();
                         }
                     });
-                }else if(list.length()>1) {
+                } else if (list.length() > 1) {
+                    ((TextView) findViewById(R.id.txt_search_third)).setText("价格");
+                    lyt_search_third.setLayoutParams(param);
+                    lyt_search_third.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
+                            lyt_search_panel.removeAllViews();
+                            createSearchPrice();
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    /*
+    public void createActionSheet(JSONObject state_name){
+        if(state_name==null || (state_name!=null && state_name.length()==0)){
+            return;
+        }
+        String[] arr = new String[state_name.length()];
+        Integer j = 0;
+        for(int i=0; i < state_name.length(); i++){
+            j++;
+            arr[i] = state_name.optString(j.toString());
+        }
+        ActionSheet.createBuilder(mContext, SearchActivity.this.getSupportFragmentManager())
+                .setCancelButtonTitle(res.getString(R.string.str_cancel))
+                .setOtherButtonTitles(arr)
+                .setCancelableOnTouchOutside(true)
+                .setListener(SearchActivity.this)
+                .show();
+    }
+    */
+    public void createActionSheet(JSONObject state_name_input, int type) {
+        if (state_name_input == null || (state_name_input != null && state_name_input.length() == 0)) {
+            return;
+        }
+
+
+        JSONObject state_name;
+
+        if (type == 0) {
+            if (areaNavView.getVisibility() == NavigationView.VISIBLE) {
+                areaNavView.setVisibility(NavigationView.GONE);
+            } else {
+                areaNavView.setVisibility(NavigationView.VISIBLE);
+            }
+
+            state_name = (JSONObject) state_name_input.opt("main");
+        } else {
+            state_name = state_name_input;
+        }
+
+        LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
+        lyt_search_panel.removeAllViews();
+        final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        String[] arr = new String[state_name.length()];
+        Integer j = 0;
+        for (int i = 0; i <= state_name.length() / 3; i++) {
+            if (state_name.length() % 3 == 0 && i == state_name.length() / 3) {
+                return;
+            }
+            j = i * 3 + 1;
+            arr[i] = state_name.optString(j.toString());
+            View rowView1 = inflater.inflate(R.layout.dropdown_rows, null);
+            ((TextView) rowView1.findViewById(R.id.txt_dropdown_sub_first)).setText(state_name.optString(j.toString()));
+            if (selectedKeyTab.get("option_" + selectedVTab) != null && selectedKeyTab.get("option_" + selectedVTab).equals(j)) {
+                ((TextView) rowView1.findViewById(R.id.txt_dropdown_sub_first)).setTextColor(getResources().getColor(R.color.colorConfirmText));
+            }
+            final LinearLayout lyt_dropdown_sub_first = (LinearLayout) rowView1.findViewById(R.id.lyt_dropdown_sub_first);
+            LinearLayout lyt_dropdown_sub_second = (LinearLayout) rowView1.findViewById(R.id.lyt_dropdown_sub_second);
+            LinearLayout lyt_dropdown_sub_third = (LinearLayout) rowView1.findViewById(R.id.lyt_dropdown_sub_third);
+            LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                    0,
+                    LayoutParams.MATCH_PARENT,
+                    0.0f
+            );
+            lyt_dropdown_sub_first.setLayoutParams(param);
+            lyt_dropdown_sub_second.setLayoutParams(param);
+            lyt_dropdown_sub_third.setLayoutParams(param);
+            if (state_name.optString(j.toString()) != "") {
+                param = new LinearLayout.LayoutParams(
+                        0,
+                        LayoutParams.MATCH_PARENT,
+                        1.0f
+                );
+                lyt_dropdown_sub_first.setId(j);
+                lyt_dropdown_sub_first.setLayoutParams(param);
+                lyt_dropdown_sub_first.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //selectedVTab = view.getId();
+                        selectedSTab = "option_" + selectedVTab;
+                        selectedKeyTab.put(selectedSTab, view.getId());
+                        LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
+                        lyt_search_panel.removeAllViews();
+                        searchItemListAdapter.clearItems();
+                        showAction = 0;
+                        mIntPage = 1;
+                        getSearchItemsRetrofit();
+                    }
+                });
+            }
+            j++;
+            ((TextView) rowView1.findViewById(R.id.txt_dropdown_sub_second)).setText(state_name.optString(j.toString()));
+            if (selectedKeyTab.get("option_" + selectedVTab) != null && selectedKeyTab.get("option_" + selectedVTab).equals(j)) {
+                ((TextView) rowView1.findViewById(R.id.txt_dropdown_sub_second)).setTextColor(getResources().getColor(R.color.colorConfirmText));
+            }
+            if (state_name.optString(j.toString()) != "") {
+                param = new LinearLayout.LayoutParams(
+                        0,
+                        LayoutParams.MATCH_PARENT,
+                        1.0f
+                );
+                lyt_dropdown_sub_second.setLayoutParams(param);
+                lyt_dropdown_sub_second.setId(j);
+                lyt_dropdown_sub_second.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //selectedVTab = view.getId();
+                        selectedSTab = "option_" + selectedVTab;
+                        selectedKeyTab.put(selectedSTab, view.getId());
+                        LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
+                        lyt_search_panel.removeAllViews();
+                        searchItemListAdapter.clearItems();
+                        showAction = 0;
+                        mIntPage = 1;
+                        getSearchItemsRetrofit();
+                    }
+                });
+            }
+            j++;
+            ((TextView) rowView1.findViewById(R.id.txt_dropdown_sub_third)).setText(state_name.optString(j.toString()));
+            if (selectedKeyTab.get("option_" + selectedVTab) != null && selectedKeyTab.get("option_" + selectedVTab).equals(j)) {
+                ((TextView) rowView1.findViewById(R.id.txt_dropdown_sub_third)).setTextColor(getResources().getColor(R.color.colorConfirmText));
+            }
+            if (state_name.optString(j.toString()) != "") {
+                param = new LinearLayout.LayoutParams(
+                        0,
+                        LayoutParams.MATCH_PARENT,
+                        1.0f
+                );
+                lyt_dropdown_sub_third.setLayoutParams(param);
+                lyt_dropdown_sub_third.setId(j);
+                lyt_dropdown_sub_third.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //selectedVTab = view.getId();
+                        selectedSTab = "option_" + selectedVTab;
+                        selectedKeyTab.put(selectedSTab, view.getId());
+                        LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
+                        lyt_search_panel.removeAllViews();
+                        searchItemListAdapter.clearItems();
+                        showAction = 0;
+                        mIntPage = 1;
+                        getSearchItemsRetrofit();
+                    }
+                });
+            }
+            lyt_search_panel.addView(rowView1, lyt_search_panel.getChildCount());
+        }
+    }
+
+    public void createSearchPrice() {
+        LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
+        lyt_search_panel.removeAllViews();
+        final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View rowView1 = inflater.inflate(R.layout.dropdown_search, null);
+        RelativeLayout rlt_price_search = (RelativeLayout) rowView1.findViewById(R.id.rlt_price_search);
+        if (fid.equals("40") || fid.equals("92")) {
+            ((EditText) rowView1.findViewById(R.id.edit_min_price)).setHint("最低值");
+            ((EditText) rowView1.findViewById(R.id.edit_max_price)).setHint("最高值");
+        } else {
+            ((EditText) rowView1.findViewById(R.id.edit_min_price)).setHint("最低值（万）");
+            ((EditText) rowView1.findViewById(R.id.edit_max_price)).setHint("最高值（万）");
+        }
+        rlt_price_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                min_price = ((EditText) findViewById(R.id.edit_min_price)).getText().toString();
+                max_price = ((EditText) findViewById(R.id.edit_max_price)).getText().toString();
+                if (min_price.equals("")) {
+                    Toast toast = Toast.makeText(mContext, "请输入最低值", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
+                    toast.show();
+                    ((EditText) (findViewById(R.id.edit_min_price))).setFocusableInTouchMode(true);
+                    ((EditText) (findViewById(R.id.edit_min_price))).requestFocus();
+                    return;
+                }
+                if (max_price.equals("")) {
+                    Toast toast = Toast.makeText(mContext, "请输入最高值", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
+                    toast.show();
+                    ((EditText) (findViewById(R.id.edit_max_price))).setFocusableInTouchMode(true);
+                    ((EditText) (findViewById(R.id.edit_max_price))).requestFocus();
+                    return;
+                }
+                price = min_price + "-" + max_price;
+                LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
+                lyt_search_panel.removeAllViews();
+                searchItemListAdapter.clearItems();
+                showAction = 0;
+                mIntPage = 1;
+                getSearchItemsRetrofit();
+            }
+        });
+        RelativeLayout rlt_price_search_cancel = (RelativeLayout) rowView1.findViewById(R.id.rlt_price_search_cancel);
+        rlt_price_search_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                price = "";
+                ((EditText) (findViewById(R.id.edit_min_price))).setText("");
+                ((EditText) (findViewById(R.id.edit_max_price))).setText("");
+                LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
+                lyt_search_panel.removeAllViews();
+            }
+        });
+        lyt_search_panel.addView(rowView1, lyt_search_panel.getChildCount());
+    }
+
+    @Override
+    public void onBackPressed() {
+        HomeGroupActivity.HomeGroupStack.finishChildActivity();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            HomeGroupActivity.HomeGroupStack.finishChildActivity();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onCancel(DialogInterface dialog) {
+
+    }
+
+    @Override
+    public void onDismiss(ActionSheet actionSheet, boolean isCancel) {
+        showAction = 0;
+    }
+
+    @Override
+    public void onOtherButtonClick(ActionSheet actionSheet, int index) {
+        //String[] phone = mHospitalTel.split(",");
+        //Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:" + phone[index]));
+        //startActivity(intent);
+        showAction = 0;
+        switch (index) {
+            case 0:
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+        }
+        actionSheet.dismiss();
+    }
+
+    private void initFilterDropDownView(JSONArray list) {
+
+//        mFilterContentView = (TextView)findViewById(R.id.mFilterContentView);
+        String[] titleList = new String[]{"第一个", "第二个", "第三个", "第四个"};
+        dropDownMenu.setMenuAdapter(new DropMenuAdapter(this, list, this));
+
+        char[] flags = new char[list.length() + 1];
+        flags[0] = 0;
+        for (int i = 0; i < list.length(); i++) {
+            try {
+                JSONObject mainItem = list.getJSONObject(i);
+                String type = mainItem.optString("type");
+                if (type.contains("click"))
+                    flags[i + 1] = 0;
+                else
+                    flags[i + 1] = 1;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        dropDownMenu.setShowDropdownFlags(flags);
+
+        final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        numberSearchView = inflater.inflate(R.layout.dropdown_search, null);
+        RelativeLayout rlt_price_search = (RelativeLayout) numberSearchView.findViewById(R.id.rlt_price_search);
+
+        rlt_price_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                min_price = ((EditText) numberSearchView.findViewById(R.id.edit_min_price)).getText().toString();
+                max_price = ((EditText) numberSearchView.findViewById(R.id.edit_max_price)).getText().toString();
+                if (min_price.equals("")) {
+                    Toast toast = Toast.makeText(mContext, "请输入最低值", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
+                    toast.show();
+                    ((EditText) (numberSearchView.findViewById(R.id.edit_min_price))).setFocusableInTouchMode(true);
+                    ((EditText) (numberSearchView.findViewById(R.id.edit_min_price))).requestFocus();
+                    return;
+                }
+                if (max_price.equals("")) {
+                    Toast toast = Toast.makeText(mContext, "请输入最高值", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 250);
+                    ;
+                    toast.show();
+                    ((EditText) (numberSearchView.findViewById(R.id.edit_max_price))).setFocusableInTouchMode(true);
+                    ((EditText) (numberSearchView.findViewById(R.id.edit_max_price))).requestFocus();
+                    return;
+                }
+                price = min_price + "<->" + max_price;
+//                LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
+//                lyt_search_panel.removeAllViews();
+
+                if (!optionIdForNumber.equals("")) {
+                    paramsUpdated.put("option_" + optionIdForNumber, price);
+                    searchItemListAdapter.clearItems();
+//                    showAction = 0;
+//                    mIntPage = 1;
+
+
+                    getSearchItemsRetrofit();
+                    dropDownMenu.close();
+                }
+
+            }
+        });
+
+        numberSearchView.setVisibility(View.GONE);
+//        dropDownMenu.setAllViews(numberSearchView);
+        dropDownMenu.setNumberSearchView(numberSearchView);
+    }
+
+    private void initSearchOptionMenu(JSONArray list, boolean price_state) {
+        arrayObj = new JSONObject[4];
+        LinearLayout lyt_search_first = (LinearLayout) findViewById(R.id.lyt_search_first);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                0,
+                LayoutParams.MATCH_PARENT,
+                0.0f
+        );
+        LinearLayout lyt_search_second = (LinearLayout) findViewById(R.id.lyt_search_second);
+        LinearLayout lyt_search_third = (LinearLayout) findViewById(R.id.lyt_search_third);
+        LinearLayout lyt_search_fourth = (LinearLayout) findViewById(R.id.lyt_search_fourth);
+        lyt_search_first.setLayoutParams(param);
+        lyt_search_second.setLayoutParams(param);
+        lyt_search_third.setLayoutParams(param);
+        lyt_search_fourth.setLayoutParams(param);
+        float weight = 0.0f;
+        if (list != null && list.length() > 0) {
+            if (price_state) {
+                if (list.length() < 4) {
+                    weight = (float) 2.7 / (list.length() + 1);
+                } else {
+                    weight = (float) 2.7 / list.length();
+                }
+            } else {
+                weight = (float) 2.7 / list.length();
+            }
+            for (int i = 0; i < list.length(); i++) {
+                try {
+                    JSONObject item = list.getJSONObject(i);
+                    switch (i) {
+                        case 0:
+                            ((TextView) findViewById(R.id.txt_search_first)).setText(item.optString("title"));
+                            option_ids[0] = item.optString("optionid");
+                            arrayObj[0] = item.optJSONObject("choice");
+                            param = new LinearLayout.LayoutParams(
+                                    0,
+                                    LayoutParams.MATCH_PARENT,
+                                    weight
+                            );
+                            lyt_search_first.setLayoutParams(param);
+                            lyt_search_first.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
+                                    lyt_search_panel.removeAllViews();
+                                    selectedVTab = option_ids[0];
+                                    createActionSheet(arrayObj[0], 0);
+                                }
+                            });
+                            break;
+                        case 1:
+                            ((TextView) findViewById(R.id.txt_search_second)).setText(item.optString("title"));
+                            option_ids[1] = item.optString("optionid");
+                            arrayObj[1] = item.optJSONObject("choice");
+                            param = new LinearLayout.LayoutParams(
+                                    0,
+                                    LayoutParams.MATCH_PARENT,
+                                    weight
+                            );
+                            lyt_search_second.setLayoutParams(param);
+                            lyt_search_second.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
+                                    lyt_search_panel.removeAllViews();
+                                    selectedVTab = option_ids[1];
+                                    createActionSheet(arrayObj[1], 1);
+                                }
+                            });
+                            break;
+                        case 2:
+                            ((TextView) findViewById(R.id.txt_search_third)).setText(item.optString("title"));
+                            option_ids[2] = item.optString("optionid");
+                            arrayObj[2] = item.optJSONObject("choice");
+                            param = new LinearLayout.LayoutParams(
+                                    0,
+                                    LayoutParams.MATCH_PARENT,
+                                    weight
+                            );
+                            lyt_search_third.setLayoutParams(param);
+                            lyt_search_third.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
+                                    lyt_search_panel.removeAllViews();
+                                    selectedVTab = option_ids[2];
+                                    createActionSheet(arrayObj[2], 2);
+                                }
+                            });
+                            break;
+                        default:
+                            //((TextView) findViewById(R.id.txt_search_fourth)).setText("更多");
+                            ((TextView) findViewById(R.id.txt_search_fourth)).setText(item.optString("title"));
+                            option_ids[3] = item.optString("optionid");
+                            arrayObj[3] = item.optJSONObject("choice");
+                            param = new LinearLayout.LayoutParams(
+                                    0,
+                                    LayoutParams.MATCH_PARENT,
+                                    weight
+                            );
+                            lyt_search_fourth.setLayoutParams(param);
+                            lyt_search_fourth.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
+                                    lyt_search_panel.removeAllViews();
+                                    selectedVTab = option_ids[3];
+                                    createActionSheet(arrayObj[3], 3);
+                                }
+                            });
+                            break;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (price_state) {
+                param = new LinearLayout.LayoutParams(
+                        0,
+                        LayoutParams.MATCH_PARENT,
+                        weight
+                );
+                if (list.length() > 2) {
+                    ((TextView) findViewById(R.id.txt_search_fourth)).setText("价格");
+                    lyt_search_fourth.setLayoutParams(param);
+                    lyt_search_fourth.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            LinearLayout lyt_search_panel = (LinearLayout) findViewById(R.id.lyt_search_panel);
+                            lyt_search_panel.removeAllViews();
+                            createSearchPrice();
+                        }
+                    });
+                } else if (list.length() > 1) {
                     ((TextView) findViewById(R.id.txt_search_third)).setText("价格");
                     lyt_search_third.setLayoutParams(param);
                     lyt_search_third.setOnClickListener(new View.OnClickListener() {
@@ -1557,7 +1607,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         Log.d("RowPosition", Integer.toString(rowPosition));
         Log.d("ItemPosition", Integer.toString(itemPosition));
 
-        if(columnPosition == 0){
+        if (columnPosition == 0) {
             //이 경우에는 remove 단추가 눌렸을때이므로 검색키들을 재설정하고 reload 한다.
             resetSearch();
             dropDownMenu.resetMainMenuTitles();
@@ -1571,7 +1621,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
             JSONObject mainItem = searchResultJsonArray.getJSONObject(columnPosition - 1);
             String analysis = mainItem.optString("analysis");
             String type = mainItem.optString("type");
-            if(analysis.contains("sortid")){
+            if (analysis.contains("sortid")) {
                 String sortid = mainItem.optString("optionid");
                 paramsUpdated.put("sortid", sortid);
 
@@ -1579,22 +1629,19 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                 getSearchItemsRetrofit();
 
 
-
-            }
-            else{
-                if(type.contains("click")){
+            } else {
+                if (type.contains("click")) {
                     String sortid = mainItem.optString("optionid");
                     paramsUpdated.put("sortid", sortid);
 
                     searchItemListAdapter.clearItems();
                     getSearchItemsRetrofit();
-                }
-                else if(type.contains("region")){
+                } else if (type.contains("region")) {
                     String optionid = mainItem.optString("optionid");
                     String paramKey = "option_" + optionid;
 
                     String paramValue;
-                    if(itemPosition == -1)
+                    if (itemPosition == -1)
                         paramValue = Integer.toString(rowPosition + 1);
                     else
                         paramValue = Integer.toString(rowPosition + 1) + "." + Integer.toString(itemPosition + 1);
@@ -1602,31 +1649,29 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                     paramsUpdated.put(paramKey, paramValue);
                     searchItemListAdapter.clearItems();
                     getSearchItemsRetrofit();
-                }
-                else if(type.contains("more") && FilterUrl.instance().filterParams != null){
+                } else if (type.contains("more") && FilterUrl.instance().filterParams != null) {
 
                     HashMap receivedParams = FilterUrl.instance().filterParams;
                     Iterator it = receivedParams.entrySet().iterator();
                     while (it.hasNext()) {
-                        Map.Entry pair = (Map.Entry)it.next();
-                        if(paramsUpdated.containsKey(pair.getKey())){
+                        Map.Entry pair = (Map.Entry) it.next();
+                        if (paramsUpdated.containsKey(pair.getKey())) {
                             paramsUpdated.remove(pair.getKey());
                         }
-                        if(!"clear".equals(pair.getValue())){
-                            paramsUpdated.put((String)pair.getKey(), pair.getValue());
+                        if (!"clear".equals(pair.getValue())) {
+                            paramsUpdated.put((String) pair.getKey(), pair.getValue());
                         }
                         it.remove(); // avoids a ConcurrentModificationException
                     }
                     searchItemListAdapter.clearItems();
                     getSearchItemsRetrofit();
 
-                }
-                else if(!type.contains("number") && !type.contains("text")){
+                } else if (!type.contains("number") && !type.contains("text")) {
                     String optionid = mainItem.optString("optionid");
 
                     String paramKey = "option_" + optionid;
                     String paramValue = Integer.toString(rowPosition + 1);
-                    if(itemPosition > -1){
+                    if (itemPosition > -1) {
                         paramValue += "." + Integer.toString(itemPosition + 1);
                     }
 
@@ -1638,7 +1683,6 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
             }
 
 
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1648,7 +1692,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         }
     }
 
-    private void resetSearch(){
+    private void resetSearch() {
         numberSearchView.setVisibility(View.GONE);
 
         paramsUpdated.clear();
@@ -1658,6 +1702,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         mIntPage = 1;
 
         searchItemListAdapter.clearItems();
+        searchItemListAdapter.notifyDataSetChanged();
         getSearchItemsRetrofit();
     }
 
