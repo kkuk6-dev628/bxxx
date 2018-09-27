@@ -13,14 +13,14 @@
         android:weightSum="4">
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="35dp"
             android:orientation="horizontal"
             android:id="@+id/lyt_img_thumbnail"
             android:layout_gravity="center_vertical"
             android:layout_weight="0.7">
             <de.hdodenhof.circleimageview.CircleImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:id="@+id/img_chat_friend"
                 android:src="@drawable/room"/>
         </LinearLayout>
@@ -28,7 +28,7 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:layout_weight="3"
             android:paddingTop="0dp"
             android:paddingLeft="10dp"
@@ -36,7 +36,7 @@
             android:layout_toEndOf="@+id/img_favor_thumbnail">
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="30dp">
+                android:layout_height="25dp">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -52,20 +52,21 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:id="@+id/txt_chat_history_time"
-                    android:textSize="13sp"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="12sp"
+                    android:textColor="@color/colorSmallText"
                     android:singleLine="true"
                     android:text="时间"
                     android:layout_gravity="center_vertical" />
             </RelativeLayout>
+
             <TextView
+                android:id="@+id/txt_chat_history_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
-                android:id="@+id/txt_chat_history_desc"
-                android:textSize="14sp"
-                android:textColor="@color/colorPrimaryDark"
-                android:text=""
-                android:singleLine="false"/>
+                android:singleLine="true"
+                android:text="名字"
+                android:textColor="@color/colorSmallText"
+                android:textSize="12sp" />
         </LinearLayout>
     </LinearLayout>
 

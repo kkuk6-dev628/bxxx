@@ -1095,25 +1095,6 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         }
     }
 
-    /*
-    public void createActionSheet(JSONObject state_name){
-        if(state_name==null || (state_name!=null && state_name.length()==0)){
-            return;
-        }
-        String[] arr = new String[state_name.length()];
-        Integer j = 0;
-        for(int i=0; i < state_name.length(); i++){
-            j++;
-            arr[i] = state_name.optString(j.toString());
-        }
-        ActionSheet.createBuilder(mContext, SearchActivity.this.getSupportFragmentManager())
-                .setCancelButtonTitle(res.getString(R.string.str_cancel))
-                .setOtherButtonTitles(arr)
-                .setCancelableOnTouchOutside(true)
-                .setListener(SearchActivity.this)
-                .show();
-    }
-    */
     public void createActionSheet(JSONObject state_name_input, int type) {
         if (state_name_input == null || (state_name_input != null && state_name_input.length() == 0)) {
             return;
@@ -1357,16 +1338,15 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         String[] titleList = new String[]{"第一个", "第二个", "第三个", "第四个"};
         dropDownMenu.setMenuAdapter(new DropMenuAdapter(this, list, this));
 
-        char[] flags = new char[list.length() + 1];
-        flags[0] = 0;
+        char[] flags = new char[list.length()];
         for (int i = 0; i < list.length(); i++) {
             try {
                 JSONObject mainItem = list.getJSONObject(i);
                 String type = mainItem.optString("type");
                 if (type.contains("click"))
-                    flags[i + 1] = 0;
+                    flags[i] = 0;
                 else
-                    flags[i + 1] = 1;
+                    flags[i] = 1;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -1583,16 +1563,6 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         searchItemListAdapter.clearItems();
         getSearchItemsRetrofit();
         dropDownMenu.close();
-//        dropDownMenu.hideNumberSearchView();
-//        if (position != 0) {
-//            dropDownMenu.setPositionIndicatorText(FilterUrl.instance().columnPosition, FilterUrl.instance().positionTitle);
-//        }
-
-//        dropDownMenu.setPositionIndicatorText(FilterUrl.instance().columnPosition, FilterUrl.instance().positionTitle);
-//
-//        dropDownMenu.close();
-//        mFilterContentView.setText(FilterUrl.instance()
-//                .toString());
     }
 
     @Override
@@ -1607,18 +1577,18 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
         Log.d("RowPosition", Integer.toString(rowPosition));
         Log.d("ItemPosition", Integer.toString(itemPosition));
 
-        if (columnPosition == 0) {
-            //이 경우에는 remove 단추가 눌렸을때이므로 검색키들을 재설정하고 reload 한다.
-            resetSearch();
-            dropDownMenu.resetMainMenuTitles();
-            return;
-        }
+//        if (columnPosition == 0) {
+//            //이 경우에는 remove 단추가 눌렸을때이므로 검색키들을 재설정하고 reload 한다.
+//            resetSearch();
+//            dropDownMenu.resetMainMenuTitles();
+//            return;
+//        }
 
         boolean isNumberSearch = false;
 
         try {
             paramsUpdated.put("page", "1");
-            JSONObject mainItem = searchResultJsonArray.getJSONObject(columnPosition - 1);
+            JSONObject mainItem = searchResultJsonArray.getJSONObject(columnPosition);
             String analysis = mainItem.optString("analysis");
             String type = mainItem.optString("type");
             if (analysis.contains("sortid")) {

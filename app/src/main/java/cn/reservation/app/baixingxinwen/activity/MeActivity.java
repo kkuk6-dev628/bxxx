@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
@@ -102,16 +103,23 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
         CommonUtils.customActionBar(mContext, this, false, "");
         showAction = 0;
         TextView txtMyName = (TextView) findViewById(R.id.txt_my_name);
-        txtMyName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showAlertLogout();
-            }
-        });
-        RelativeLayout lytLogout = (RelativeLayout) findViewById(R.id.rlt_my_logout);
+//        txtMyName.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                showAlertLogout();
+//            }
+//        });
+        final RelativeLayout lytLogout = (RelativeLayout) findViewById(R.id.rlt_my_logout);
         lytLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                lytLogout.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        lytLogout.setClickable(true);
+                    }
+                }, 500);
                 Intent intent = new Intent(MeActivity.this, AboutActivity.class);
                 pActivity.startChildActivity("user_about", intent);
             }
@@ -126,66 +134,122 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
             }
         });
         */
-        RelativeLayout rltSafe = (RelativeLayout) findViewById(R.id.rlt_my_safe);
+        final RelativeLayout rltSafe = (RelativeLayout) findViewById(R.id.rlt_my_safe);
         rltSafe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                rltSafe.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        rltSafe.setClickable(true);
+                    }
+                }, 500);
                 Intent intent = new Intent(MeActivity.this, UserSafeActivity.class);
                 pActivity.startChildActivity("user_safe", intent);
             }
         });
-        RelativeLayout rltHistory = (RelativeLayout) findViewById(R.id.rlt_my_history);
+        final RelativeLayout rltHistory = (RelativeLayout) findViewById(R.id.rlt_my_history);
         rltHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                rltHistory.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        rltHistory.setClickable(true);
+                    }
+                }, 500);
                 Intent intent = new Intent(MeActivity.this, UserHistoryListActivity.class);
                 pActivity.startChildActivity("user_history", intent);
             }
         });
-        RelativeLayout rltSave = (RelativeLayout) findViewById(R.id.rlt_my_save);
+        final RelativeLayout rltSave = (RelativeLayout) findViewById(R.id.rlt_my_save);
         rltSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                rltSave.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        rltSave.setClickable(true);
+                    }
+                }, 500);
                 Intent intent = new Intent(MeActivity.this, UserSaveListActivity.class);
                 pActivity.startChildActivity("user_save", intent);
             }
         });
-        RelativeLayout rltNews = (RelativeLayout) findViewById(R.id.rlt_my_news);
+        final RelativeLayout rltNews = (RelativeLayout) findViewById(R.id.rlt_my_news);
         rltNews.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                rltNews.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        rltNews.setClickable(true);
+                    }
+                }, 500);
                 Intent intent = new Intent(MeActivity.this, UserNewsActivity.class);
                 pActivity.startChildActivity("user_news", intent);
             }
         });
-        RelativeLayout rltMoney = (RelativeLayout) findViewById(R.id.rlt_my_adver);
+        final RelativeLayout rltMoney = (RelativeLayout) findViewById(R.id.rlt_my_adver);
         rltMoney.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                rltMoney.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        rltMoney.setClickable(true);
+                    }
+                }, 500);
                 Intent intent = new Intent(MeActivity.this, AdverActivity.class);
                 pActivity.startChildActivity("adver", intent);
             }
         });
-        RelativeLayout rltHelp = (RelativeLayout) findViewById(R.id.rlt_my_help);
+        final RelativeLayout rltHelp = (RelativeLayout) findViewById(R.id.rlt_my_help);
         rltHelp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                rltHelp.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        rltHelp.setClickable(true);
+                    }
+                }, 500);
                 Intent intent = new Intent(MeActivity.this, HelpActivity.class);
                 pActivity.startChildActivity("help", intent);
             }
         });
-        TextView txt_my_money = (TextView) findViewById(R.id.txt_my_money);
+        final TextView txt_my_money = (TextView) findViewById(R.id.txt_my_money);
         txt_my_money.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                txt_my_money.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        txt_my_money.setClickable(true);
+                    }
+                }, 500);
                 Intent intent = new Intent(MeActivity.this, MoreActivity.class);
                 pActivity.startChildActivity("more", intent);
             }
         });
-        TextView txt_my_level_title = (TextView) findViewById(R.id.txt_my_level_title);
+        final TextView txt_my_level_title = (TextView) findViewById(R.id.txt_my_level_title);
         txt_my_level_title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                txt_my_level_title.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        txt_my_level_title.setClickable(true);
+                    }
+                }, 500);
                 Intent intent = new Intent(MeActivity.this, MoreActivity.class);
                 pActivity.startChildActivity("more", intent);
 //                Intent intent = new Intent(MeActivity.this, MemberActivity.class);
@@ -197,22 +261,36 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
         String dateline = CommonUtils.userInfo.getDateline();
         txt_my_level_date.setText(dateline);
 
-        TextView txt_my_name_set = (TextView) findViewById(R.id.txt_my_name_set);
+        final TextView txt_my_name_set = (TextView) findViewById(R.id.txt_my_name_set);
         String changeid = CommonUtils.userInfo.getChangeid();
-        if(changeid != null && changeid.equals("1")){
+        if(changeid == null || changeid.equals("0")){
             txt_my_name_set.setVisibility(TextView.GONE);
         }
         txt_my_name_set.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                txt_my_name_set.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        txt_my_name_set.setClickable(true);
+                    }
+                }, 500);
                 Intent intent = new Intent(MeActivity.this, SetNameActivity.class);
                 pActivity.startChildActivity("member", intent);
             }
         });
-        TextView txt_my_level = (TextView) findViewById(R.id.txt_my_level);
+        final TextView txt_my_level = (TextView) findViewById(R.id.txt_my_level);
         txt_my_level.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                txt_my_level.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        txt_my_level.setClickable(true);
+                    }
+                }, 500);
                 Intent intent = new Intent(MeActivity.this, MemberActivity.class);
                 pActivity.startChildActivity("member", intent);
             }
@@ -264,17 +342,32 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
                 onSelectFaceImageClick();
             }
         });
-        LinearLayout lyt_sign_every = (LinearLayout) findViewById(R.id.lyt_sign_every);
+        final LinearLayout lyt_sign_every = (LinearLayout) findViewById(R.id.lyt_sign_every);
         lyt_sign_every.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                lyt_sign_every.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        lyt_sign_every.setClickable(true);
+                    }
+                }, 500);
                 signEvery();
             }
         });
-        TextView txt_my_desc = (TextView) findViewById(R.id.txt_my_desc);
+        final TextView txt_my_desc = (TextView) findViewById(R.id.txt_my_desc);
         txt_my_desc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                txt_my_desc.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        txt_my_desc.setClickable(true);
+                    }
+                }, 500);
                 signEvery();
             }
         });

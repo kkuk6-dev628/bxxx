@@ -17,8 +17,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.tencent.connect.common.Constants;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
@@ -28,12 +26,17 @@ import com.walnutlabs.android.ProgressHUD;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
 import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.api.APIManager;
+import cn.reservation.app.baixingxinwen.api.NetRetrofit;
 import cn.reservation.app.baixingxinwen.api.WXAPI;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
 import cn.reservation.app.baixingxinwen.utils.UserInfo;
-import cz.msebera.android.httpclient.Header;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity implements DialogInterface.OnCancelListener, View.OnClickListener{
     private Context mContext;
@@ -151,19 +154,19 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
      */
     public void user_login(final String loginType, final String userName, final String passWord) {
         mProgressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, this);
-        RequestParams params = new RequestParams();
+        HashMap<String, Object> params = new HashMap<>();
         params.put("act","login");
         params.put("login_type", loginType);
         params.put("username", userName);
         params.put("password", passWord);
         String url = APIManager.Ucenter_URL;
-        APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {//APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
+        NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            public void onResponse(Call<JSONObject> call, Response<JSONObject> resp) {
+                JSONObject response = resp.body();
+                assert response != null;
                 try {
-                    //System.out.println("login:"+response);
-                    Integer code = response.getInt("code");
-                    if (code==1) {
+                    if (response.getInt("code") == 1) {
                         login_type = loginType;
                         login_username = userName;
                         login_password = passWord;
@@ -187,35 +190,31 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+            public void onFailure(Call<JSONObject> call, Throwable t) {
                 mProgressDialog.dismiss();
                 Toast.makeText(LoginActivity.this, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
             }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                mProgressDialog.dismiss();
-                Toast.makeText(LoginActivity.this, responseString, Toast.LENGTH_SHORT).show();
-            }
         });
     }
     private void getUserInfo(String _uid) {
         //mProgressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, this);
-        RequestParams params = new RequestParams();
+        HashMap<String, Object> params = new HashMap<>();
         params.put("uid", _uid);
-        String url = "user/profile/";
-        APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
+        String url = "api/user/profile/";
+        NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            public void onResponse(Call<JSONObject> call, Response<JSONObject> resp) {
+                mProgressDialog.dismiss();
+                JSONObject response = resp.body();
+                assert response != null;
                 try {
-                    Integer code = response.getInt("code");
-                    System.out.println(response);
-                    if (code==1) {
+                    if (response.getInt("code") == 1) {
                         JSONObject userObj = response.optJSONObject("ret");
                         CommonUtils.isLogin = true;
                         System.out.println(userObj);
                         Integer gender = 0;
-                        if(userObj.optString("gender").toString()!=""){
+                        if(!userObj.optString("gender").isEmpty()){
                             gender = Integer.parseInt(userObj.optString("gender"));
                         }
                         CommonUtils.userInfo = new UserInfo(Long.valueOf(userObj.optString("uid")), userObj.optString("username"),
@@ -251,7 +250,6 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
 
                         gotoForward();
                     } else{
-                        mProgressDialog.dismiss();
                         Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_LONG).show();
                     }
 
@@ -261,16 +259,11 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+            public void onFailure(Call<JSONObject> call, Throwable t) {
                 mProgressDialog.dismiss();
                 Toast.makeText(LoginActivity.this, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
             }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                mProgressDialog.dismiss();
-                Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
-            }
         });
     }
     private boolean validateInput() {

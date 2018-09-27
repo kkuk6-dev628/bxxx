@@ -150,8 +150,8 @@ public class DictionaryUtils {
                 if(proVal2 != null && !proVal2.equals(""))
                     proVal2 = proVal2.trim();
                 proVal3 = fieldsJsonObject.optString("sex");
-                if(proVal3 != null && !proVal3.equals(""))
-                    proVal3 = "经验:" + proVal3.trim();
+//                if(proVal3 != null && !proVal3.equals(""))
+//                    proVal3 = "经验:" + proVal3.trim();
                 priceVal = fieldsJsonObject.optString("age");
                 if(priceVal != null && !priceVal.equals(""))
                     priceVal = priceVal + "岁";

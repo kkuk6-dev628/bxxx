@@ -1,6 +1,5 @@
 package cn.reservation.app.baixingxinwen.activity;
 
-import android.app.TabActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,15 +10,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -36,15 +31,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 import cn.reservation.app.baixingxinwen.R;
-import cn.reservation.app.baixingxinwen.adapter.HistoryItemListAdapter;
 import cn.reservation.app.baixingxinwen.api.APIManager;
 import cn.reservation.app.baixingxinwen.utils.AnimatedActivity;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
-import cn.reservation.app.baixingxinwen.utils.DictionaryUtils;
-import cn.reservation.app.baixingxinwen.utils.HistoryItem;
 import cz.msebera.android.httpclient.Header;
 
 import static android.view.View.INVISIBLE;
@@ -337,6 +327,9 @@ public class UserSaveListActivity extends AppCompatActivity implements DialogInt
                     return;
                 }
                 params.put("uid", userID);
+                if(allsel){
+                    params.put("all", 1);
+                }
                 int k = 0;
                 for(int i=0;i<lyt_history_parent.getChildCount();i++){
                     CheckBox chk = (CheckBox)lyt_history_parent.getChildAt(i).findViewById(R.id.img_select);

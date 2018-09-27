@@ -1,6 +1,5 @@
 package cn.reservation.app.baixingxinwen.activity;
 
-import android.app.TabActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,13 +15,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,8 +30,6 @@ import com.walnutlabs.android.ProgressHUD;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.api.APIManager;
@@ -340,6 +333,9 @@ public class UserHistoryListActivity extends AppCompatActivity implements Dialog
                 params.put("uid", userID);
                 String deviceID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
                 params.put("device",deviceID);
+                if(allsel){
+                    params.put("all", 1);
+                }
                 System.out.println("userid++"+userID);
                 int k = 0;
                 int e = 0;

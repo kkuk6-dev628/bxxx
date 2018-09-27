@@ -19,5 +19,6 @@
         android:layout_height="match_parent"
         android:divider="@null"
         android:layout_below="@+id/relativeLayout"
+        android:background="@color/colorBackgroundGray"
         android:overScrollMode="never" />
 </RelativeLayout>

@@ -53,6 +53,12 @@
 
 
                     </LinearLayout>
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:id="@+id/img_circle"
+                        android:src="@drawable/room"/>
+
 
                     <ImageView
                         android:id="@+id/img_news_top"
@@ -62,8 +68,8 @@
                         android:layout_marginTop="-10dp"
                         android:adjustViewBounds="true"
                         android:scaleType="fitXY"
-                        android:visibility="gone"
-                        android:src="@drawable/top_corner" />
+                        android:src="@drawable/top_corner"
+                        android:visibility="gone" />
                 </FrameLayout>
             </LinearLayout>
 

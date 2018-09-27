@@ -142,7 +142,7 @@ public class UserNewsActivity extends AppCompatActivity implements DialogInterfa
                         sel_position = position;
                         System.out.println("position:" + position);
                         //String name_state = "置顶,删除,点击清零,下架";
-                        String name_state = "置顶,删除,点击清零";
+                        String name_state = "置顶,删除";
                         if (showAction == 0) {
                             createActionSheet(name_state);
                             showAction = 1;

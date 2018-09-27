@@ -25,8 +25,11 @@ public class UserInfo {
     private String changeid;
     private String dateline;
 
-    public UserInfo(long userID, String userName, int userGender, String userBirthday, String userPhone, String userPhoto,
-                    String token, String userIdentify, String userPassword, String uid, String userQQ, String userWeixin, String userJoinMobile, String baixingbi, String level, String loginType, String loginUsername, String loginPassword, String changeid, String dateline) {
+    public UserInfo(long userID, String userName, int userGender, String userBirthday,
+                    String userPhone, String userPhoto, String token, String userIdentify,
+                    String userPassword, String uid, String userQQ, String userWeixin,
+                    String userJoinMobile, String baixingbi, String level, String loginType,
+                    String loginUsername, String loginPassword, String changeid, String dateline) {
         this.userID = userID;
         this.userName = userName;
         this.userGender = userGender;

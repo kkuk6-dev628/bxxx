@@ -85,6 +85,13 @@ public class NewsActivity extends AppCompatActivity implements DialogInterface.O
         lstChat.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                lstChat.setClickable(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        lstChat.setClickable(true);
+                    }
+                }, 500);
                 ChatItem chatItem = (ChatItem) chatItemListAdapter.getItem(position);
                 Long long_id = chatItem.getmChatID();
                 String uid = chatItem.getmUid();

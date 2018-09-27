@@ -1,7 +1,6 @@
 package cn.reservation.app.baixingxinwen.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -14,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.walnutlabs.android.ProgressHUD;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,8 +52,7 @@ public class SetNameActivity extends AppCompatActivity{
         rltBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SetNameActivity.this, MeActivity.class);
-                pActivity.startChildActivity("home", intent);
+                pActivity.finishChildActivity();
             }
         });
 
@@ -78,11 +78,13 @@ public class SetNameActivity extends AppCompatActivity{
                     final String url = "api/user/changeid";
                     params.put("uid", CommonUtils.userInfo.getUserID());
                     params.put("newname", name);
+                    final ProgressHUD progressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, null);
                     NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
                         @Override
                         public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
                             try {
                                 JSONObject responseBody = response.body();
+                                CommonUtils.dismissProgress(progressDialog);
                                 if (responseBody != null && responseBody.getInt("code") == 1) {
                                     String message = responseBody.getString("message");
                                     Log.d("Change user name", message);
@@ -95,19 +97,12 @@ public class SetNameActivity extends AppCompatActivity{
                                     CommonUtils.userInfo.setUserName(name);
                                     CommonUtils.userInfo.setChangeid("1");
 
-//                                    if(!isFinishing()){
-//
-//                                    }
-
                                     CommonUtils.showAlertDialog(mContext,
                                             message, new View.OnClickListener(){
 
                                                 @Override
                                                 public void onClick(View view) {
-                                                    Intent intent;
-                                                    intent = new Intent(SetNameActivity.this, MeActivity.class);
-                                                    pActivity.startChildActivity("about_activity", intent);
-//                                                    finish();
+                                                    pActivity.finishChildActivity();
                                                 }
                                             });
 
@@ -120,11 +115,11 @@ public class SetNameActivity extends AppCompatActivity{
                         }
                         @Override
                         public void onFailure(Call<JSONObject> call, Throwable t) {
-                            //CommonUtils.dismissProgress(progressDialog);
+                            CommonUtils.dismissProgress(progressDialog);
                             Toast.makeText(mContext, "Add Channel Request failed", Toast.LENGTH_SHORT).show();
                         }
 
-                    });
+                    }, 1);
                 }
 
             }
@@ -133,17 +128,13 @@ public class SetNameActivity extends AppCompatActivity{
 
     @Override
     public void onBackPressed() {
-        Intent intent;
-        intent = new Intent(SetNameActivity.this, MeActivity.class);
-        pActivity.startChildActivity("about_activity", intent);
+        pActivity.finishChildActivity();
     }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         System.out.println("****event****" + event + "****" + keyCode);
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent intent;
-            intent = new Intent(SetNameActivity.this, MeActivity.class);
-            pActivity.startChildActivity("about_activity", intent);
+            pActivity.finishChildActivity();
             return true;
         }
         return super.onKeyDown(keyCode, event);

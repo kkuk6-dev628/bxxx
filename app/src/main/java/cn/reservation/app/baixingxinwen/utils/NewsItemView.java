@@ -89,16 +89,18 @@ public class NewsItemView extends LinearLayout {
             case "0":
                 if(TextUtils.equals(newsItem.getmPaid(),"1")){
                     m_news_state.setText("付费贴");
-                    rlt_news_desc1.setVisibility(VISIBLE);
+                    rlt_news_desc1.setVisibility(INVISIBLE);
                 }else{
                     rlt_news_desc1.setVisibility(INVISIBLE);
                 }
                 mTop.setVisibility(INVISIBLE);
+                mEndTime.setVisibility(GONE);
                 break;
             case "1":
-                rlt_news_desc1.setVisibility(VISIBLE);
+                rlt_news_desc1.setVisibility(INVISIBLE);
                 m_news_state.setText("置顶帖");
                 mTop.setVisibility(VISIBLE);
+                mEndTime.setVisibility(VISIBLE);
                 break;
         }
         switch(newsItem.getmStatus()){
@@ -212,16 +214,18 @@ public class NewsItemView extends LinearLayout {
             case "0":
                 if(TextUtils.equals(postPaid,"1")){
                     m_news_state.setText("付费贴");
-                    rlt_news_desc1.setVisibility(VISIBLE);
+                    rlt_news_desc1.setVisibility(INVISIBLE);
                 }else{
                     rlt_news_desc1.setVisibility(INVISIBLE);
                 }
                 mTop.setVisibility(INVISIBLE);
+                mEndTime.setVisibility(GONE);
                 break;
             case "1":
                 m_news_state.setText("置顶帖");
-                rlt_news_desc1.setVisibility(VISIBLE);
+                rlt_news_desc1.setVisibility(INVISIBLE);
                 mTop.setVisibility(VISIBLE);
+                mEndTime.setVisibility(VISIBLE);
                 break;
         }
     }

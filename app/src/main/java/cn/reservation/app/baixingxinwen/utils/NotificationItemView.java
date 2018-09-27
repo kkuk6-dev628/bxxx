@@ -51,10 +51,10 @@ public class NotificationItemView extends LinearLayout {
         mTime.setText(item.getmTime());
 
         mDesc = (TextView)findViewById(R.id.txt_content);
-        if(item.getmType().equals("master")){
+//        if(item.getmType().equals("master")){
             mDesc.setText(item.getmDesc());
             mDesc.setVisibility(TextView.VISIBLE);
-        }
+//        }
 
 
 
