@@ -1,5 +1,6 @@
 package cn.reservation.app.baixingxinwen.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -36,15 +37,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Pattern;
 
 import cn.reservation.app.baixingxinwen.R;
 import cn.reservation.app.baixingxinwen.api.APIManager;
+import cn.reservation.app.baixingxinwen.api.NetRetrofit;
 import cn.reservation.app.baixingxinwen.api.WXAPI;
 import cn.reservation.app.baixingxinwen.utils.CommonUtils;
 import cz.msebera.android.httpclient.Header;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+import static android.view.View.GONE;
 
 public class RegisterPatientInfoActivity extends ConfirmDialogActivity implements DialogInterface.OnCancelListener, View.OnClickListener {
 
@@ -81,6 +89,10 @@ public class RegisterPatientInfoActivity extends ConfirmDialogActivity implement
     private boolean isVerified = false;
     private int mIntLeftTime = 180;
     private String mStrVerifyCode;
+    private String mRegType = "normal";
+    private String mOpenId = "";
+    private String mAccessToken = "";
+    private RelativeLayout mSocialLoginPanel;
 
     private Timer timer;
     private TimerTask timerTask;
@@ -105,10 +117,13 @@ public class RegisterPatientInfoActivity extends ConfirmDialogActivity implement
         mEditPassword = (EditText) findViewById(R.id.edit_password);
         findViewById(R.id.btn_ok).setOnClickListener(this);
         mBtnSendVerifyCode = (TextView)findViewById(R.id.btn_send_verify_code);
+        mSocialLoginPanel = findViewById(R.id.login_social);
+
         findViewById(R.id.btn_send_verify_code).setOnClickListener(this);
         findViewById(R.id.btn_policy).setOnClickListener(this);
         findViewById(R.id.img_weixin_icon).setOnClickListener(this);
         findViewById(R.id.img_qq_icon).setOnClickListener(this);
+
         mEditVerifyCode.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
@@ -128,17 +143,24 @@ public class RegisterPatientInfoActivity extends ConfirmDialogActivity implement
         });
     }
 
+    @SuppressLint("HandlerLeak")
     @Override
-    public void onClick(View view) {
+    public void onClick(final View view) {
+        view.setClickable(false);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                view.setClickable(false);
+            }
+        }, 500);
+
         int id = view.getId();
         if (id == R.id.btn_ok) {
-            if (!validateInput())
-                return;
             if (!isVerified) {
                 Toast.makeText(mContext, res.getString(R.string.verify_code_incorrect), Toast.LENGTH_LONG).show();
                 return;
             }
-            register("normal", mEditMobile.getText().toString(), mEditPassword.getText().toString());
+            register();
         } else if (id == R.id.btn_send_verify_code){
             sendVerifyCode();
         } else if (id == R.id.btn_policy){
@@ -152,8 +174,12 @@ public class RegisterPatientInfoActivity extends ConfirmDialogActivity implement
                     Bundle b = msg.getData();
                     int res = b.getInt("loginRes");
                     String token = b.getString("loginToken");
-                    if (res == 0 && token != null)
-                        register("wechat", token, "null");
+                    if (res == 0 && token != null){
+                        mSocialLoginPanel.setVisibility(GONE);
+                        mRegType = "wechat";
+                        mOpenId = token;
+                        register();
+                    }
                 }
             };
             WXAPI.Init(RegisterPatientInfoActivity.this);
@@ -173,7 +199,11 @@ public class RegisterPatientInfoActivity extends ConfirmDialogActivity implement
                     String openid = values.getString("openid");
                     String access_token = values.getString("access_token");
                     String expires_in = values.getString("expires_in");
-                    register("qq", openid, access_token);
+                    mRegType = "qq";
+                    mOpenId = openid;
+                    mAccessToken = access_token;
+                    mSocialLoginPanel.setVisibility(GONE);
+                    register();
                     //APIManager.mTencent.setOpenId(openid);
                     //APIManager.mTencent.setAccessToken(access_token, expires_in);
                 }
@@ -213,7 +243,7 @@ public class RegisterPatientInfoActivity extends ConfirmDialogActivity implement
                 try {
                     String code = response.getString("code");
                     System.out.println(response);
-                    if (code.equals("1")) {
+                    if (code.equals("1") && response.optJSONObject("ret").optInt("result") >= 0) {
                         mStrVerifyCode = response.optJSONObject("ret").optString("retkey");
                         isVerified = false;
                         startTimer();
@@ -364,18 +394,27 @@ public class RegisterPatientInfoActivity extends ConfirmDialogActivity implement
         }
     }
 
-    private void register(final String reg_type, final String username, final String password) {
-        RequestParams params = new RequestParams();
-        params.put("username", username);
-        params.put("password", password);
-        params.put("register_type", reg_type);
+    private void register() {
+        if(!validateInput()){
+            CommonUtils.showAlertDialog(mContext, getString(R.string.register_input),
+                    null);
+            return;
+        }
+
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("phone", mEditMobile.getText().toString());
+        params.put("username", mOpenId);
+        params.put("password", mEditPassword.getText().toString());
+        params.put("register_type", mRegType);
+        params.put("access_token", mAccessToken);
         params.put("act","register");
         String url = APIManager.Ucenter_URL;
         mProgressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, this);
-        APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
+        NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+            public void onResponse(Call<JSONObject> call, Response<JSONObject> resp) {
                 mProgressDialog.dismiss();
+                JSONObject response = resp.body();
                 try {
                     String code = response.getString("code");
                     System.out.println(response);
@@ -383,9 +422,9 @@ public class RegisterPatientInfoActivity extends ConfirmDialogActivity implement
                         String msg = res.getString(R.string.success_register);
                         if (isModify) {
                             msg = res.getString(R.string.success_update);
-                            CommonUtils.userInfo.setLoginType(reg_type);
-                            CommonUtils.userInfo.setLoginUsername(username);
-                            CommonUtils.userInfo.setLoginPassword(password);
+                            CommonUtils.userInfo.setLoginType(mRegType);
+                            CommonUtils.userInfo.setLoginUsername(mOpenId);
+                            CommonUtils.userInfo.setLoginPassword(mEditPassword.getText().toString());
                             SharedPreferences.Editor editor = getSharedPreferences("userData", MODE_PRIVATE).edit();
                             editor.putString("login_type", CommonUtils.userInfo.getLoginType());
                             editor.putString("login_username", CommonUtils.userInfo.getLoginUsername());
@@ -402,16 +441,11 @@ public class RegisterPatientInfoActivity extends ConfirmDialogActivity implement
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+            public void onFailure(Call<JSONObject> call, Throwable t) {
                 mProgressDialog.dismiss();
                 Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
             }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                mProgressDialog.dismiss();
-                Toast.makeText(mContext, res.getString(R.string.error_db), Toast.LENGTH_SHORT).show();
-            }
         });
     }
 

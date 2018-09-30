@@ -233,7 +233,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorHomeBackground"
-        android:paddingTop="8dp">
+        android:paddingTop="8dp"
+        android:paddingBottom="1dp">
         <RelativeLayout
             android:id="@+id/rlt_my_news"
             android:clickable="true"

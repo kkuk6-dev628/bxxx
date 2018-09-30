@@ -257,10 +257,7 @@ public class NotificationsActivity extends AppCompatActivity implements DialogIn
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent intent;
-            intent = new Intent(NotificationsActivity.this, NewsActivity.class);
-
-            pActivity.startChildActivity("news_activity", intent);
+            pActivity.finishChildActivity();
             return true;
         }
         return super.onKeyDown(keyCode, event);

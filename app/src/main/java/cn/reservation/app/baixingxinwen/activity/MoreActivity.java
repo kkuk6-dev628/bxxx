@@ -153,14 +153,12 @@ public class MoreActivity extends AppCompatActivity implements DialogInterface.O
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(MoreActivity.this, AdverActivity.class);
-        pActivity.startChildActivity("adver", intent);
+        pActivity.finishChildActivity();
     }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent intent = new Intent(MoreActivity.this, AdverActivity.class);
-            pActivity.startChildActivity("adver", intent);
+            pActivity.finishChildActivity();
             return true;
         }
         return super.onKeyDown(keyCode, event);

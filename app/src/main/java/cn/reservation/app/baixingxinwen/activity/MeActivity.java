@@ -103,12 +103,6 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
         CommonUtils.customActionBar(mContext, this, false, "");
         showAction = 0;
         TextView txtMyName = (TextView) findViewById(R.id.txt_my_name);
-//        txtMyName.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                showAlertLogout();
-//            }
-//        });
         final RelativeLayout lytLogout = (RelativeLayout) findViewById(R.id.rlt_my_logout);
         lytLogout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -259,7 +253,14 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
 
         TextView txt_my_level_date = (TextView) findViewById(R.id.txt_my_level_date);
         String dateline = CommonUtils.userInfo.getDateline();
-        txt_my_level_date.setText(dateline);
+        if(dateline.isEmpty() || dateline.equals("0")){
+            txt_my_level_date.setText("");
+            txt_my_level_date.setVisibility(View.GONE);
+        }
+        else{
+            txt_my_level_date.setText(dateline);
+            txt_my_level_date.setVisibility(View.VISIBLE);
+        }
 
         final TextView txt_my_name_set = (TextView) findViewById(R.id.txt_my_name_set);
         String changeid = CommonUtils.userInfo.getChangeid();
@@ -277,7 +278,7 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
                     }
                 }, 500);
                 Intent intent = new Intent(MeActivity.this, SetNameActivity.class);
-                pActivity.startChildActivity("member", intent);
+                startActivityForResult(intent, SetNameActivity.SET_NAME_REQUEST_CODE);
             }
         });
         final TextView txt_my_level = (TextView) findViewById(R.id.txt_my_level);
@@ -326,7 +327,7 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
                     .with(mContext)
                     .load(myIconPath).networkPolicy(NetworkPolicy.NO_CACHE)
                     .memoryPolicy(MemoryPolicy.NO_CACHE)
-                    .placeholder(mImgPlaceholder)
+//                    .placeholder(mImgPlaceholder)
                     .transform(CommonUtils.getTransformation(mContext))
                     .into(imgMyPhoto);
         //}
@@ -372,35 +373,93 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
             }
         });
 
+        txt_my_desc.setText(CommonUtils.userInfo.getAbsence() + "天");
+
+
         this.continuousAbsence();
     }
+
+    private void loadUserInfo(){
+        TextView txtMyName = findViewById(R.id.txt_my_name);
+
+        TextView txt_my_level_date = (TextView) findViewById(R.id.txt_my_level_date);
+        String dateline = CommonUtils.userInfo.getDateline();
+        if(!dateline.isEmpty() && !dateline.equals("0")){
+            txt_my_level_date.setText(dateline);
+            txt_my_level_date.setVisibility(View.VISIBLE);
+        }
+        else{
+            txt_my_level_date.setText("");
+            txt_my_level_date.setVisibility(View.GONE);
+        }
+
+        txtMyName.setText(CommonUtils.userInfo.getUserName());
+        TextView mTxtMoney = findViewById(R.id.txt_my_money);
+        if(CommonUtils.userInfo.getBaixingbi().equals("")){
+            mTxtMoney.setText("0");
+        }else {
+            mTxtMoney.setText(CommonUtils.userInfo.getBaixingbi());
+        }
+
+        TextView mTxtLevel = findViewById(R.id.txt_my_level);
+        if(CommonUtils.userInfo.getLevel().equals("")){
+            mTxtLevel.setText("新手");
+        }else{
+            mTxtLevel.setText(CommonUtils.userInfo.getLevel());
+        }
+        String myIconPath = CommonUtils.userInfo.getUserPhoto();
+        if(myIconPath.equals("")) {
+            myIconPath = "http://bbs.bxxx.cn/uc_server/images/noavatar_small.gif";
+        }else {
+            myIconPath = myIconPath.replace("\\/", "/");
+        }
+        System.out.println(myIconPath+"++++");
+        imgMyPhoto = (CircleImageView) findViewById(R.id.img_me_icon);
+        Picasso
+                .with(mContext)
+                .load(myIconPath).networkPolicy(NetworkPolicy.NO_CACHE)
+                .memoryPolicy(MemoryPolicy.NO_CACHE)
+                .transform(CommonUtils.getTransformation(mContext))
+                .into(imgMyPhoto);
+        final LinearLayout lyt_sign_every = (LinearLayout) findViewById(R.id.lyt_sign_every);
+        final TextView txt_my_desc = findViewById(R.id.txt_my_desc);
+        final TextView txt_my_name_set = findViewById(R.id.txt_my_name_set);
+        String changeid = CommonUtils.userInfo.getChangeid();
+        if(changeid == null || changeid.equals("0")){
+            txt_my_name_set.setVisibility(TextView.GONE);
+        }
+        else{
+            txt_my_name_set.setVisibility(TextView.VISIBLE);
+        }
+
+    }
+
     private void getUserInfo(String _uid) {
         //mProgressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, this);
-        RequestParams params = new RequestParams();
+        HashMap<String, Object> params = new HashMap<>();
         params.put("uid", _uid);
-        String url = "user/profile/";
-        APIManager.post(mContext, url, params, null, new JsonHttpResponseHandler() {
+        String url = "api/user/profile/";
+        NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
+            public void onResponse(Call<JSONObject> call, Response<JSONObject> resp) {
                 try {
+                    JSONObject response = resp.body();
                     Integer code = response.getInt("code");
                     System.out.println(response);
                     if (code==1) {
                         JSONObject userObj = response.optJSONObject("ret");
                         System.out.println(userObj);
+                        CommonUtils.userInfo.setUserName(userObj.optString("username"));
+                        CommonUtils.userInfo.setChangeid(userObj.optString("changeid"));
+                        CommonUtils.userInfo.setDateline(userObj.optString("groupexpiry"));
                         CommonUtils.userInfo.setBaixingbi(userObj.optString("credits"));
                         CommonUtils.userInfo.setLevel(userObj.optString("grouptitle"));
-                        SharedPreferences.Editor editor = getSharedPreferences("userData", MODE_PRIVATE).edit();
-                        editor.putString("baixingbi", CommonUtils.userInfo.getBaixingbi());
-                        editor.putString("level", CommonUtils.userInfo.getLevel());
-                        editor.apply();
-                        TextView mTxtMoney = (TextView) findViewById(R.id.txt_my_money);
-                        if(CommonUtils.userInfo.getBaixingbi().equals("")){
-                            mTxtMoney.setText("0");
-                        }else {
-                            mTxtMoney.setText(CommonUtils.userInfo.getBaixingbi());
-                        }
+                        CommonUtils.userInfo.setUserPhoto(userObj.optString("avatar"));
+
+                        CommonUtils.userInfo.save(mContext);
+
+                        loadUserInfo();
+
 
                     } else if(code==-1) {
                         //Toast.makeText(mContext, "用户名不存在", Toast.LENGTH_LONG).show();
@@ -422,14 +481,10 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+            public void onFailure(Call<JSONObject> call, Throwable t){
 
             }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-
-            }
         });
     }
     private void showAlertLogout() {
@@ -558,8 +613,9 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
                 try {
                     JSONObject response = resp.body();
                     if (response.getInt("code") == 1) {
-                        TextView mTxtTian = (TextView) findViewById(R.id.txt_my_desc);
-                        mTxtTian.setText(response.getString("ret") + "天");
+                        TextView mTxtTian = findViewById(R.id.txt_my_desc);
+                        CommonUtils.userInfo.setAbsence(response.getString("ret"));
+                        mTxtTian.setText(CommonUtils.userInfo.getAbsence() + "天");
                     }else {
                     }
 
@@ -577,7 +633,7 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
                 Toast.makeText(mContext, res.getString(R.string.error_message), Toast.LENGTH_SHORT).show();
 
             }
-        });
+        }, 1);
 
 
 
@@ -658,6 +714,7 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
         super.onResume();
         String uid = CommonUtils.userInfo.getUid();
         getUserInfo(uid);
+
         System.out.println("comp1");
         SharedPreferences cropData = getSharedPreferences("cropData", MODE_PRIVATE);
         String crop = cropData.getString("crop","");
@@ -1006,6 +1063,9 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Toast.makeText(this, "失败: " + result.getError(), Toast.LENGTH_LONG).show();
             }
+        }
+        else if(requestCode == SetNameActivity.SET_NAME_REQUEST_CODE){
+            onResume();
         }
     }
     @Override

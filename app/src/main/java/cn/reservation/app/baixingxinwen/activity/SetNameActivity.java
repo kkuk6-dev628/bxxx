@@ -1,11 +1,12 @@
 package cn.reservation.app.baixingxinwen.activity;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -33,6 +34,8 @@ import retrofit2.Response;
 public class SetNameActivity extends AppCompatActivity{
     private static String TAG = SetNameActivity.class.getSimpleName();
 
+    public static int SET_NAME_REQUEST_CODE = 628;
+
     private Context mContext;
     private Resources res;
     public AnimatedActivity pActivity;
@@ -52,21 +55,22 @@ public class SetNameActivity extends AppCompatActivity{
         rltBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                pActivity.finishChildActivity();
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("nameChanged",false);
+                setResult(Activity.RESULT_OK,returnIntent);
+                finish();
             }
         });
 
-        editTextName = (EditText) findViewById(R.id.edit_input_data7);
+        editTextName = findViewById(R.id.edit_input_data7);
 
-        ImageView img_delete = (ImageView) findViewById(R.id.img_delete);
+        ImageView img_delete = findViewById(R.id.img_delete);
         img_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 editTextName.setText("");
             }
         });
-
-
 
         TextView txt_my_level_title = (TextView) findViewById(R.id.txt_save_name);
         txt_my_level_title.setOnClickListener(new View.OnClickListener() {
@@ -78,7 +82,7 @@ public class SetNameActivity extends AppCompatActivity{
                     final String url = "api/user/changeid";
                     params.put("uid", CommonUtils.userInfo.getUserID());
                     params.put("newname", name);
-                    final ProgressHUD progressDialog = ProgressHUD.show(mContext, res.getString(R.string.processing), true, false, null);
+                    final ProgressHUD progressDialog = ProgressHUD.show(SetNameActivity.this, res.getString(R.string.processing), true, false, null);
                     NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {
                         @Override
                         public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
@@ -87,27 +91,27 @@ public class SetNameActivity extends AppCompatActivity{
                                 CommonUtils.dismissProgress(progressDialog);
                                 if (responseBody != null && responseBody.getInt("code") == 1) {
                                     String message = responseBody.getString("message");
-                                    Log.d("Change user name", message);
-
                                     SharedPreferences.Editor editor = getSharedPreferences("userData", MODE_PRIVATE).edit();
                                     editor.putString("userName", name);
-                                    editor.putString("changeid", "1");
+                                    editor.putString("changeid", "0");
                                     editor.apply();
 
                                     CommonUtils.userInfo.setUserName(name);
                                     CommonUtils.userInfo.setChangeid("1");
 
-                                    CommonUtils.showAlertDialog(mContext,
+                                    CommonUtils.showAlertDialog(SetNameActivity.this,
                                             message, new View.OnClickListener(){
 
                                                 @Override
                                                 public void onClick(View view) {
-                                                    pActivity.finishChildActivity();
+                                                    finish();
                                                 }
                                             });
-
-
-
+                                }
+                                else{
+                                    String message = responseBody.optString("message");
+                                    CommonUtils.showAlertDialog(SetNameActivity.this,
+                                            message, null);
                                 }
                             } catch (JSONException ex) {
 

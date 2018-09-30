@@ -80,16 +80,12 @@ public class AdverActivity extends AppCompatActivity{
 
     @Override
     public void onBackPressed() {
-        Intent intent;
-        intent = new Intent(AdverActivity.this, MeActivity.class);
-        pActivity.startChildActivity("me_activity", intent);
+        pActivity.finishChildActivity();
     }
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            Intent intent;
-            intent = new Intent(AdverActivity.this, MeActivity.class);
-            pActivity.startChildActivity("me_activity", intent);
+            pActivity.finishChildActivity();
             return true;
         }
         return super.onKeyDown(keyCode, event);

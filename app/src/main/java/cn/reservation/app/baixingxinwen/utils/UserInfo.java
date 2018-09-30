@@ -1,5 +1,10 @@
 package cn.reservation.app.baixingxinwen.utils;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by LiYin on 3/23/2017.
  */
@@ -24,6 +29,7 @@ public class UserInfo {
     private String loginPassword;
     private String changeid;
     private String dateline;
+    private String absence;
 
     public UserInfo(long userID, String userName, int userGender, String userBirthday,
                     String userPhone, String userPhoto, String token, String userIdentify,
@@ -50,7 +56,46 @@ public class UserInfo {
         this.loginPassword = loginPassword;
         this.changeid = changeid;
         this.dateline = dateline;
+        this.absence = "0";
     }
+
+    public void save(Context context){
+        SharedPreferences.Editor editor = context.getSharedPreferences("userData", MODE_PRIVATE).edit();
+        editor.putLong("userID", getUserID());
+        editor.putString("userName", getUserName());
+        editor.putInt("userGender", getUserGender());
+        editor.putString("userBirthday", getUserBirthday());
+        editor.putString("userPhone", getUserPhone());
+        editor.putString("userPhoto", getUserPhoto());
+        editor.putString("credits", getToken());
+        editor.putString("identify", getUserIdentify());
+        editor.putString("realname", getUserPassword());
+        editor.putString("uid", getUid());
+        editor.putString("qq", getUserQQ());
+        editor.putString("wechat", getUserWeixin());
+        editor.putString("userJoinMobile", getUserJoinMobile());
+        editor.putString("baixingbi", getBaixingbi());
+        editor.putString("level", getLevel());
+        editor.putString("login_type", getLoginType());
+        editor.putString("login_username", getLoginUsername());
+        editor.putString("login_password", getLoginPassword());
+        editor.putString("changeid", getChangeid());
+        editor.putString("dateline", getDateline());
+        editor.putString("channel_id", changeid);
+        editor.putString("absence", absence);
+        editor.apply();
+
+    }
+
+    public String getAbsence() {
+        return absence;
+    }
+
+    public void setAbsence(String absence) {
+        this.absence = absence;
+    }
+
+
 
     public String getToken() {
         return token;
