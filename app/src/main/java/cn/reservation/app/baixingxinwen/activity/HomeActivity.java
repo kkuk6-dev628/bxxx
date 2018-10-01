@@ -684,7 +684,7 @@ public class HomeActivity extends AppCompatActivity implements DialogInterface.O
                         mIntPage = 1;
                     }
                     searchItemListAdapter.notifyDataSetChanged();
-                    lstSearch.invalidateViews();
+//                    lstSearch.invalidateViews();
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -1096,7 +1096,7 @@ public class HomeActivity extends AppCompatActivity implements DialogInterface.O
                     getArticle();
                     lstSearch.loadComplete();
                 }
-            }, 500);//模拟网络请求，延缓2秒钟
+            }, 5);//模拟网络请求，延缓2秒钟
         }
     }
 

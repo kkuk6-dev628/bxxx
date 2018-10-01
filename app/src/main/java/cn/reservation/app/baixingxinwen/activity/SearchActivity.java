@@ -872,6 +872,7 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
             @Override
             public void onResponse(Call<JSONObject> call, Response<JSONObject> resp) {
                 try {
+                    indicatorLayout.setVisibility(View.GONE);
                     JSONObject response = resp.body();
                     if (response.getInt("code") == 1) {
                         JSONArray list = response.getJSONArray("ret");
@@ -919,10 +920,12 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
                         mIntPage = 1;
                     }
                     searchItemListAdapter.notifyDataSetChanged();
-                    lstSearch.invalidateViews();
+//                    lstSearch.invalidateViews();
+//                    List<SearchItem> oldNews = searchItemListAdapter.;
+//                    DiffUtil.DiffResult result = DiffUtil.calculateDiff(new MyCallback(oldNews, news));
+//                    searchItemListAdapter.setNews(news);
+//                    result.dispatchUpdatesTo(myAdapter);
 
-
-                    indicatorLayout.setVisibility(View.GONE);
 //                            if(dropDownMenu != null){
 //                                dropDownMenu.setVisibility(View.VISIBLE);
 //                            }
