@@ -143,6 +143,10 @@ public class PhoneVerifyDialog extends Dialog implements View.OnClickListener{
         params.put("type", "change");
         params.put("phone", strPhone);
         System.out.println("phone:" + strPhone);
+        if(CommonUtils.isLogin){
+            params.put("uid", CommonUtils.userInfo.getUserID());
+        }
+
         String url = "api/sms/send";
         mTxtSendRequest.setClickable(false);
         NetRetrofit.getInstance().post(url, params, new Callback<JSONObject>() {

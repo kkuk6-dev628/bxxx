@@ -192,7 +192,7 @@ public class ReportActivity extends AppCompatActivity implements DialogInterface
                 txt_report_message.getText();
                 String message = txt_report_message.getText().toString();
                 if(message.isEmpty()){
-                    CommonUtils.showAlertDialog(ReportActivity.this, res.getString(R.string.please_input_info), null);
+                    CommonUtils.showAlertDialog(ReportActivity.this, res.getString(R.string.report_fill_message), null);
                     return;
                 }
                 params.put("message", txt_report_message.getText());

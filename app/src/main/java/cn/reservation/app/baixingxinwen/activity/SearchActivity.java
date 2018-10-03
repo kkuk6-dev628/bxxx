@@ -1289,12 +1289,14 @@ public class SearchActivity extends AppCompatActivity implements DialogInterface
 
     @Override
     public void onBackPressed() {
+        popUp.dismiss();
         HomeGroupActivity.HomeGroupStack.finishChildActivity();
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            popUp.dismiss();
             HomeGroupActivity.HomeGroupStack.finishChildActivity();
             return true;
         }

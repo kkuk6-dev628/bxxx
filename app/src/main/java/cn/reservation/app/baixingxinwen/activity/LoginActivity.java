@@ -91,13 +91,22 @@ public class LoginActivity extends AppCompatActivity implements DialogInterface.
         findViewById(R.id.img_weixin_icon).setOnClickListener(this);
         findViewById(R.id.img_qq_icon).setOnClickListener(this);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(CommonUtils.isLogin){
+            LoginActivity.this.finish();
+        }
+    }
+
     @Override
     public void onClick(final View view) {
         view.setClickable(false);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                view.setClickable(false);
+                view.setClickable(true);
             }
         }, 500);
 

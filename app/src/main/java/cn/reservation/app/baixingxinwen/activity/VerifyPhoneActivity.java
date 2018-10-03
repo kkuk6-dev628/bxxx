@@ -152,6 +152,9 @@ public class VerifyPhoneActivity extends AppCompatActivity implements DialogInte
             params.put("type", type);
         }
         params.put("phone", strPhone);
+        if(CommonUtils.isLogin){
+            params.put("uid", CommonUtils.userInfo.getUserID());
+        }
         System.out.println("phone:" + strPhone);
         String url = "api/sms/send";
         mTxtLeftTime.setClickable(false);
@@ -315,7 +318,7 @@ public class VerifyPhoneActivity extends AppCompatActivity implements DialogInte
         if (timer != null) {
             timer.cancel();
             timer = null;
-            mTxtLeftTime.setText("");
+            mTxtLeftTime.setText(getString(R.string.send_verify_code));
         }
     }
 
@@ -326,9 +329,9 @@ public class VerifyPhoneActivity extends AppCompatActivity implements DialogInte
                 handler.post(new Runnable() {
                     public void run() {
                         mIntLeftTime--;
-                        mStrLeftTime = "[" + res.getString(R.string.left_time) + " " + CommonUtils.getLeftTime(mContext, mIntLeftTime) + "]";
+                        mStrLeftTime = "[" + CommonUtils.getLeftTime(mContext, mIntLeftTime) + "]";
                         mTxtLeftTime.setText(mStrLeftTime);
-                        if (mIntLeftTime == 0) {
+                        if (mIntLeftTime <= 0) {
                             stopTimerTask();
                         }
                     }

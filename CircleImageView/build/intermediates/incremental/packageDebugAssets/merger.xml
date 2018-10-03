@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="E:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\assets"/><source path="E:\bxxx\android_bxxx\baixingxinwen\CircleImageView\build\generated\assets\shaders\debug"/></dataSet><dataSet config="debug"><source path="E:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\debug\assets"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="D:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\assets"/><source path="D:\bxxx\android_bxxx\baixingxinwen\CircleImageView\build\generated\assets\shaders\debug"/></dataSet><dataSet config="debug"><source path="D:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\debug\assets"/></dataSet></merger>

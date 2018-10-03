@@ -570,11 +570,8 @@ public class MeActivity extends AppCompatActivity implements DialogInterface.OnC
                         editor.apply();
 
                         self.continuousAbsence();
-
-                        CommonUtils.showAlertDialog(mContext, response.optString("message"), null);
-                    }else {
-                            CommonUtils.showAlertDialog(mContext, "您已签到，明天再来哦", null);
-                        }
+                    }
+                    CommonUtils.showAlertDialog(mContext, response.optString("message"), null);
 
                 } catch (JSONException e) {
                     //CommonUtils.dismissProgress(progressDialog);

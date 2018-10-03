@@ -431,7 +431,12 @@ public class RegisterPatientInfoActivity extends ConfirmDialogActivity implement
                             editor.putString("login_password", CommonUtils.userInfo.getLoginPassword());
                             editor.apply();
                         }
-                        CommonUtils.showConfirmDialog(mContext, RegisterPatientInfoActivity.this, 0, msg);
+                        CommonUtils.showAlertDialog(mContext, msg, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                RegisterPatientInfoActivity.this.finish();
+                            }
+                        });
                     } else {
                         Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                     }

@@ -148,9 +148,9 @@ public class RoomDetailActivity extends AppCompatActivity implements DialogInter
         imgReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                imgReport.setClickable(false);
                 if (CommonUtils.isLogin) {
 
-                    imgReport.setClickable(false);
                     HashMap<String, Object> params = new HashMap<String, Object>();
 
                     params.put("uid", userID);
@@ -167,7 +167,7 @@ public class RoomDetailActivity extends AppCompatActivity implements DialogInter
                             try {
                                 if (responseBody.getInt("code") == 1) {
                                     if (responseBody.getInt("ret") == 1) {
-                                        CommonUtils.showAlertDialog(mContext,
+                                        CommonUtils.showAlertDialog(RoomDetailActivity.this,
                                                 res.getString(R.string.report_received_message), null);
                                     } else {
                                         Intent intent = new Intent(RoomDetailActivity.this, ReportActivity.class);
@@ -194,6 +194,7 @@ public class RoomDetailActivity extends AppCompatActivity implements DialogInter
                     });
 
                 } else {
+                    imgReport.setClickable(true);
                     Intent intent = new Intent(RoomDetailActivity.this, LoginActivity.class);
                     intent.putExtra("from_activity", "room_detail");
                     RoomDetailActivity.this.startActivityForResult(intent, CommonUtils.REQUEST_CODE_LOGIN);

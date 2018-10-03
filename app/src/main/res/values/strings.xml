@@ -18,7 +18,7 @@
     <string name="lang_ko">조선어</string>
     <string name="lang_ch">中文</string>
 
-    <string name="str_ok">确认</string>
+    <string name="str_ok">确定</string>
     <string name="str_login">登录</string>
     <string name="str_cancel">取消</string>
     <string name="success">成功</string>
@@ -132,7 +132,7 @@
     <string name="platform_introduce">平台简介</string>
     <string name="department">科室</string>
 
-    <string name="please_input_info">请输入患者信息</string>
+    <string name="please_input_info">请输入举报理由</string>
     <string name="please_check_icon">为家属选择头像</string>
     <string name="please_choose_patient">选择就诊患者</string>
     <string name="password_hint">请输入密码</string>
@@ -188,7 +188,7 @@
 	<string name="home_travel">旅游专栏</string>
 	<string name="home_wait">敬请期待</string>
     <string name="report_received_message">已举报，处理结果将以站内信的形式发送给您</string>
-    <string name="report_fill_message">请输入验证码</string>
+    <string name="report_fill_message">请输入举报理由</string>
     <string name="delete_news_message">确定删除吗</string>
     <string name="change_phone">点击确定立即发送验证码</string>
 </resources>

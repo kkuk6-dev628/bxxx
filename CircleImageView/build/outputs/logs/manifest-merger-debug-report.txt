@@ -1,27 +1,27 @@
 -- Merging decision tree log ---
 manifest
-ADDED from E:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml:2:1-7:12
-INJECTED from E:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml:2:1-7:12
-INJECTED from E:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml:2:1-7:12
+ADDED from D:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml:2:1-7:12
+INJECTED from D:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml:2:1-7:12
+INJECTED from D:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml:2:1-7:12
 	package
-		ADDED from E:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml:3:5-43
-		INJECTED from E:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
-		INJECTED from E:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
+		ADDED from D:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml:3:5-43
+		INJECTED from D:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
+		INJECTED from D:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
 	xmlns:android
-		ADDED from E:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml:2:11-69
+		ADDED from D:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml:2:11-69
 application
-ADDED from E:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml:5:5-20
+ADDED from D:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml:5:5-20
 uses-sdk
-INJECTED from E:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from E:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
-INJECTED from E:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
-INJECTED from E:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
-INJECTED from E:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
+INJECTED from D:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from D:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
+INJECTED from D:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
+INJECTED from D:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
+INJECTED from D:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from E:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
-		ADDED from E:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
-		INJECTED from E:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
+		INJECTED from D:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
+		ADDED from D:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
+		INJECTED from D:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from E:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
-		ADDED from E:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
-		INJECTED from E:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
+		INJECTED from D:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
+		ADDED from D:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
+		INJECTED from D:\bxxx\android_bxxx\baixingxinwen\CircleImageView\src\main\AndroidManifest.xml
